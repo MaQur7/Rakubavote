@@ -45,7 +45,7 @@ closing) will be added here as each part of the app is finished.
 | Milestone | What it delivers | Status |
 |---|---|---|
 | 0 | Project setup, fonts, brand, build workflow | Done |
-| 1 | Data model, encryption, signatures, audit log | In progress |
+| 1 | Data model, encryption, signatures, audit log | Done |
 | 2 | Election setup and voter registration | Planned |
 | 3 | Public review, objections and register lock | Planned |
 | 4 | Check-in and voting codes | Planned |
