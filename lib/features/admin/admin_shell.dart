@@ -5,6 +5,7 @@ import '../../app/providers.dart';
 import '../../core/theme.dart';
 import '../../core/widgets/common.dart';
 import '../../l10n/app_localizations.dart';
+import '../register_lock/review_screen.dart';
 import '../registration/registration_screen.dart';
 import '../setup/setup_screen.dart';
 
@@ -76,6 +77,7 @@ class _AdminShellState extends ConsumerState<AdminShell> {
             child: switch (_tab) {
               0 => const SetupScreen(),
               1 => const RegistrationScreen(),
+              2 => const ReviewScreen(),
               _ => Center(
                   child: Padding(
                     padding: const EdgeInsets.all(24),

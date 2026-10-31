@@ -80,8 +80,27 @@ You do not need internet at the polling station. Download the files once, before
 7. **Back up to USB** at the end of each day: choose the USB drive. The backup is encrypted
    and needs the officer PIN to open.
 
-Guides for review and lock, election day and closing will be added as those parts are
-finished.
+### Phase 3: Public review and lock (tab "3 Review and lock")
+
+1. Press **Set dates** and choose the first and last day the register is posted for the public.
+2. Post the printed register on the notice board. (Printing is added in a later update; until
+   then use the Registration list.)
+3. When someone objects, press **Record an objection** and choose:
+   - **Possible duplicate:** type both voter numbers.
+   - **Missing name:** type the name of the person who says they registered.
+   - **Other:** type the voter number and the details.
+   Always type the name of the person objecting.
+4. **Check for duplicates** lists names that look alike in the same group. You can record any
+   of them as an objection; the app never removes anyone by itself.
+5. Decide each objection with the buttons on it: *Keep both* / *Remove*, *Add voter* /
+   *Reject*, or *Upheld* / *Rejected*. Every decision is saved with your name and the date.
+6. When there are no open objections, press **Lock register** and confirm. The ballot must
+   already be signed in Setup.
+7. Write the **fingerprint code** on the notice board and give it to party agents and
+   observers. After locking, no names can be added, changed or removed, and the ballot cannot
+   be changed. A lost card can still be reprinted.
+
+Guides for election day and closing will be added as those parts are finished.
 
 ## Project status
 
@@ -90,7 +109,7 @@ finished.
 | 0 | Project setup, fonts, brand, build workflow | Done |
 | 1 | Data model, encryption, signatures, audit log | Done |
 | 2 | Election setup and voter registration | Done |
-| 3 | Public review, objections and register lock | Planned |
+| 3 | Public review, objections and register lock | Done |
 | 4 | Check-in and voting codes | Planned |
 | 5 | Voting booth screens | Planned |
 | 6 | Station network, closing and results | Planned |

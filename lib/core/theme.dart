@@ -18,6 +18,8 @@ abstract final class RakubaColors {
   static const warningTint = Color(0xFFFFF6E3);
   static const successTint = Color(0xFFE7F2EA);
   static const white = Color(0xFFFFFFFF);
+  /// Background of disabled filled buttons; white text on it is 5.3:1.
+  static const disabled = Color(0xFF6E6A60);
 }
 
 /// Default palette offered for ballot positions, in order. Position colours are
@@ -100,7 +102,13 @@ ThemeData buildRakubaTheme({required bool arabic}) {
       style: TextButton.styleFrom(minimumSize: const Size(48, 48), textStyle: btnText.copyWith(fontSize: 16)),
     ),
     filledButtonTheme: FilledButtonThemeData(
-      style: FilledButton.styleFrom(minimumSize: minSize, shape: shape, textStyle: btnText),
+      style: FilledButton.styleFrom(
+        minimumSize: minSize,
+        shape: shape,
+        textStyle: btnText,
+        disabledBackgroundColor: RakubaColors.disabled,
+        disabledForegroundColor: RakubaColors.white,
+      ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(

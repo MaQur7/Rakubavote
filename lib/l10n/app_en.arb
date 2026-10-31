@@ -37,6 +37,11 @@
   "setUpButton": "Set up this device",
   "pinWarning": "Keep the PIN secret. Without it nobody can open the data on this device, and it cannot be recovered.",
   "unlockTitle": "Unlock: {mode}",
+  "@unlockTitle": {
+    "placeholders": {
+      "mode": {}
+    }
+  },
   "officerPin": "Officer PIN",
   "unlockButton": "Unlock",
   "wrongPin": "That PIN is not correct. Try again.",
@@ -79,19 +84,39 @@
   "schoolConsent": "School consent",
   "schoolConsentText": "The school has given consent to register students under 18.",
   "schoolConsentRecordedBy": "Recorded by {name}",
+  "@schoolConsentRecordedBy": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "positions": "Positions",
   "addPosition": "Add position",
   "newPositionTitle": "New position",
   "candidatesCount": "{count, plural, =0{No candidates} =1{1 candidate} other{{count} candidates}}",
+  "@candidatesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "allowNoChoice": "Allow “No choice”",
   "chooseLabel": "Choose",
   "candidatesSuffix": "candidate(s)",
   "positionTitleIn": "Title in {language}",
+  "@positionTitleIn": {
+    "placeholders": {
+      "language": {}
+    }
+  },
   "colour": "Colour",
   "moveUp": "Move up",
   "moveDown": "Move down",
   "deletePosition": "Delete position",
   "deletePositionConfirm": "Delete {title} and its candidates?",
+  "@deletePositionConfirm": {
+    "placeholders": {
+      "title": {}
+    }
+  },
   "colNo": "No.",
   "colPhoto": "Photo",
   "colName": "Name",
@@ -108,12 +133,22 @@
   "saveAndSignBallot": "Save and sign ballot",
   "ballotSigned": "Ballot signed",
   "ballotFingerprint": "Fingerprint: {code}",
+  "@ballotFingerprint": {
+    "placeholders": {
+      "code": {}
+    }
+  },
   "ballotNotSigned": "The ballot is not signed yet.",
   "ballotSignedNote": "Signed. Any change will need signing again.",
   "noPositionSelected": "Add a position on the left to start.",
   "errFeeLocked": "The fee cannot change: voters are already registered.",
   "errBallotFrozen": "The ballot cannot change after the register is locked.",
   "errBallotInvalid": "The ballot is not complete. {details}",
+  "@errBallotInvalid": {
+    "placeholders": {
+      "details": {}
+    }
+  },
   "errDuplicateNumber": "Another candidate already has that number.",
   "errLowContrast": "That colour is too light for white text. Choose a darker one.",
   "errInvalidValue": "Check the values and try again.",
@@ -123,11 +158,27 @@
   "fullName": "Full name",
   "fullNameHint": "As known in the community",
   "feeLine": "Registration fee: {amount} {currency}",
+  "@feeLine": {
+    "placeholders": {
+      "amount": {},
+      "currency": {}
+    }
+  },
   "paid": "Paid",
   "receiptNo": "Receipt no.",
   "possibleDuplicate": "Possible duplicate:",
   "duplicateNameText": "a voter with a similar name and the same group exists (Voter No. {number}). Check before saving.",
+  "@duplicateNameText": {
+    "placeholders": {
+      "number": {}
+    }
+  },
   "duplicateIdText": "a voter with the same ID exists (Voter No. {number}). Check before saving.",
+  "@duplicateIdText": {
+    "placeholders": {
+      "number": {}
+    }
+  },
   "clear": "Clear",
   "saveAndPrintCard": "Save and print voter card",
   "registeredVoters": "Registered voters",
@@ -139,10 +190,21 @@
   "feeNotPaid": "Not paid",
   "cardNotPrinted": "Not printed",
   "showingVoters": "Showing {shown} of {total} registered voters",
+  "@showingVoters": {
+    "placeholders": {
+      "shown": {},
+      "total": {}
+    }
+  },
   "feeSummary": "Fee summary",
   "importCsv": "Import list (CSV)",
   "backupUsb": "Back up to USB",
   "voterSaved": "Saved. Voter No. {number}.",
+  "@voterSaved": {
+    "placeholders": {
+      "number": {}
+    }
+  },
   "errConsentMissing": "Record the school's consent in Setup before registering students.",
   "errNameRequired": "Enter the full name.",
   "errFeeUnpaidBlocked": "This election only registers people who have paid the fee.",
@@ -151,14 +213,169 @@
   "errRegisterLocked": "The register is locked. No names can be added.",
   "errNoElection": "Create the election in Setup first.",
   "importDone": "Imported {imported}. Skipped {skipped}. Possible duplicates: {duplicates}.",
+  "@importDone": {
+    "placeholders": {
+      "imported": {},
+      "skipped": {},
+      "duplicates": {}
+    }
+  },
   "importSkippedLine": "Line {line}: {reason}",
+  "@importSkippedLine": {
+    "placeholders": {
+      "line": {},
+      "reason": {}
+    }
+  },
   "backupDone": "Backup saved in {path}",
+  "@backupDone": {
+    "placeholders": {
+      "path": {}
+    }
+  },
   "backupFailed": "The backup could not be saved. Check the USB drive and try again.",
   "totalsByCurrency": "Totals by currency",
   "totalsByOfficial": "Totals by official",
   "paidCount": "Paid: {count}",
+  "@paidCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "unpaidCount": "Not paid: {count}",
+  "@unpaidCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "flaggedCount": "Registered without paying: {count}",
+  "@flaggedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "noFee": "This election has no registration fee.",
-  "photoFailed": "No photo was taken. You can try again."
+  "photoFailed": "No photo was taken. You can try again.",
+  "registeredVotersStat": "Registered voters",
+  "displayPeriod": "Public display period",
+  "displayPeriodRange": "{start} to {end}",
+  "@displayPeriodRange": {
+    "placeholders": {
+      "start": {},
+      "end": {}
+    }
+  },
+  "displayPeriodNotSet": "Not set yet",
+  "setDates": "Set dates",
+  "startDate": "First day",
+  "endDate": "Last day",
+  "openObjections": "Open objections",
+  "objectionsTitle": "Objections and corrections",
+  "objectionsNote": "Every decision is saved in the audit log with the official's name and time.",
+  "noObjections": "No objections recorded.",
+  "raiseObjection": "Record an objection",
+  "checkDuplicates": "Check for duplicates",
+  "objectionKind": "What is the objection?",
+  "kindDuplicate": "Possible duplicate",
+  "kindMissing": "Missing name",
+  "kindOther": "Other",
+  "voterNumberField": "Voter No.",
+  "otherVoterNumberField": "Possible duplicate of Voter No.",
+  "claimantNameField": "Name of the person who is missing",
+  "raisedByField": "Name of the person objecting",
+  "detailField": "Details",
+  "duplicateTitle": "Voter No. {subject} · possible duplicate of {other}",
+  "@duplicateTitle": {
+    "placeholders": {
+      "subject": {},
+      "other": {}
+    }
+  },
+  "missingTitle": "Missing name: {name}",
+  "@missingTitle": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "otherTitle": "Voter No. {subject}: {detail}",
+  "@otherTitle": {
+    "placeholders": {
+      "subject": {},
+      "detail": {}
+    }
+  },
+  "raisedByLine": "Raised by {name} on {date}",
+  "@raisedByLine": {
+    "placeholders": {
+      "name": {},
+      "date": {}
+    }
+  },
+  "decidedLine": "Decided by {name} on {date}: {decision}",
+  "@decidedLine": {
+    "placeholders": {
+      "name": {},
+      "date": {},
+      "decision": {}
+    }
+  },
+  "keepBoth": "Keep both",
+  "removeVoter": "Remove {number}",
+  "@removeVoter": {
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "addVoter": "Add voter",
+  "reject": "Reject",
+  "upheld": "Upheld",
+  "rejected": "Rejected",
+  "decisionKeepBoth": "kept both",
+  "decisionRemove": "removed",
+  "decisionAdd": "added",
+  "decisionReject": "rejected",
+  "decisionUpheld": "upheld",
+  "decisionRejected": "rejected",
+  "noDuplicatesFound": "No possible duplicates found.",
+  "duplicatePairsTitle": "Possible duplicates",
+  "duplicatePairLine": "{a} and {b}",
+  "@duplicatePairLine": {
+    "placeholders": {
+      "a": {},
+      "b": {}
+    }
+  },
+  "raiseThis": "Record as objection",
+  "lockTitle": "Lock the register",
+  "lockText": "After locking, no names can be added or removed. The laptop creates a signed copy and a fingerprint code that anyone can check.",
+  "printRegister": "Print register for notice board",
+  "lockButton": "Lock register",
+  "lockButtonBlocked": "Lock register (resolve {count} objections first)",
+  "@lockButtonBlocked": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "lockConfirm": "Lock the register now? This cannot be undone.",
+  "afterLockingTitle": "After locking:",
+  "afterLockingText": "copy to the check-in device by USB or local Wi-Fi, and print the fingerprint code for party agents and observers.",
+  "registerLocked": "The register is locked",
+  "registerFingerprint": "Fingerprint code",
+  "lockedByLine": "Locked by {name} on {date}",
+  "@lockedByLine": {
+    "placeholders": {
+      "name": {},
+      "date": {}
+    }
+  },
+  "registerCheckValid": "Checked: the signed register matches the data on this laptop.",
+  "registerCheckBad": "Warning: the signed register does not match its signature. Do not use this laptop's register; call the presiding officer.",
+  "registerCheckChanged": "Warning: the data on this laptop has changed since the register was locked. Call the presiding officer.",
+  "errOpenObjections": "Resolve all objections before locking.",
+  "errBallotNotSigned": "Sign the ballot in Setup before locking the register.",
+  "errEmptyRegister": "There are no voters on the register.",
+  "errVoterNotFound": "That voter number was not found on the register.",
+  "errDecisionNotAllowed": "That decision does not fit this objection.",
+  "errAlreadyDecided": "This objection has already been decided.",
+  "errInvalidDates": "The last day must be on or after the first day."
 }

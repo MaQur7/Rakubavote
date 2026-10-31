@@ -17,7 +17,9 @@ Station protocol: docs/protocol.md · Secrecy design: SECURITY.md
 ## Commands
 - Get packages: `flutter pub get`
 - Generate drift code: `dart run build_runner build --delete-conflicting-outputs`
-- After editing app_en.arb: `python3 tool/sync_l10n.py` (fills app_din.arb, lists missing Arabic keys)
+- After editing app_en.arb: `python3 tool/sync_l10n.py` (declares placeholder order, fills
+  app_din.arb, lists missing Arabic keys). Without declared order gen-l10n sorts arguments
+  alphabetically and silently swaps them.
 - Run tests: `flutter test`
 - Static checks: `flutter analyze`
 - Run app: `flutter run -d <device>`

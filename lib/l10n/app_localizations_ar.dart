@@ -492,7 +492,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errNoElection => 'أنشئ الانتخاب في الإعداد أولًا.';
 
   @override
-  String importDone(Object duplicates, Object imported, Object skipped) {
+  String importDone(Object imported, Object skipped, Object duplicates) {
     return 'تم استيراد $imported. تم تخطي $skipped. تكرارات محتملة: $duplicates.';
   }
 
@@ -536,4 +536,224 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get photoFailed => 'لم تُلتقط صورة. يمكنك المحاولة مرة أخرى.';
+
+  @override
+  String get registeredVotersStat => 'الناخبون المسجلون';
+
+  @override
+  String get displayPeriod => 'فترة العرض العام';
+
+  @override
+  String displayPeriodRange(Object start, Object end) {
+    return 'من $start إلى $end';
+  }
+
+  @override
+  String get displayPeriodNotSet => 'لم تُحدد بعد';
+
+  @override
+  String get setDates => 'تحديد التواريخ';
+
+  @override
+  String get startDate => 'اليوم الأول';
+
+  @override
+  String get endDate => 'اليوم الأخير';
+
+  @override
+  String get openObjections => 'اعتراضات مفتوحة';
+
+  @override
+  String get objectionsTitle => 'الاعتراضات والتصحيحات';
+
+  @override
+  String get objectionsNote =>
+      'يُحفظ كل قرار في سجل التدقيق مع اسم المسؤول والوقت.';
+
+  @override
+  String get noObjections => 'لا توجد اعتراضات مسجلة.';
+
+  @override
+  String get raiseObjection => 'تسجيل اعتراض';
+
+  @override
+  String get checkDuplicates => 'البحث عن التكرارات';
+
+  @override
+  String get objectionKind => 'ما هو الاعتراض؟';
+
+  @override
+  String get kindDuplicate => 'تكرار محتمل';
+
+  @override
+  String get kindMissing => 'اسم مفقود';
+
+  @override
+  String get kindOther => 'أخرى';
+
+  @override
+  String get voterNumberField => 'رقم الناخب';
+
+  @override
+  String get otherVoterNumberField => 'تكرار محتمل لرقم الناخب';
+
+  @override
+  String get claimantNameField => 'اسم الشخص المفقود';
+
+  @override
+  String get raisedByField => 'اسم المعترض';
+
+  @override
+  String get detailField => 'التفاصيل';
+
+  @override
+  String duplicateTitle(Object subject, Object other) {
+    return 'رقم الناخب $subject · تكرار محتمل لـ $other';
+  }
+
+  @override
+  String missingTitle(Object name) {
+    return 'اسم مفقود: $name';
+  }
+
+  @override
+  String otherTitle(Object subject, Object detail) {
+    return 'رقم الناخب $subject: $detail';
+  }
+
+  @override
+  String raisedByLine(Object name, Object date) {
+    return 'قدمه $name في $date';
+  }
+
+  @override
+  String decidedLine(Object name, Object date, Object decision) {
+    return 'قرره $name في $date: $decision';
+  }
+
+  @override
+  String get keepBoth => 'إبقاء الاثنين';
+
+  @override
+  String removeVoter(Object number) {
+    return 'حذف $number';
+  }
+
+  @override
+  String get addVoter => 'إضافة ناخب';
+
+  @override
+  String get reject => 'رفض';
+
+  @override
+  String get upheld => 'مقبول';
+
+  @override
+  String get rejected => 'مرفوض';
+
+  @override
+  String get decisionKeepBoth => 'أُبقي الاثنان';
+
+  @override
+  String get decisionRemove => 'حُذف';
+
+  @override
+  String get decisionAdd => 'أُضيف';
+
+  @override
+  String get decisionReject => 'رُفض';
+
+  @override
+  String get decisionUpheld => 'قُبل';
+
+  @override
+  String get decisionRejected => 'رُفض';
+
+  @override
+  String get noDuplicatesFound => 'لم يُعثر على تكرارات محتملة.';
+
+  @override
+  String get duplicatePairsTitle => 'تكرارات محتملة';
+
+  @override
+  String duplicatePairLine(Object a, Object b) {
+    return '$a و$b';
+  }
+
+  @override
+  String get raiseThis => 'تسجيل كاعتراض';
+
+  @override
+  String get lockTitle => 'قفل السجل';
+
+  @override
+  String get lockText =>
+      'بعد القفل لا يمكن إضافة أسماء أو حذفها. ينشئ الحاسوب نسخة موقعة ورمز بصمة يمكن لأي شخص التحقق منه.';
+
+  @override
+  String get printRegister => 'طباعة السجل للوحة الإعلانات';
+
+  @override
+  String get lockButton => 'قفل السجل';
+
+  @override
+  String lockButtonBlocked(Object count) {
+    return 'قفل السجل (احسم $count اعتراضات أولًا)';
+  }
+
+  @override
+  String get lockConfirm => 'قفل السجل الآن؟ لا يمكن التراجع عن ذلك.';
+
+  @override
+  String get afterLockingTitle => 'بعد القفل:';
+
+  @override
+  String get afterLockingText =>
+      'انسخه إلى جهاز التحقق عبر USB أو شبكة Wi-Fi المحلية، واطبع رمز البصمة لوكلاء الأحزاب والمراقبين.';
+
+  @override
+  String get registerLocked => 'السجل مقفل';
+
+  @override
+  String get registerFingerprint => 'رمز البصمة';
+
+  @override
+  String lockedByLine(Object name, Object date) {
+    return 'قفله $name في $date';
+  }
+
+  @override
+  String get registerCheckValid =>
+      'تم التحقق: السجل الموقع يطابق البيانات على هذا الحاسوب.';
+
+  @override
+  String get registerCheckBad =>
+      'تحذير: السجل الموقع لا يطابق توقيعه. لا تستخدم سجل هذا الحاسوب؛ اتصل برئيس المركز.';
+
+  @override
+  String get registerCheckChanged =>
+      'تحذير: تغيرت البيانات على هذا الحاسوب منذ قفل السجل. اتصل برئيس المركز.';
+
+  @override
+  String get errOpenObjections => 'احسم كل الاعتراضات قبل القفل.';
+
+  @override
+  String get errBallotNotSigned =>
+      'وقّع ورقة الاقتراع في الإعداد قبل قفل السجل.';
+
+  @override
+  String get errEmptyRegister => 'لا يوجد ناخبون في السجل.';
+
+  @override
+  String get errVoterNotFound => 'لم يُعثر على رقم الناخب هذا في السجل.';
+
+  @override
+  String get errDecisionNotAllowed => 'هذا القرار لا يناسب هذا الاعتراض.';
+
+  @override
+  String get errAlreadyDecided => 'تم الحسم في هذا الاعتراض من قبل.';
+
+  @override
+  String get errInvalidDates =>
+      'يجب أن يكون اليوم الأخير في اليوم الأول أو بعده.';
 }

@@ -6,7 +6,9 @@
 
 Run: python3 tool/sync_l10n.py
 """
-import json, pathlib
+import json, pathlib, subprocess, sys
+
+subprocess.run([sys.executable, str(pathlib.Path(__file__).with_name('declare_placeholders.py'))], check=True)
 
 root = pathlib.Path(__file__).resolve().parent.parent / 'lib' / 'l10n'
 en = json.loads((root / 'app_en.arb').read_text())

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../features/register_lock/review_service.dart';
 import '../features/registration/registration_service.dart';
 import '../features/setup/election_service.dart';
 import 'device_store.dart';
@@ -71,3 +72,8 @@ final registrationServiceProvider = Provider<RegistrationService>((ref) {
 
 /// Name of the official using the device, for the audit log.
 final officialProvider = Provider<String>((ref) => _requireSession(ref).official);
+
+final reviewServiceProvider = Provider<ReviewService>((ref) {
+  final s = _requireSession(ref);
+  return ReviewService(s.registry!, s.keys);
+});

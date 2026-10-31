@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -33,6 +34,9 @@ void useLaptopScreen(WidgetTester tester) {
 }
 
 Widget appWithSession(DeviceSession session, {Locale locale = const Locale('en')}) {
+  // Each test opens its own in-memory databases; drift's duplicate-instance
+  // warning does not apply.
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   final container = ProviderContainer(overrides: [
     deviceStoreProvider.overrideWith((ref) async => DeviceStore(Directory.systemTemp, kdf: KdfParams.fast)),
   ]);
@@ -43,7 +47,7 @@ Widget appWithSession(DeviceSession session, {Locale locale = const Locale('en')
 
 /// Lets drift streams and futures settle (they use real async gaps).
 Future<void> settle(WidgetTester tester) async {
-  for (var i = 0; i < 5; i++) {
+  for (var i = 0; i < 10; i++) {
     await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 20)));
     await tester.pump();
   }

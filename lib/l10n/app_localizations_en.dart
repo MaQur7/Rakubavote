@@ -494,7 +494,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errNoElection => 'Create the election in Setup first.';
 
   @override
-  String importDone(Object duplicates, Object imported, Object skipped) {
+  String importDone(Object imported, Object skipped, Object duplicates) {
     return 'Imported $imported. Skipped $skipped. Possible duplicates: $duplicates.';
   }
 
@@ -538,4 +538,226 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get photoFailed => 'No photo was taken. You can try again.';
+
+  @override
+  String get registeredVotersStat => 'Registered voters';
+
+  @override
+  String get displayPeriod => 'Public display period';
+
+  @override
+  String displayPeriodRange(Object start, Object end) {
+    return '$start to $end';
+  }
+
+  @override
+  String get displayPeriodNotSet => 'Not set yet';
+
+  @override
+  String get setDates => 'Set dates';
+
+  @override
+  String get startDate => 'First day';
+
+  @override
+  String get endDate => 'Last day';
+
+  @override
+  String get openObjections => 'Open objections';
+
+  @override
+  String get objectionsTitle => 'Objections and corrections';
+
+  @override
+  String get objectionsNote =>
+      'Every decision is saved in the audit log with the official\'s name and time.';
+
+  @override
+  String get noObjections => 'No objections recorded.';
+
+  @override
+  String get raiseObjection => 'Record an objection';
+
+  @override
+  String get checkDuplicates => 'Check for duplicates';
+
+  @override
+  String get objectionKind => 'What is the objection?';
+
+  @override
+  String get kindDuplicate => 'Possible duplicate';
+
+  @override
+  String get kindMissing => 'Missing name';
+
+  @override
+  String get kindOther => 'Other';
+
+  @override
+  String get voterNumberField => 'Voter No.';
+
+  @override
+  String get otherVoterNumberField => 'Possible duplicate of Voter No.';
+
+  @override
+  String get claimantNameField => 'Name of the person who is missing';
+
+  @override
+  String get raisedByField => 'Name of the person objecting';
+
+  @override
+  String get detailField => 'Details';
+
+  @override
+  String duplicateTitle(Object subject, Object other) {
+    return 'Voter No. $subject · possible duplicate of $other';
+  }
+
+  @override
+  String missingTitle(Object name) {
+    return 'Missing name: $name';
+  }
+
+  @override
+  String otherTitle(Object subject, Object detail) {
+    return 'Voter No. $subject: $detail';
+  }
+
+  @override
+  String raisedByLine(Object name, Object date) {
+    return 'Raised by $name on $date';
+  }
+
+  @override
+  String decidedLine(Object name, Object date, Object decision) {
+    return 'Decided by $name on $date: $decision';
+  }
+
+  @override
+  String get keepBoth => 'Keep both';
+
+  @override
+  String removeVoter(Object number) {
+    return 'Remove $number';
+  }
+
+  @override
+  String get addVoter => 'Add voter';
+
+  @override
+  String get reject => 'Reject';
+
+  @override
+  String get upheld => 'Upheld';
+
+  @override
+  String get rejected => 'Rejected';
+
+  @override
+  String get decisionKeepBoth => 'kept both';
+
+  @override
+  String get decisionRemove => 'removed';
+
+  @override
+  String get decisionAdd => 'added';
+
+  @override
+  String get decisionReject => 'rejected';
+
+  @override
+  String get decisionUpheld => 'upheld';
+
+  @override
+  String get decisionRejected => 'rejected';
+
+  @override
+  String get noDuplicatesFound => 'No possible duplicates found.';
+
+  @override
+  String get duplicatePairsTitle => 'Possible duplicates';
+
+  @override
+  String duplicatePairLine(Object a, Object b) {
+    return '$a and $b';
+  }
+
+  @override
+  String get raiseThis => 'Record as objection';
+
+  @override
+  String get lockTitle => 'Lock the register';
+
+  @override
+  String get lockText =>
+      'After locking, no names can be added or removed. The laptop creates a signed copy and a fingerprint code that anyone can check.';
+
+  @override
+  String get printRegister => 'Print register for notice board';
+
+  @override
+  String get lockButton => 'Lock register';
+
+  @override
+  String lockButtonBlocked(Object count) {
+    return 'Lock register (resolve $count objections first)';
+  }
+
+  @override
+  String get lockConfirm => 'Lock the register now? This cannot be undone.';
+
+  @override
+  String get afterLockingTitle => 'After locking:';
+
+  @override
+  String get afterLockingText =>
+      'copy to the check-in device by USB or local Wi-Fi, and print the fingerprint code for party agents and observers.';
+
+  @override
+  String get registerLocked => 'The register is locked';
+
+  @override
+  String get registerFingerprint => 'Fingerprint code';
+
+  @override
+  String lockedByLine(Object name, Object date) {
+    return 'Locked by $name on $date';
+  }
+
+  @override
+  String get registerCheckValid =>
+      'Checked: the signed register matches the data on this laptop.';
+
+  @override
+  String get registerCheckBad =>
+      'Warning: the signed register does not match its signature. Do not use this laptop\'s register; call the presiding officer.';
+
+  @override
+  String get registerCheckChanged =>
+      'Warning: the data on this laptop has changed since the register was locked. Call the presiding officer.';
+
+  @override
+  String get errOpenObjections => 'Resolve all objections before locking.';
+
+  @override
+  String get errBallotNotSigned =>
+      'Sign the ballot in Setup before locking the register.';
+
+  @override
+  String get errEmptyRegister => 'There are no voters on the register.';
+
+  @override
+  String get errVoterNotFound =>
+      'That voter number was not found on the register.';
+
+  @override
+  String get errDecisionNotAllowed =>
+      'That decision does not fit this objection.';
+
+  @override
+  String get errAlreadyDecided => 'This objection has already been decided.';
+
+  @override
+  String get errInvalidDates =>
+      'The last day must be on or after the first day.';
 }

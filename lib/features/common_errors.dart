@@ -1,4 +1,5 @@
 import '../l10n/app_localizations.dart';
+import 'register_lock/review_service.dart';
 import 'registration/registration_service.dart';
 import 'setup/election_service.dart';
 
@@ -12,6 +13,19 @@ String describeError(AppLocalizations t, Object e) {
       SetupFailure.duplicateCandidateNumber => t.errDuplicateNumber,
       SetupFailure.lowContrastColour => t.errLowContrast,
       SetupFailure.invalidValue => t.errInvalidValue,
+    };
+  }
+  if (e is ReviewException) {
+    return switch (e.failure) {
+      ReviewFailure.noElection => t.errNoElection,
+      ReviewFailure.registerLocked => t.errRegisterLocked,
+      ReviewFailure.openObjections => t.errOpenObjections,
+      ReviewFailure.ballotNotSigned => t.errBallotNotSigned,
+      ReviewFailure.emptyRegister => t.errEmptyRegister,
+      ReviewFailure.voterNotFound => t.errVoterNotFound,
+      ReviewFailure.decisionNotAllowed => t.errDecisionNotAllowed,
+      ReviewFailure.alreadyDecided => t.errAlreadyDecided,
+      ReviewFailure.invalidDates => t.errInvalidDates,
     };
   }
   if (e is RegistrationException) {

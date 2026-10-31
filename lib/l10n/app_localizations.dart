@@ -986,7 +986,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Imported {imported}. Skipped {skipped}. Possible duplicates: {duplicates}.'**
-  String importDone(Object duplicates, Object imported, Object skipped);
+  String importDone(Object imported, Object skipped, Object duplicates);
 
   /// No description provided for @importSkippedLine.
   ///
@@ -1047,6 +1047,390 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No photo was taken. You can try again.'**
   String get photoFailed;
+
+  /// No description provided for @registeredVotersStat.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered voters'**
+  String get registeredVotersStat;
+
+  /// No description provided for @displayPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Public display period'**
+  String get displayPeriod;
+
+  /// No description provided for @displayPeriodRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{start} to {end}'**
+  String displayPeriodRange(Object start, Object end);
+
+  /// No description provided for @displayPeriodNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set yet'**
+  String get displayPeriodNotSet;
+
+  /// No description provided for @setDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Set dates'**
+  String get setDates;
+
+  /// No description provided for @startDate.
+  ///
+  /// In en, this message translates to:
+  /// **'First day'**
+  String get startDate;
+
+  /// No description provided for @endDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Last day'**
+  String get endDate;
+
+  /// No description provided for @openObjections.
+  ///
+  /// In en, this message translates to:
+  /// **'Open objections'**
+  String get openObjections;
+
+  /// No description provided for @objectionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Objections and corrections'**
+  String get objectionsTitle;
+
+  /// No description provided for @objectionsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Every decision is saved in the audit log with the official\'s name and time.'**
+  String get objectionsNote;
+
+  /// No description provided for @noObjections.
+  ///
+  /// In en, this message translates to:
+  /// **'No objections recorded.'**
+  String get noObjections;
+
+  /// No description provided for @raiseObjection.
+  ///
+  /// In en, this message translates to:
+  /// **'Record an objection'**
+  String get raiseObjection;
+
+  /// No description provided for @checkDuplicates.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for duplicates'**
+  String get checkDuplicates;
+
+  /// No description provided for @objectionKind.
+  ///
+  /// In en, this message translates to:
+  /// **'What is the objection?'**
+  String get objectionKind;
+
+  /// No description provided for @kindDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Possible duplicate'**
+  String get kindDuplicate;
+
+  /// No description provided for @kindMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing name'**
+  String get kindMissing;
+
+  /// No description provided for @kindOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get kindOther;
+
+  /// No description provided for @voterNumberField.
+  ///
+  /// In en, this message translates to:
+  /// **'Voter No.'**
+  String get voterNumberField;
+
+  /// No description provided for @otherVoterNumberField.
+  ///
+  /// In en, this message translates to:
+  /// **'Possible duplicate of Voter No.'**
+  String get otherVoterNumberField;
+
+  /// No description provided for @claimantNameField.
+  ///
+  /// In en, this message translates to:
+  /// **'Name of the person who is missing'**
+  String get claimantNameField;
+
+  /// No description provided for @raisedByField.
+  ///
+  /// In en, this message translates to:
+  /// **'Name of the person objecting'**
+  String get raisedByField;
+
+  /// No description provided for @detailField.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get detailField;
+
+  /// No description provided for @duplicateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voter No. {subject} · possible duplicate of {other}'**
+  String duplicateTitle(Object subject, Object other);
+
+  /// No description provided for @missingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing name: {name}'**
+  String missingTitle(Object name);
+
+  /// No description provided for @otherTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voter No. {subject}: {detail}'**
+  String otherTitle(Object subject, Object detail);
+
+  /// No description provided for @raisedByLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Raised by {name} on {date}'**
+  String raisedByLine(Object name, Object date);
+
+  /// No description provided for @decidedLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Decided by {name} on {date}: {decision}'**
+  String decidedLine(Object name, Object date, Object decision);
+
+  /// No description provided for @keepBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep both'**
+  String get keepBoth;
+
+  /// No description provided for @removeVoter.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {number}'**
+  String removeVoter(Object number);
+
+  /// No description provided for @addVoter.
+  ///
+  /// In en, this message translates to:
+  /// **'Add voter'**
+  String get addVoter;
+
+  /// No description provided for @reject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get reject;
+
+  /// No description provided for @upheld.
+  ///
+  /// In en, this message translates to:
+  /// **'Upheld'**
+  String get upheld;
+
+  /// No description provided for @rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get rejected;
+
+  /// No description provided for @decisionKeepBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'kept both'**
+  String get decisionKeepBoth;
+
+  /// No description provided for @decisionRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'removed'**
+  String get decisionRemove;
+
+  /// No description provided for @decisionAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'added'**
+  String get decisionAdd;
+
+  /// No description provided for @decisionReject.
+  ///
+  /// In en, this message translates to:
+  /// **'rejected'**
+  String get decisionReject;
+
+  /// No description provided for @decisionUpheld.
+  ///
+  /// In en, this message translates to:
+  /// **'upheld'**
+  String get decisionUpheld;
+
+  /// No description provided for @decisionRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'rejected'**
+  String get decisionRejected;
+
+  /// No description provided for @noDuplicatesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No possible duplicates found.'**
+  String get noDuplicatesFound;
+
+  /// No description provided for @duplicatePairsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Possible duplicates'**
+  String get duplicatePairsTitle;
+
+  /// No description provided for @duplicatePairLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} and {b}'**
+  String duplicatePairLine(Object a, Object b);
+
+  /// No description provided for @raiseThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Record as objection'**
+  String get raiseThis;
+
+  /// No description provided for @lockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock the register'**
+  String get lockTitle;
+
+  /// No description provided for @lockText.
+  ///
+  /// In en, this message translates to:
+  /// **'After locking, no names can be added or removed. The laptop creates a signed copy and a fingerprint code that anyone can check.'**
+  String get lockText;
+
+  /// No description provided for @printRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Print register for notice board'**
+  String get printRegister;
+
+  /// No description provided for @lockButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock register'**
+  String get lockButton;
+
+  /// No description provided for @lockButtonBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock register (resolve {count} objections first)'**
+  String lockButtonBlocked(Object count);
+
+  /// No description provided for @lockConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock the register now? This cannot be undone.'**
+  String get lockConfirm;
+
+  /// No description provided for @afterLockingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'After locking:'**
+  String get afterLockingTitle;
+
+  /// No description provided for @afterLockingText.
+  ///
+  /// In en, this message translates to:
+  /// **'copy to the check-in device by USB or local Wi-Fi, and print the fingerprint code for party agents and observers.'**
+  String get afterLockingText;
+
+  /// No description provided for @registerLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'The register is locked'**
+  String get registerLocked;
+
+  /// No description provided for @registerFingerprint.
+  ///
+  /// In en, this message translates to:
+  /// **'Fingerprint code'**
+  String get registerFingerprint;
+
+  /// No description provided for @lockedByLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked by {name} on {date}'**
+  String lockedByLine(Object name, Object date);
+
+  /// No description provided for @registerCheckValid.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked: the signed register matches the data on this laptop.'**
+  String get registerCheckValid;
+
+  /// No description provided for @registerCheckBad.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning: the signed register does not match its signature. Do not use this laptop\'s register; call the presiding officer.'**
+  String get registerCheckBad;
+
+  /// No description provided for @registerCheckChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning: the data on this laptop has changed since the register was locked. Call the presiding officer.'**
+  String get registerCheckChanged;
+
+  /// No description provided for @errOpenObjections.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolve all objections before locking.'**
+  String get errOpenObjections;
+
+  /// No description provided for @errBallotNotSigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign the ballot in Setup before locking the register.'**
+  String get errBallotNotSigned;
+
+  /// No description provided for @errEmptyRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no voters on the register.'**
+  String get errEmptyRegister;
+
+  /// No description provided for @errVoterNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'That voter number was not found on the register.'**
+  String get errVoterNotFound;
+
+  /// No description provided for @errDecisionNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'That decision does not fit this objection.'**
+  String get errDecisionNotAllowed;
+
+  /// No description provided for @errAlreadyDecided.
+  ///
+  /// In en, this message translates to:
+  /// **'This objection has already been decided.'**
+  String get errAlreadyDecided;
+
+  /// No description provided for @errInvalidDates.
+  ///
+  /// In en, this message translates to:
+  /// **'The last day must be on or after the first day.'**
+  String get errInvalidDates;
 }
 
 class _AppLocalizationsDelegate
