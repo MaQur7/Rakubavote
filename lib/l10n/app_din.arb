@@ -1,0 +1,16 @@
+{
+  "@@locale": "din",
+  "appName": "Rakubavote",
+  "tagline": "Your vote, in the open.",
+  "chooseDeviceMode": "What will this device be used for?",
+  "modeAdmin": "Station admin",
+  "modeAdminHint": "Laptop. Set up the election, register voters, close the polls and print results.",
+  "modeCheckin": "Check-in desk",
+  "modeCheckinHint": "Laptop or tablet. Find voters and give each one a voting code.",
+  "modeBooth": "Voting booth",
+  "modeBoothHint": "Tablet. Voters choose their candidates here.",
+  "yourVoteIsSecret": "Your vote is secret.",
+  "askAnOfficial": "Ask an official if you need help.",
+  "help": "Help",
+  "languageName": "[Local language]"
+}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" role="img" aria-label="Rakubavote mark (draft)">
+  <!-- Draft mark from mockup board F; a local designer should refine it. -->
+  <path d="M8 26 L22 8 H98 L112 26 Z" fill="#C8963E"/>
+  <rect x="16" y="26" width="8" height="70" rx="3" fill="#1B1B1B"/>
+  <rect x="96" y="26" width="8" height="70" rx="3" fill="#1B1B1B"/>
+  <rect x="38" y="46" width="44" height="46" rx="5" fill="#1D4E89"/>
+  <rect x="52" y="42" width="16" height="6" rx="2" fill="#F4F1EA"/>
+  <path d="M48 68 L57 77 L73 59" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

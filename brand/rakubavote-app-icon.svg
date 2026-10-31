@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Rakubavote app icon (draft)">
+  <rect width="120" height="120" rx="26" fill="#1D4E89"/>
+  <path d="M18 40 L30 26 H90 L102 40 Z" fill="#E6C27A"/>
+  <rect x="26" y="40" width="7" height="58" rx="3" fill="#FFFFFF"/>
+  <rect x="87" y="40" width="7" height="58" rx="3" fill="#FFFFFF"/>
+  <path d="M45 72 L55 82 L76 60" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

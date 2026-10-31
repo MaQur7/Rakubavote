@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" role="img" aria-label="Rakubavote mark, one colour (draft)">
+  <path d="M8 26 L22 8 H98 L112 26 Z" fill="#000"/>
+  <rect x="16" y="26" width="8" height="70" rx="3" fill="#000"/>
+  <rect x="96" y="26" width="8" height="70" rx="3" fill="#000"/>
+  <rect x="38" y="46" width="44" height="46" rx="5" fill="#000"/>
+  <path d="M48 68 L57 77 L73 59" fill="none" stroke="#FFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
