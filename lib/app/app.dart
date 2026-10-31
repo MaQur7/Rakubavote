@@ -1,94 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/theme.dart';
+import '../features/admin/admin_shell.dart';
+import '../features/device_setup/device_setup_screen.dart';
+import '../features/device_setup/unlock_screen.dart';
 import '../l10n/app_localizations.dart';
+import 'device_store.dart';
 import 'localization.dart';
+import 'providers.dart';
 
-class RakubavoteApp extends StatefulWidget {
-  const RakubavoteApp({super.key, this.initialLocale = const Locale('en')});
-
-  final Locale initialLocale;
-
-  @override
-  State<RakubavoteApp> createState() => _RakubavoteAppState();
-}
-
-class _RakubavoteAppState extends State<RakubavoteApp> {
-  late Locale _locale = widget.initialLocale;
+class RakubavoteApp extends ConsumerWidget {
+  const RakubavoteApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locale = ref.watch(localeProvider);
     return MaterialApp(
       title: 'Rakubavote',
       debugShowCheckedModeBanner: false,
-      locale: _locale,
+      locale: locale,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: rakubaLocalizationsDelegates,
-      theme: buildRakubaTheme(arabic: _locale.languageCode == 'ar'),
-      home: DeviceModeScreen(onLocale: (l) => setState(() => _locale = l)),
+      theme: buildRakubaTheme(arabic: locale.languageCode == 'ar'),
+      home: const AppRoot(),
     );
   }
 }
 
-/// First-run screen: the device mode is chosen once at setup (milestone 2 stores it).
-class DeviceModeScreen extends StatelessWidget {
-  const DeviceModeScreen({super.key, required this.onLocale});
+/// Decides what to show: first-run setup, the PIN screen, or the mode's home.
+class AppRoot extends ConsumerStatefulWidget {
+  const AppRoot({super.key});
+  @override
+  ConsumerState<AppRoot> createState() => _AppRootState();
+}
 
-  final ValueChanged<Locale> onLocale;
-
+class _AppRootState extends ConsumerState<AppRoot> {
   @override
   Widget build(BuildContext context) {
+    final session = ref.watch(sessionProvider);
+    if (session != null) {
+      return switch (session.info.mode) {
+        DeviceMode.admin => const AdminShell(),
+        _ => const _ModeComingLater(),
+      };
+    }
+    final store = ref.watch(deviceStoreProvider);
+    return store.when(
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (e, _) => Scaffold(body: Center(child: Text('$e'))),
+      data: (store) => FutureBuilder<DeviceInfo?>(
+        // Re-read after locking or setting up.
+        key: ValueKey(session),
+        future: store.readInfo(),
+        builder: (context, snap) {
+          if (snap.connectionState != ConnectionState.done) {
+            return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          }
+          final info = snap.data;
+          return info == null ? DeviceSetupScreen(store: store) : UnlockScreen(store: store, info: info);
+        },
+      ),
+    );
+  }
+}
+
+/// Check-in (milestone 4) and booth (milestone 5) screens are not built yet.
+class _ModeComingLater extends ConsumerWidget {
+  const _ModeComingLater();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 640),
-            child: ListView(
-              padding: const EdgeInsets.all(24),
-              children: [
-                Text(t.appName,
-                    style: const TextStyle(fontSize: 36, fontWeight: FontWeight.w700)),
-                Text(t.tagline, style: const TextStyle(fontSize: RakubaSizes.body)),
-                const SizedBox(height: 16),
-                Wrap(spacing: 12, runSpacing: 12, children: [
-                  for (final l in AppLocalizations.supportedLocales)
-                    OutlinedButton(
-                      onPressed: () => onLocale(l),
-                      child: Text(lookupAppLocalizations(l).languageName),
-                    ),
-                ]),
-                const SizedBox(height: 24),
-                Text(t.chooseDeviceMode,
-                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
-                const SizedBox(height: 12),
-                _ModeCard(title: t.modeAdmin, hint: t.modeAdminHint),
-                _ModeCard(title: t.modeCheckin, hint: t.modeCheckinHint),
-                _ModeCard(title: t.modeBooth, hint: t.modeBoothHint),
-              ],
-            ),
-          ),
-        ),
+      body: Center(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text(t.comingLater, style: const TextStyle(fontSize: 18)),
+          const SizedBox(height: 16),
+          OutlinedButton(
+              onPressed: () => ref.read(sessionProvider.notifier).lock(), child: Text(t.lockDevice)),
+        ]),
       ),
-    );
-  }
-}
-
-class _ModeCard extends StatelessWidget {
-  const _ModeCard({required this.title, required this.hint});
-  final String title;
-  final String hint;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        minTileHeight: RakubaSizes.minTouch + 16,
-        title: Text(title,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
-        subtitle: Text(hint, style: const TextStyle(fontSize: RakubaSizes.body)),
-        onTap: () {},
-      ),
+      backgroundColor: RakubaColors.paper,
     );
   }
 }

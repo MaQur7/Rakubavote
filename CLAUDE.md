@@ -17,6 +17,7 @@ Station protocol: docs/protocol.md · Secrecy design: SECURITY.md
 ## Commands
 - Get packages: `flutter pub get`
 - Generate drift code: `dart run build_runner build --delete-conflicting-outputs`
+- After editing app_en.arb: `python3 tool/sync_l10n.py` (fills app_din.arb, lists missing Arabic keys)
 - Run tests: `flutter test`
 - Static checks: `flutter analyze`
 - Run app: `flutter run -d <device>`
@@ -31,7 +32,8 @@ Station protocol: docs/protocol.md · Secrecy design: SECURITY.md
 - lib/station/ local server, client, protocol, USB bundles, multi-part QR
 - lib/printing/ receipts, token slips, voter cards, registers, results, fee summary
 - lib/platform/ kiosk (Android lock task), camera
-- test/ unit + integration (incl. 500-voter simulation and secrecy tests)
+- test/ unit + integration (incl. 500-voter simulation and secrecy tests); widget tests use
+  test/support/app_harness.dart (end each with `finish()`; drift needs real-time pumps via `settle()`)
 
 ## Non-negotiable rules
 - Must work with NO internet. Online sync is optional and off by default (Supabase deferred, D4).
@@ -57,6 +59,8 @@ Station protocol: docs/protocol.md · Secrecy design: SECURITY.md
 - Follow docs/mockups/ and docs/brand-guidelines.md. Touch targets >= 64 px,
   sentence case, Atkinson Hyperlegible (Latin) + Noto Sans Arabic, fonts
   bundled offline (assets/fonts).
+- Button text styles must carry the font family (use the theme); Noto Sans is the fallback for
+  letters Atkinson lacks (D13).
 - Brand colours only as named tokens in lib/core/theme.dart: nileBlue
   #1D4E89, acaciaGreen #1F5E3A, clay #A9521A, thatchGold #C8963E, lightThatch
   #E6C27A, ink #1B1B1B, paper #F4F1EA. Never hard-code hex in screens; never

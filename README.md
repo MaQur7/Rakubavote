@@ -37,8 +37,51 @@ You do not need internet at the polling station. Download the files once, before
 5. Open Rakubavote and choose what the device will be used for: *Station admin*,
    *Check-in desk* or *Voting booth*.
 
-Step-by-step guides for each phase (setup, registration, review and lock, election day,
-closing) will be added here as each part of the app is finished.
+### First start on the laptop
+
+1. Choose your language at the top (English, العربية or the local language).
+2. Tap **Station admin**.
+3. Type your name and choose an **officer PIN** of 6 to 12 digits. Type it twice.
+   Keep it secret: without it nobody can open the election data, and it cannot be recovered.
+4. Each time the app opens, type your name and the PIN. Your name is written next to
+   everything you do, in the audit log.
+
+### Phase 1: Set up the election (tab "1 Setup")
+
+1. Choose a **template**: School, Community association, Party primary or Blank. Type the
+   organization name, election name, year and station name. Choose the ballot languages.
+2. **School elections:** tick *The school has given consent to register students under 18*.
+   Registration cannot start until this is ticked.
+3. **Registration fee (optional):** tick *Charge a fee*, type the amount, choose SSP, USD or
+   either, and choose what happens if someone has not paid. Press *Save fee*.
+   The fee cannot be changed after the first voter is registered.
+4. **Positions:** the template adds the usual positions. Tap a position to edit it:
+   - its title in each ballot language,
+   - its colour (the app refuses colours that are too light to read),
+   - how many candidates a voter may choose, and whether "No choice" is allowed.
+   Use *Add position*, *Move up*, *Move down* and *Delete position* as needed.
+5. **Candidates:** tap *Add candidate (take photo)*. Check the number, type the name, take
+   the photo and choose the symbol. Numbers must be different within a position.
+6. Press **Save and sign ballot**. Write down the fingerprint code it shows. If you change
+   anything later, sign again.
+
+### Phase 2: Register voters (tab "2 Registration")
+
+1. Tap **Take photo** (on a laptop this opens a photo file), then type the full name,
+   ID and group.
+2. If there is a fee, tick **Paid** and type the receipt number.
+3. If a yellow **Possible duplicate** box appears, check the other voter before saving.
+4. Press **Save and print voter card**. The voter number is given automatically.
+   (Card printing is added in a later update.)
+5. **Import list (CSV):** for a list such as party delegates. The first row must have a
+   `full_name` column; it may also have `member_id`, `group`, `fee_paid`, `currency` and
+   `receipt_no`. The app tells you which lines it skipped and why.
+6. **Fee summary** shows totals by currency and by official.
+7. **Back up to USB** at the end of each day: choose the USB drive. The backup is encrypted
+   and needs the officer PIN to open.
+
+Guides for review and lock, election day and closing will be added as those parts are
+finished.
 
 ## Project status
 
@@ -46,7 +89,7 @@ closing) will be added here as each part of the app is finished.
 |---|---|---|
 | 0 | Project setup, fonts, brand, build workflow | Done |
 | 1 | Data model, encryption, signatures, audit log | Done |
-| 2 | Election setup and voter registration | Planned |
+| 2 | Election setup and voter registration | Done |
 | 3 | Public review, objections and register lock | Planned |
 | 4 | Check-in and voting codes | Planned |
 | 5 | Voting booth screens | Planned |

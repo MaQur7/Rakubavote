@@ -1,0 +1,452 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../app/providers.dart';
+import '../../core/db/registry_db.dart';
+import '../../core/format.dart';
+import '../../core/theme.dart';
+import '../../core/widgets/common.dart';
+import '../../l10n/app_localizations.dart';
+import '../../platform/photo_capture.dart';
+import '../common_errors.dart';
+import 'duplicates.dart';
+import 'registration_service.dart';
+
+/// Mockup B: register a voter on the left, the register on the right.
+class RegistrationScreen extends ConsumerWidget {
+  const RegistrationScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = AppLocalizations.of(context);
+    return StreamBuilder<Election?>(
+      stream: ref.watch(electionServiceProvider).watchElection(),
+      builder: (context, snap) {
+        final e = snap.data;
+        if (e == null) {
+          return Center(child: Text(t.errNoElection, style: const TextStyle(fontSize: 18)));
+        }
+        return LayoutBuilder(builder: (context, c) {
+          final form = RegisterVoterForm(election: e);
+          final list = VoterList(election: e);
+          if (c.maxWidth >= 900) {
+            return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              SizedBox(
+                  width: 380,
+                  child: ListView(padding: const EdgeInsets.fromLTRB(24, 16, 8, 24), children: [form])),
+              Expanded(child: Padding(padding: const EdgeInsets.fromLTRB(8, 16, 24, 24), child: list)),
+            ]);
+          }
+          return ListView(padding: const EdgeInsets.all(16), children: [form, SizedBox(height: 600, child: list)]);
+        });
+      },
+    );
+  }
+}
+
+class RegisterVoterForm extends ConsumerStatefulWidget {
+  const RegisterVoterForm({super.key, required this.election});
+  final Election election;
+  @override
+  ConsumerState<RegisterVoterForm> createState() => _RegisterVoterFormState();
+}
+
+class _RegisterVoterFormState extends ConsumerState<RegisterVoterForm> {
+  final _name = TextEditingController();
+  final _memberId = TextEditingController();
+  final _group = TextEditingController();
+  final _receipt = TextEditingController();
+  Uint8List? _photo;
+  bool _paid = false;
+  String _currency = 'SSP';
+  List<DuplicateMatch> _dups = const [];
+  Timer? _debounce;
+  String? _error;
+  bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    for (final c in [_name, _memberId, _group]) {
+      c.addListener(_scheduleDuplicateCheck);
+    }
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    for (final c in [_name, _memberId, _group, _receipt]) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  void _scheduleDuplicateCheck() {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () async {
+      if (_name.text.trim().isEmpty && _memberId.text.trim().isEmpty) {
+        if (mounted) setState(() => _dups = const []);
+        return;
+      }
+      final d = await ref.read(registrationServiceProvider).findDuplicates(widget.election.id,
+          fullName: _name.text, memberId: _memberId.text, groupName: _group.text);
+      if (mounted) setState(() => _dups = d);
+    });
+  }
+
+  void _clear() {
+    _debounce?.cancel();
+    for (final c in [_name, _memberId, _group, _receipt]) {
+      c.clear();
+    }
+    setState(() {
+      _photo = null;
+      _paid = false;
+      _dups = const [];
+      _error = null;
+    });
+  }
+
+  Future<void> _save(FeeConfig? fee) async {
+    final t = AppLocalizations.of(context);
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      final r = await ref.read(registrationServiceProvider).register(
+            widget.election.id,
+            VoterInput(
+              fullName: _name.text,
+              memberId: _memberId.text,
+              groupName: _group.text,
+              photo: _photo,
+              feePaid: _paid,
+              feeCurrency: fee?.currency == 'EITHER' ? _currency : null,
+              receiptNo: _receipt.text,
+            ),
+            official: ref.read(officialProvider),
+          );
+      _clear();
+      if (mounted) showMessage(context, t.voterSaved(voterNoLabel(r.voterNo)));
+      // Card printing arrives in milestone 7.
+    } on RegistrationException catch (e) {
+      setState(() => _error = registrationFailureText(t, e.failure));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    final e = widget.election;
+    return StreamBuilder<FeeConfig>(
+      stream: ref.watch(electionServiceProvider).watchFeeConfig(e.id),
+      builder: (context, feeSnap) {
+        final fee = feeSnap.data;
+        return SectionCard(
+          title: t.registerAVoter,
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              PhotoBox(bytes: _photo, size: 110, label: t.photo),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  FilledButton(
+                    key: const ValueKey('reg-photo'),
+                    onPressed: () async {
+                      try {
+                        final b = await capturePhoto();
+                        if (b != null) setState(() => _photo = b);
+                      } catch (_) {
+                        if (context.mounted) showMessage(context, t.photoFailed);
+                      }
+                    },
+                    child: Text(t.takePhoto),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(t.photoUse, style: const TextStyle(fontSize: RakubaSizes.label)),
+                ]),
+              ),
+            ]),
+            FieldLabel(t.fullName),
+            TextField(
+                key: const ValueKey('reg-name'),
+                controller: _name,
+                decoration: InputDecoration(hintText: t.fullNameHint)),
+            FieldLabel(e.idLabel),
+            TextField(key: const ValueKey('reg-id'), controller: _memberId),
+            FieldLabel(e.groupLabel),
+            TextField(key: const ValueKey('reg-group'), controller: _group),
+            if (fee != null && fee.enabled) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(color: RakubaColors.paper, borderRadius: BorderRadius.circular(10)),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  Row(children: [
+                    Expanded(
+                      child: Text(
+                        t.feeLine('${fee.amount}', fee.currency == 'EITHER' ? t.currencyEither : fee.currency),
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                    Checkbox(
+                        key: const ValueKey('reg-paid'),
+                        value: _paid,
+                        onChanged: (v) => setState(() => _paid = v ?? false)),
+                    Text(t.paid),
+                  ]),
+                  if (_paid) ...[
+                    if (fee.currency == 'EITHER')
+                      SegmentedButton<String>(
+                        segments: const [
+                          ButtonSegment(value: 'SSP', label: Text('SSP')),
+                          ButtonSegment(value: 'USD', label: Text('USD')),
+                        ],
+                        selected: {_currency},
+                        onSelectionChanged: (s) => setState(() => _currency = s.first),
+                      ),
+                    FieldLabel(t.receiptNo),
+                    TextField(key: const ValueKey('reg-receipt'), controller: _receipt),
+                  ],
+                ]),
+              ),
+            ],
+            if (_dups.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              NoticeBox(
+                key: const ValueKey('reg-duplicate'),
+                child: Text.rich(TextSpan(children: [
+                  TextSpan(text: '${t.possibleDuplicate} ', style: const TextStyle(fontWeight: FontWeight.w700)),
+                  TextSpan(
+                    text: _dups.first.reason == DuplicateReason.sameMemberId
+                        ? t.duplicateIdText(voterNoLabel(_dups.first.voterNo))
+                        : t.duplicateNameText(voterNoLabel(_dups.first.voterNo)),
+                  ),
+                ])),
+              ),
+            ],
+            if (_error != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Text(_error!,
+                    key: const ValueKey('reg-error'),
+                    style: const TextStyle(color: RakubaColors.clay, fontSize: 16)),
+              ),
+            const SizedBox(height: 16),
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              OutlinedButton(onPressed: _clear, child: Text(t.clear)),
+              const SizedBox(width: 12),
+              Flexible(
+                child: FilledButton(
+                  key: const ValueKey('reg-save'),
+                  style: FilledButton.styleFrom(backgroundColor: RakubaColors.acaciaGreen),
+                  onPressed: _busy ? null : () => _save(fee),
+                  child: Text(t.saveAndPrintCard),
+                ),
+              ),
+            ]),
+          ]),
+        );
+      },
+    );
+  }
+}
+
+class VoterList extends ConsumerStatefulWidget {
+  const VoterList({super.key, required this.election});
+  final Election election;
+  @override
+  ConsumerState<VoterList> createState() => _VoterListState();
+}
+
+class _VoterListState extends ConsumerState<VoterList> {
+  String _query = '';
+
+  Future<void> _import() async {
+    final t = AppLocalizations.of(context);
+    final text = await pickCsvText();
+    if (text == null) return;
+    try {
+      final r = await ref
+          .read(registrationServiceProvider)
+          .importCsv(widget.election.id, text, official: ref.read(officialProvider));
+      if (!mounted) return;
+      await showDialog<void>(
+        context: context,
+        builder: (c) => AlertDialog(
+          title: Text(t.importCsv),
+          content: SingleChildScrollView(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(t.importDone(
+                  '${r.importedVoterNos.length}', '${r.skipped.length}', '${r.possibleDuplicates.length}')),
+              for (final s in r.skipped)
+                Text(t.importSkippedLine('${s.line}', _skipReason(t, s.reason))),
+            ]),
+          ),
+          actions: [FilledButton(onPressed: () => Navigator.pop(c), child: Text(t.ok))],
+        ),
+      );
+    } on RegistrationException catch (e) {
+      if (mounted) showMessage(context, registrationFailureText(t, e.failure));
+    }
+  }
+
+  String _skipReason(AppLocalizations t, String code) {
+    for (final f in RegistrationFailure.values) {
+      if (f.name == code) return registrationFailureText(t, f);
+    }
+    return code == 'Name is empty.' ? t.errNameRequired : code;
+  }
+
+  Future<void> _backup() async {
+    final t = AppLocalizations.of(context);
+    final path = await pickFolder();
+    if (path == null) return;
+    try {
+      final store = await ref.read(deviceStoreProvider.future);
+      final out = await store.backup(ref.read(sessionProvider)!, Directory(path));
+      if (mounted) showMessage(context, t.backupDone(out.path));
+    } catch (_) {
+      if (mounted) showMessage(context, t.backupFailed);
+    }
+  }
+
+  Future<void> _feeSummary() async {
+    final t = AppLocalizations.of(context);
+    final fee = await ref.read(electionServiceProvider).feeConfig(widget.election.id);
+    final s = await ref.read(registrationServiceProvider).feeSummary(widget.election.id);
+    if (!mounted) return;
+    await showDialog<void>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: Text(t.feeSummary),
+        content: !fee.enabled
+            ? Text(t.noFee)
+            : Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(t.totalsByCurrency, style: const TextStyle(fontWeight: FontWeight.w700)),
+                for (final e in s.byCurrency.entries) Text('${e.key}: ${e.value}'),
+                const SizedBox(height: 12),
+                Text(t.totalsByOfficial, style: const TextStyle(fontWeight: FontWeight.w700)),
+                for (final o in s.byOfficial.entries)
+                  Text('${o.key}: ${o.value.entries.map((e) => '${e.value} ${e.key}').join(', ')}'),
+                const SizedBox(height: 12),
+                Text(t.paidCount('${s.paidCount}')),
+                Text(t.unpaidCount('${s.unpaidCount}')),
+                Text(t.flaggedCount('${s.flaggedCount}')),
+              ]),
+        actions: [FilledButton(onPressed: () => Navigator.pop(c), child: Text(t.close))],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    final reg = ref.watch(registrationServiceProvider);
+    final e = widget.election;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Row(children: [
+            Expanded(
+                child: Text(t.registeredVoters, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700))),
+            SizedBox(
+              width: 240,
+              child: TextField(
+                key: const ValueKey('voter-search'),
+                decoration: InputDecoration(hintText: t.searchNameOrNumber, isDense: true),
+                onChanged: (v) => setState(() => _query = v),
+              ),
+            ),
+          ]),
+          const SizedBox(height: 12),
+          Expanded(
+            child: StreamBuilder<List<Voter>>(
+              stream: reg.watchVoters(e.id, query: _query),
+              builder: (context, snap) {
+                final voters = snap.data ?? const <Voter>[];
+                return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  _header(t),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: voters.length,
+                      itemBuilder: (context, i) => _VoterRow(voter: voters[i]),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  FutureBuilder<int>(
+                    future: reg.voterCount(e.id),
+                    builder: (context, c) =>
+                        Text(t.showingVoters('${voters.length}', '${c.data ?? voters.length}')),
+                  ),
+                ]);
+              },
+            ),
+          ),
+          const Divider(height: 24),
+          Wrap(alignment: WrapAlignment.end, spacing: 12, runSpacing: 12, children: [
+            OutlinedButton(onPressed: _feeSummary, child: Text(t.feeSummary)),
+            OutlinedButton(onPressed: _import, child: Text(t.importCsv)),
+            OutlinedButton(onPressed: _backup, child: Text(t.backupUsb)),
+          ]),
+        ]),
+      ),
+    );
+  }
+
+  Widget _header(AppLocalizations t) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: RakubaColors.ink, width: 2))),
+        child: Row(children: [
+          SizedBox(width: 90, child: Text(t.colVoterNo, style: const TextStyle(fontWeight: FontWeight.w700))),
+          SizedBox(width: 64, child: Text(t.colPhoto, style: const TextStyle(fontWeight: FontWeight.w700))),
+          Expanded(flex: 3, child: Text(t.colName, style: const TextStyle(fontWeight: FontWeight.w700))),
+          Expanded(flex: 2, child: Text(t.colGroup, style: const TextStyle(fontWeight: FontWeight.w700))),
+          SizedBox(width: 90, child: Text(t.colFee, style: const TextStyle(fontWeight: FontWeight.w700))),
+          SizedBox(width: 100, child: Text(t.colCard, style: const TextStyle(fontWeight: FontWeight.w700))),
+        ]),
+      );
+}
+
+class _VoterRow extends ConsumerWidget {
+  const _VoterRow({required this.voter});
+  final Voter voter;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = AppLocalizations.of(context);
+    return Container(
+      constraints: const BoxConstraints(minHeight: 56),
+      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: RakubaColors.placeholder))),
+      child: Row(children: [
+        SizedBox(
+            width: 90,
+            child: Text(voterNoLabel(voter.voterNo), style: const TextStyle(fontWeight: FontWeight.w700))),
+        SizedBox(width: 64, child: Align(alignment: AlignmentDirectional.centerStart, child: PhotoBox(bytes: voter.photo, size: 36))),
+        Expanded(flex: 3, child: Text(voter.fullName)),
+        Expanded(flex: 2, child: Text(voter.groupName)),
+        SizedBox(
+          width: 90,
+          child: FutureBuilder<FeePayment?>(
+            future: ref.read(registrationServiceProvider).feePayment(voter.id),
+            builder: (context, s) {
+              final f = s.data;
+              if (f == null) return const Text('—');
+              return Text(f.paid ? t.paid : t.feeNotPaid,
+                  style: TextStyle(color: f.paid ? RakubaColors.ink : RakubaColors.clay));
+            },
+          ),
+        ),
+        SizedBox(width: 100, child: Text(t.cardNotPrinted, style: const TextStyle(color: RakubaColors.clay))),
+      ]),
+    );
+  }
+}

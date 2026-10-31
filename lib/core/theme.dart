@@ -36,6 +36,13 @@ const List<Color> defaultPositionColours = [
 abstract final class RakubaFonts {
   static const latin = 'AtkinsonHyperlegible';
   static const arabic = 'NotoSansArabic';
+  /// Covers letters Atkinson Hyperlegible lacks, such as Dinka ɛ, ɔ, ŋ.
+  static const latinExtended = 'NotoSans';
+
+  static String familyFor({required bool arabic}) => arabic ? RakubaFonts.arabic : latin;
+
+  static List<String> fallbackFor({required bool arabic}) =>
+      arabic ? const [latin, latinExtended] : const [latinExtended, RakubaFonts.arabic];
 }
 
 /// Sizes from the brand guidelines (logical pixels).
@@ -62,8 +69,8 @@ bool meetsTextContrast(Color fg, Color bg, {bool largeText = false}) =>
     contrastRatio(fg, bg) >= (largeText ? 3.0 : 4.5);
 
 ThemeData buildRakubaTheme({required bool arabic}) {
-  final family = arabic ? RakubaFonts.arabic : RakubaFonts.latin;
-  final fallback = arabic ? [RakubaFonts.latin] : [RakubaFonts.arabic];
+  final family = RakubaFonts.familyFor(arabic: arabic);
+  final fallback = RakubaFonts.fallbackFor(arabic: arabic);
   final scheme = ColorScheme.fromSeed(
     seedColor: RakubaColors.nileBlue,
     primary: RakubaColors.nileBlue,
@@ -84,9 +91,14 @@ ThemeData buildRakubaTheme({required bool arabic}) {
   );
   const minSize = Size(RakubaSizes.minTouch, RakubaSizes.minTouch);
   final shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
-  const btnText = TextStyle(fontSize: 18, fontWeight: FontWeight.w700);
+  // Button styles replace the text style entirely, so the family is repeated here.
+  final btnText = TextStyle(
+      fontSize: 18, fontWeight: FontWeight.w700, fontFamily: family, fontFamilyFallback: fallback);
   return base.copyWith(
     textTheme: base.textTheme.apply(bodyColor: RakubaColors.ink, displayColor: RakubaColors.ink),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(minimumSize: const Size(48, 48), textStyle: btnText.copyWith(fontSize: 16)),
+    ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(minimumSize: minSize, shape: shape, textStyle: btnText),
     ),
