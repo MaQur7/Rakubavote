@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../core/db/ballot_box_repository.dart';
 import '../features/checkin/checkin_service.dart';
 import '../features/register_lock/review_service.dart';
 import '../features/registration/registration_service.dart';
@@ -83,4 +84,10 @@ final reviewServiceProvider = Provider<ReviewService>((ref) {
 final checkInServiceProvider = Provider<CheckInService>((ref) {
   final s = _requireSession(ref);
   return CheckInService(s.registry!, s.keys);
+});
+
+/// The booth's ballot box (booth tablets only).
+final boothRepositoryProvider = Provider<BallotBoxRepository>((ref) {
+  final s = _requireSession(ref);
+  return BallotBoxRepository(s.ballotBox!, s.keys);
 });

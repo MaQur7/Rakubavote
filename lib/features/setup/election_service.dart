@@ -345,6 +345,7 @@ class ElectionService {
       electionName: e.name,
       year: e.year,
       stationName: e.stationName,
+      orgLogoSha256: e.orgLogo == null ? null : sha256Hex(e.orgLogo!),
       languages: (jsonDecode(e.languages) as List).cast<String>(),
       positions: [
         for (final p in ps)
@@ -386,6 +387,24 @@ class ElectionService {
       'positions': def.positions.length,
     });
     return signed;
+  }
+
+  /// Image bytes the signed ballot refers to, keyed by SHA-256, for booths.
+  Future<Map<String, Uint8List>> ballotMedia(String electionId) async {
+    final e = await (db.select(db.elections)..where((x) => x.id.equals(electionId))).getSingle();
+    final out = <String, Uint8List>{};
+    void add(Uint8List? b) {
+      if (b != null) out[sha256Hex(b)] = b;
+    }
+
+    add(e.orgLogo);
+    for (final p in await positions(electionId)) {
+      for (final c in await candidates(p.id)) {
+        add(c.photo);
+        add(c.symbol);
+      }
+    }
+    return out;
   }
 
   Future<SignedArtifact?> signedBallot(String electionId) async {

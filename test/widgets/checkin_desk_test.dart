@@ -44,8 +44,7 @@ void main() {
 
     final shown = tester.widget<Text>(find.byKey(const ValueKey('issued-token'))).data!;
     expect(VotingToken.normalise(shown), isNotNull);
-    expect(find.text('Printed on a slip for the voter. Not linked to the vote, so the ballot stays secret.'),
-        findsOneWidget);
+    expect(find.textContaining('It is not linked to the vote, so the ballot stays secret.'), findsOneWidget);
     expect(find.text('Checked in: 1 of 5'), findsOneWidget);
 
     await tester.tap(find.byKey(const ValueKey('next-voter')));

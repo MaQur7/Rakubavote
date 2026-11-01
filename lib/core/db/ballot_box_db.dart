@@ -15,9 +15,22 @@ part 'ballot_box_db.g.dart';
 class BallotDefinitions extends Table {
   TextColumn get electionId => text()();
   TextColumn get signedBallot => text()();
+  /// The station laptop's signing key, pinned when the first ballot is loaded.
+  BlobColumn get stationPublicKey => blob()();
 
   @override
   Set<Column> get primaryKey => {electionId};
+}
+
+/// Candidate photos, symbols and the organization logo, keyed by SHA-256
+/// (the signed ballot refers to them by hash).
+@DataClassName('MediaItem')
+class BallotMedia extends Table {
+  TextColumn get sha256 => text()();
+  BlobColumn get bytes => blob()();
+
+  @override
+  Set<Column> get primaryKey => {sha256};
 }
 
 @DataClassName('VoteRecord')
@@ -69,7 +82,7 @@ class BatchExports extends Table {
   Set<Column> get primaryKey => {batchSeq};
 }
 
-@DriftDatabase(tables: [BallotDefinitions, Votes, ActiveTokens, UsedTokens, BatchExports, AuditLog])
+@DriftDatabase(tables: [BallotDefinitions, BallotMedia, Votes, ActiveTokens, UsedTokens, BatchExports, AuditLog])
 class BallotBoxDb extends _$BallotBoxDb {
   BallotBoxDb(super.e);
 

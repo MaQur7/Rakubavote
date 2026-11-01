@@ -797,7 +797,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tokenNote =>
-      'يُطبع على قسيمة للناخب. غير مرتبط بالصوت، لذلك يبقى الاقتراع سريًا.';
+      'أعطِ هذا الرمز للناخب، مثلًا مكتوبًا على قسيمة. الرمز غير مرتبط بالصوت، لذلك يبقى الاقتراع سريًا.';
 
   @override
   String get nextVoter => 'الناخب التالي';
@@ -888,5 +888,197 @@ class AppLocalizationsAr extends AppLocalizations {
   String get backToAdmin => 'العودة إلى الإدارة';
 
   @override
-  String get statusJustCheckedIn => 'تم التحقق الآن. أعطِ القسيمة للناخب.';
+  String get statusJustCheckedIn => 'تم التحقق الآن. أعطِ الرمز للناخب.';
+
+  @override
+  String get officialBallot => 'ورقة اقتراع رسمية';
+
+  @override
+  String get typeCode => 'اكتب الرمز الذي أعطاك إياه المسؤول';
+
+  @override
+  String get startVoting => 'ابدأ التصويت';
+
+  @override
+  String get secrecyFooter => 'صوتك سري. لا أحد يستطيع أن يرى لمن تصوت.';
+
+  @override
+  String get numbersHelp => 'لكل مرشح رقم ورمز لمساعدتك في إيجاده.';
+
+  @override
+  String get poweredBy => 'Powered by Rakubavote';
+
+  @override
+  String get codeNotFound =>
+      'لم يُعثر على هذا الرمز. تحقق من القسيمة أو اطلب مساعدة مسؤول.';
+
+  @override
+  String get codeUsed => 'هذا الرمز استُخدم من قبل. اطلب مساعدة مسؤول.';
+
+  @override
+  String get tooManyTries =>
+      'اطلب مساعدة مسؤول من فضلك. يمكنك المحاولة مرة أخرى بعد دقيقة.';
+
+  @override
+  String get helpTitle => 'كيف تصوت';
+
+  @override
+  String get helpText =>
+      '1. اكتب رمزك واضغط ابدأ التصويت.\n2. لكل منصب، اضغط على المرشح الذي تختاره أو اضغط لا اختيار.\n3. راجع اختياراتك ثم اضغط أكّد صوتي.\n\nصوتك سري. اطلب مساعدة مسؤول إذا احتجت.';
+
+  @override
+  String positionOf(Object current, Object total) {
+    return 'المنصب $current من $total';
+  }
+
+  @override
+  String get tapOneOrNoChoice => 'اضغط على مرشح واحد، أو اختر لا اختيار';
+
+  @override
+  String get tapOne => 'اضغط على مرشح واحد';
+
+  @override
+  String tapUpToOrNoChoice(Object count) {
+    return 'اضغط على ما يصل إلى $count مرشحين، أو اختر لا اختيار';
+  }
+
+  @override
+  String tapUpTo(Object count) {
+    return 'اضغط على ما يصل إلى $count مرشحين';
+  }
+
+  @override
+  String get noChoiceForPosition => 'لا اختيار لهذا المنصب';
+
+  @override
+  String get changeNote =>
+      'الضغط على خيار آخر يغير اختيارك. يمكنك مراجعة كل شيء قبل التأكيد.';
+
+  @override
+  String nextPosition(Object title) {
+    return 'التالي: $title';
+  }
+
+  @override
+  String get reviewButton => 'مراجعة';
+
+  @override
+  String bigListHeader(Object count) {
+    return '$count مرشحًا. اضغط على واحد، أو اكتب رقمه في الأسفل.';
+  }
+
+  @override
+  String get candidateNumberLabel => 'رقم المرشح';
+
+  @override
+  String get showsMatching => 'يظهر المرشح المطابق';
+
+  @override
+  String get yourChoice => 'اختيارك';
+
+  @override
+  String get noCandidateWithNumber => 'لا يوجد مرشح بهذا الرقم.';
+
+  @override
+  String chosenCount(Object count, Object max) {
+    return 'تم اختيار $count من $max';
+  }
+
+  @override
+  String get checkChoices => 'راجع اختياراتك';
+
+  @override
+  String get notSavedUntil => 'لا يُحفظ صوتك حتى تضغط تأكيد.';
+
+  @override
+  String get change => 'تغيير';
+
+  @override
+  String get confirmMyVote => 'أكّد صوتي';
+
+  @override
+  String get cannotChangeAfter => 'بعد التأكيد لا يمكن تغيير اختياراتك.';
+
+  @override
+  String get codeUsedElsewhere =>
+      'استُخدم هذا الرمز في كشك آخر. اطلب مساعدة مسؤول.';
+
+  @override
+  String get endTitle => 'انتهى';
+
+  @override
+  String get thankYou => 'شكرًا لك. تم تسجيل صوتك.';
+
+  @override
+  String get beepNote => 'يصدر صوت تنبيه طويل لتأكيد حفظ صوتك.';
+
+  @override
+  String clearsIn(Object seconds) {
+    return 'ستُمسح هذه الشاشة بعد $seconds ثوانٍ للناخب التالي.';
+  }
+
+  @override
+  String get boothSetupTitle => 'كشك التصويت';
+
+  @override
+  String get loadBallot => 'تحميل ورقة الاقتراع من USB';
+
+  @override
+  String get noBallotYet => 'لم تُحمّل ورقة اقتراع بعد.';
+
+  @override
+  String get ballotLoadedTitle => 'تم تحميل ورقة الاقتراع';
+
+  @override
+  String get ballotFingerprintCheck =>
+      'تحقق من أن هذه البصمة تطابق البصمة على الحاسوب:';
+
+  @override
+  String stationIdLine(Object id) {
+    return 'الحاسوب: $id';
+  }
+
+  @override
+  String get startBooth => 'تشغيل كشك التصويت';
+
+  @override
+  String votesOnBooth(Object count) {
+    return 'الأصوات في هذا الكشك: $count';
+  }
+
+  @override
+  String get leaveBoothTitle => 'رمز المسؤول لمغادرة شاشة الكشك';
+
+  @override
+  String get leaveBooth => 'مغادرة';
+
+  @override
+  String get codesNote =>
+      'تصل الرموز إلى هذا الكشك من الحاسوب عبر شبكة Wi-Fi الخاصة بالمركز.';
+
+  @override
+  String get errPackageMalformed => 'هذا الملف ليس ورقة اقتراع من Rakubavote.';
+
+  @override
+  String get errPackageSignature =>
+      'توقيع ورقة الاقتراع غير صحيح. لا تستخدم هذا الملف.';
+
+  @override
+  String get errPackageWrongStation =>
+      'ورقة الاقتراع هذه من حاسوب غير الحاسوب الذي يثق به هذا الكشك.';
+
+  @override
+  String get errPackageImage =>
+      'صورة في ورقة الاقتراع مفقودة أو تغيرت. لا تستخدم هذا الملف.';
+
+  @override
+  String get errVotesExist => 'هذا الكشك يحتوي على أصوات لورقة اقتراع أخرى.';
+
+  @override
+  String get saveBallotForBooths => 'حفظ ورقة الاقتراع للأكشاك (USB)';
+
+  @override
+  String ballotSavedIn(Object path) {
+    return 'تم حفظ ورقة الاقتراع في $path';
+  }
 }

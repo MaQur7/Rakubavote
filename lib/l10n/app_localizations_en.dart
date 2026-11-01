@@ -802,7 +802,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tokenNote =>
-      'Printed on a slip for the voter. Not linked to the vote, so the ballot stays secret.';
+      'Give this code to the voter, for example written on a slip. It is not linked to the vote, so the ballot stays secret.';
 
   @override
   String get nextVoter => 'Next voter';
@@ -897,5 +897,201 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statusJustCheckedIn =>
-      'Checked in now. Give the slip to the voter.';
+      'Checked in now. Give the code to the voter.';
+
+  @override
+  String get officialBallot => 'Official ballot';
+
+  @override
+  String get typeCode => 'Type the code the official gave you';
+
+  @override
+  String get startVoting => 'Start voting';
+
+  @override
+  String get secrecyFooter =>
+      'Your vote is secret. Nobody can see who you vote for.';
+
+  @override
+  String get numbersHelp =>
+      'Each candidate has a number and a symbol to help you find them.';
+
+  @override
+  String get poweredBy => 'Powered by Rakubavote';
+
+  @override
+  String get codeNotFound =>
+      'That code was not found. Check your slip or ask an official.';
+
+  @override
+  String get codeUsed => 'This code has already been used. Ask an official.';
+
+  @override
+  String get tooManyTries =>
+      'Please ask an official for help. You can try again in one minute.';
+
+  @override
+  String get helpTitle => 'How to vote';
+
+  @override
+  String get helpText =>
+      '1. Type your code and press Start voting.\n2. For each position, tap the candidate you choose, or tap No choice.\n3. Check your choices, then press Confirm my vote.\n\nYour vote is secret. Ask an official if you need help.';
+
+  @override
+  String positionOf(Object current, Object total) {
+    return 'Position $current of $total';
+  }
+
+  @override
+  String get tapOneOrNoChoice => 'Tap one candidate, or choose No choice';
+
+  @override
+  String get tapOne => 'Tap one candidate';
+
+  @override
+  String tapUpToOrNoChoice(Object count) {
+    return 'Tap up to $count candidates, or choose No choice';
+  }
+
+  @override
+  String tapUpTo(Object count) {
+    return 'Tap up to $count candidates';
+  }
+
+  @override
+  String get noChoiceForPosition => 'No choice for this position';
+
+  @override
+  String get changeNote =>
+      'Tapping another option changes your choice. You can check everything before confirming.';
+
+  @override
+  String nextPosition(Object title) {
+    return 'Next: $title';
+  }
+
+  @override
+  String get reviewButton => 'Review';
+
+  @override
+  String bigListHeader(Object count) {
+    return '$count candidates. Tap one, or type their number below.';
+  }
+
+  @override
+  String get candidateNumberLabel => 'Candidate number';
+
+  @override
+  String get showsMatching => 'Shows the matching candidate';
+
+  @override
+  String get yourChoice => 'Your choice';
+
+  @override
+  String get noCandidateWithNumber => 'There is no candidate with that number.';
+
+  @override
+  String chosenCount(Object count, Object max) {
+    return '$count of $max chosen';
+  }
+
+  @override
+  String get checkChoices => 'Check your choices';
+
+  @override
+  String get notSavedUntil => 'Your vote is not saved until you press Confirm.';
+
+  @override
+  String get change => 'Change';
+
+  @override
+  String get confirmMyVote => 'Confirm my vote';
+
+  @override
+  String get cannotChangeAfter =>
+      'After confirming, your choices cannot be changed.';
+
+  @override
+  String get codeUsedElsewhere =>
+      'This code was already used at another booth. Ask an official.';
+
+  @override
+  String get endTitle => 'End';
+
+  @override
+  String get thankYou => 'Thank you. Your vote has been recorded.';
+
+  @override
+  String get beepNote => 'A long beep sounds to confirm your vote is saved.';
+
+  @override
+  String clearsIn(Object seconds) {
+    return 'This screen will clear in $seconds seconds for the next voter.';
+  }
+
+  @override
+  String get boothSetupTitle => 'Voting booth';
+
+  @override
+  String get loadBallot => 'Load ballot from USB';
+
+  @override
+  String get noBallotYet => 'No ballot loaded yet.';
+
+  @override
+  String get ballotLoadedTitle => 'Ballot loaded';
+
+  @override
+  String get ballotFingerprintCheck =>
+      'Check that this fingerprint matches the one on the laptop:';
+
+  @override
+  String stationIdLine(Object id) {
+    return 'Laptop: $id';
+  }
+
+  @override
+  String get startBooth => 'Start voting booth';
+
+  @override
+  String votesOnBooth(Object count) {
+    return 'Votes on this booth: $count';
+  }
+
+  @override
+  String get leaveBoothTitle => 'Officer PIN to leave the booth screen';
+
+  @override
+  String get leaveBooth => 'Leave';
+
+  @override
+  String get codesNote =>
+      'Codes reach this booth from the laptop over the station Wi-Fi.';
+
+  @override
+  String get errPackageMalformed => 'This file is not a Rakubavote ballot.';
+
+  @override
+  String get errPackageSignature =>
+      'The ballot\'s signature does not check. Do not use this file.';
+
+  @override
+  String get errPackageWrongStation =>
+      'This ballot comes from a different laptop than the one this booth trusts.';
+
+  @override
+  String get errPackageImage =>
+      'An image in this ballot is missing or was changed. Do not use this file.';
+
+  @override
+  String get errVotesExist =>
+      'This booth already has votes for another ballot.';
+
+  @override
+  String get saveBallotForBooths => 'Save ballot for booths (USB)';
+
+  @override
+  String ballotSavedIn(Object path) {
+    return 'Ballot saved in $path';
+  }
 }

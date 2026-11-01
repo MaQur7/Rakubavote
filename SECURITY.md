@@ -13,7 +13,7 @@ Two things must both be true:
 1. **Nobody can link a vote to a voter**, including the presiding officer, the person who
    wrote the software, and anyone who copies every file on every device.
 2. **Nobody can change the register, the ballot, the votes or the results without it
-   showing**, and the paper receipts allow an independent hand recount.
+   showing.**
 
 ## How secrecy works
 
@@ -34,7 +34,7 @@ Exactly four things, enforced by the database schema and by automated tests
 
 | Field | Meaning |
 |---|---|
-| `ballot_id` | A random 128-bit number made when the voter presses *Confirm my vote*. It is printed on the receipt. |
+| `ballot_id` | A random 128-bit number made when the voter presses *Confirm my vote*. It groups the positions of one ballot and is never shown to anyone. |
 | `position_id` | Which position (for example "Chairman"). |
 | `choice` | The chosen candidate(s), or "No choice for this position". |
 | `signature` | The booth tablet's digital signature over the row. |
@@ -76,11 +76,10 @@ Rakubavote prevents this:
 - **Check-ins are logged as hourly counts** in the audit log; only manual check-ins are logged
   one by one (with their reason), because those need an explanation.
 
-### Paper receipts
+### No paper receipts (decision D18)
 
-Each receipt shows the election, position names, candidate numbers and names, and the random
-ballot id — never the voter. The voter checks it and drops it into the sealed box. Receipts
-allow a hand recount that does not depend on the software.
+The organizations using Rakubavote chose not to print vote receipts. Results are counted by the
+laptop from the signed vote batches and shown with a fingerprint code. See the limits below.
 
 ## How tampering is made visible
 
@@ -107,6 +106,8 @@ At closing the laptop reports, and never silently corrects:
 - the same code used at two booths (possible only if Wi-Fi failed between them);
 - codes used that were never issued;
 - ballots with a missing or unknown position, or an invalid choice.
+
+The presiding officer then presses **Show results**: the laptop counts automatically.
 
 **Ties** are flagged and recorded. The software never breaks a tie or declares a winner by
 rule; the committee announces results from the recorded data.
@@ -136,8 +137,10 @@ Be honest with voters and agents about these limits:
 - **Timing by a person in the room.** An observer who writes down when each voter enters each
   booth learns nothing from the data, but booth layout and queue order are physical matters
   for the presiding officer.
-- **A voter who shows their receipt** to someone outside. Receipts must go into the sealed
-  box before the voter leaves the booth area.
+- **No independent recount.** Because no paper receipts are printed (D18), the count cannot be
+  checked by hand against paper. Trust rests on the signed ballot, register and vote batches,
+  the audit log, the check-in/vote reconciliation, the device PINs and the independent review
+  of the code. Organizations that need a paper trail should revisit this decision.
 - **A compromised device** (someone installs modified software or has the PIN and full
   control of a booth during polling). Use the official release builds, keep tablets in kiosk
   mode, keep the PIN secret, and compare the paper recount with the digital count.

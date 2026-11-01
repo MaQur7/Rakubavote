@@ -16,10 +16,10 @@ secret votes and print a count everyone can check — **with no internet**.
 |---|---|---|
 | Laptop (Windows 10+ or Ubuntu Linux) | 1 | Setting up the election, registration, results |
 | Android tablet, 10 inch, Android 10+ | 2–3 | Voting booths (one spare) |
-| Bluetooth thermal receipt printer, 58 mm | 1 per booth | Vote receipts and voting slips |
+| Printer (any printer the laptop can print to) | 1 | Voter registration cards |
 | Travel Wi-Fi router (optional) | 1 | A local network with no internet |
 | Power banks or a solar panel | 3–4 | A full day without mains power |
-| Sealed receipt box, USB drives | 1 set | Paper receipts for a hand recount |
+| USB drives | 2 | Backups and moving files between devices |
 
 ## Installing the app
 
@@ -109,7 +109,7 @@ You do not need internet at the polling station. Download the files once, before
      type the name or voter number.
    - **Compare the photo with the person in front of you.**
    - Press **Confirm and issue voting token**. Copy the code onto the slip for the voter.
-     (Printing slips is added in a later update.)
+     There is no printer at check-in: write the code on a blank slip for the voter.
    - Press **Next voter**.
 4. If the app says *This voter has already received a token*, do not give another code; call
    the presiding officer.
@@ -119,7 +119,23 @@ You do not need internet at the polling station. Download the files once, before
 6. A lost slip cannot be replaced: codes are not linked to voters, so a new code would allow a
    second vote. Ask the voter to find the slip.
 
-Voting booths (milestone 5) and closing the polls (milestone 6) will be added next.
+### Election day: set up each voting booth (tablet)
+
+1. On the laptop, in **1 Setup**, after signing the ballot press **Save ballot for booths (USB)**
+   and choose the USB drive.
+2. On the tablet (set up as *Voting booth*), press **Load ballot from USB** and choose the file.
+3. **Compare the fingerprint code** on the tablet with the one the laptop showed when the ballot
+   was signed. If they differ, do not use the tablet.
+4. Press **Start voting booth**. The voter screen appears.
+5. To leave the voter screen, press and hold the top corner for a few seconds and type the
+   officer PIN.
+
+What the voter does: types the code, chooses a language, picks a candidate (or *No choice*) on
+each screen, checks the choices, presses **Confirm my vote**, hears a long beep and sees
+**End**. The screen clears by itself after 10 seconds.
+
+Codes reach the booths from the laptop over the station Wi-Fi; this is added in milestone 6
+together with closing the polls and showing results.
 
 ## Project status
 
@@ -130,9 +146,9 @@ Voting booths (milestone 5) and closing the polls (milestone 6) will be added ne
 | 2 | Election setup and voter registration | Done |
 | 3 | Public review, objections and register lock | Done |
 | 4 | Check-in and voting codes | Done |
-| 5 | Voting booth screens | Planned |
+| 5 | Voting booth screens | Done |
 | 6 | Station network, closing and results | Planned |
-| 7 | Printing (receipts, voter cards, registers, results) | Planned |
+| 7 | Printing voter registration cards | Planned |
 | 8 | Tablet kiosk mode and release packages | Planned |
 
 ## For developers

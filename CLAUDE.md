@@ -10,7 +10,8 @@ Station protocol: docs/protocol.md · Secrecy design: SECURITY.md
 - Flutter (Dart), one codebase: Android tablets + Windows/Linux laptops
 - SQLite via drift + SQLCipher; Ed25519 / SHA-256 / AES-GCM / X25519 / Argon2id via `cryptography`
 - Local station server: shelf (HTTP/WebSocket) over local Wi-Fi
-- Printing: ESC/POS thermal (receipts, token slips), `pdf` + `printing` (A4, voter cards)
+- Printing: voter registration cards only, via `pdf` + `printing` (D18). No vote receipts,
+  no token slips, no thermal printers; results are counted and shown by the laptop.
 - i18n: intl ARB files in lib/l10n (en, ar RTL, placeholder local language)
 - State: flutter_riverpod
 
@@ -32,7 +33,7 @@ Station protocol: docs/protocol.md · Secrecy design: SECURITY.md
 - lib/core/ theme tokens, crypto, db (registry + ballot box), audit log, domain models, counting, templates
 - lib/features/{device_setup,setup,registration,register_lock,checkin,booth,results}/
 - lib/station/ local server, client, protocol, USB bundles, multi-part QR
-- lib/printing/ receipts, token slips, voter cards, registers, results, fee summary
+- lib/printing/ voter registration cards (only printed item, D18)
 - lib/platform/ kiosk (Android lock task), camera
 - test/ unit + integration (incl. 500-voter simulation and secrecy tests); widget tests use
   test/support/app_harness.dart (end each with `finish()`; drift needs real-time pumps via `settle()`)
@@ -61,8 +62,9 @@ Station protocol: docs/protocol.md · Secrecy design: SECURITY.md
 - Follow docs/mockups/ and docs/brand-guidelines.md. Touch targets >= 64 px,
   sentence case, Atkinson Hyperlegible (Latin) + Noto Sans Arabic, fonts
   bundled offline (assets/fonts).
-- Button text styles must carry the font family (use the theme); Noto Sans is the fallback for
-  letters Atkinson lacks (D13).
+- Button text styles must carry the font family and fallbacks: use the theme, or
+  `buttonTextStyle(context, size)` from lib/core/theme.dart, never a bare TextStyle (Arabic
+  turns into empty boxes otherwise). Noto Sans is the fallback for letters Atkinson lacks (D13).
 - Brand colours only as named tokens in lib/core/theme.dart: nileBlue
   #1D4E89, acaciaGreen #1F5E3A, clay #A9521A, thatchGold #C8963E, lightThatch
   #E6C27A, ink #1B1B1B, paper #F4F1EA. Never hard-code hex in screens; never

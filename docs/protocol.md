@@ -37,6 +37,14 @@ Every message after pairing:
 
 `seq` increases per device and direction; replays and old sequence numbers are rejected.
 
+## Ballot package (USB, available now)
+
+`rakubavote-ballot-<fingerprint>.rkvballot` is canonical JSON:
+`{"type":"rakubavote-ballot-package","v":1,"station":<laptop Ed25519 public key>,
+"ballot":<signed ballot artifact>,"media":{<sha256>:<base64url image>}}`.
+The booth verifies the signature, every image hash and that every hash the ballot refers to is
+present. The first package pins the laptop's key (D19). It holds no personal data.
+
 ## Endpoints
 
 | Call | Who | Purpose |

@@ -101,6 +101,16 @@ class DeviceStore {
     return _open(info, keys, secrets, official);
   }
 
+  /// True if [pin] opens this device's vault (used to leave the booth screen).
+  Future<bool> verifyPin(String pin) async {
+    try {
+      await KeyVault.open(await _vaultFile.readAsString(), pin);
+      return true;
+    } on WrongPinException {
+      return false;
+    }
+  }
+
   Future<void> changePin(String oldPin, String newPin) async {
     if (!isAcceptablePin(newPin)) throw ArgumentError('PIN must be 6 to 12 digits');
     final v = await KeyVault.changePin(await _vaultFile.readAsString(), oldPin, newPin, params: kdf);

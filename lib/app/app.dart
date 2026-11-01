@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/theme.dart';
 import '../features/admin/admin_shell.dart';
+import '../features/booth/booth_home.dart';
 import '../features/device_setup/device_setup_screen.dart';
 import '../features/device_setup/unlock_screen.dart';
 import '../l10n/app_localizations.dart';
@@ -42,7 +43,8 @@ class _AppRootState extends ConsumerState<AppRoot> {
     if (session != null) {
       return switch (session.info.mode) {
         DeviceMode.admin => const AdminShell(),
-        _ => const _ModeComingLater(),
+        DeviceMode.booth => const BoothHome(),
+        DeviceMode.checkin => const _ModeComingLater(),
       };
     }
     final store = ref.watch(deviceStoreProvider);
@@ -65,7 +67,7 @@ class _AppRootState extends ConsumerState<AppRoot> {
   }
 }
 
-/// Check-in (milestone 4) and booth (milestone 5) screens are not built yet.
+/// The check-in tablet connects to the laptop in milestone 6.
 class _ModeComingLater extends ConsumerWidget {
   const _ModeComingLater();
   @override

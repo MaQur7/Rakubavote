@@ -99,9 +99,12 @@ class BallotDefinition {
     required this.stationName,
     required this.languages,
     required this.positions,
+    this.orgLogoSha256,
   });
 
   final String electionId;
+  /// SHA-256 of the organization logo shown on the booth welcome screen.
+  final String? orgLogoSha256;
   final String orgName;
   final String electionName;
   final int year;
@@ -109,6 +112,13 @@ class BallotDefinition {
   final List<String> languages;
   /// Sorted by [PositionDef.order].
   final List<PositionDef> positions;
+
+  /// Every image hash the ballot refers to (logo, photos, symbols).
+  Set<String> get mediaHashes => {
+        ?orgLogoSha256,
+        for (final p in positions)
+          for (final c in p.candidates) ...[?c.photoSha256, ?c.symbolSha256],
+      };
 
   PositionDef? positionById(String id) {
     for (final p in positions) {
@@ -141,6 +151,7 @@ class BallotDefinition {
         'electionName': electionName,
         'year': year,
         'stationName': stationName,
+        'orgLogo': orgLogoSha256,
         'languages': languages,
         'positions': [for (final p in positions) p.toJson()],
       };
@@ -154,6 +165,7 @@ class BallotDefinition {
       electionName: m['electionName'] as String,
       year: m['year'] as int,
       stationName: m['stationName'] as String,
+      orgLogoSha256: m['orgLogo'] as String?,
       languages: (m['languages'] as List).cast<String>(),
       positions: positions,
     );

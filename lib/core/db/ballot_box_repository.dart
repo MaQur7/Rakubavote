@@ -12,7 +12,7 @@ import '../domain/vote.dart';
 import '../domain/vote_batch.dart';
 import 'ballot_box_db.dart';
 
-enum CastFailure { ballotNotLoaded, codeNotActive, codeAlreadyUsed, invalidSelection }
+enum CastFailure { ballotNotLoaded, codeNotActive, codeAlreadyUsed, invalidSelection, otherStation, votesExist }
 
 class CastBallotException implements Exception {
   CastBallotException(this.failure, [this.detail = '']);
@@ -36,28 +36,65 @@ class BallotBoxRepository {
   BallotDefinition? _ballot;
   BallotDefinition? get ballot => _ballot;
 
-  /// Verifies and stores the signed ballot from the station laptop.
+  /// The pinned station key, or null before the first ballot is loaded.
+  Future<Uint8List?> pinnedStationKey() async =>
+      (await (db.select(db.ballotDefinitions)..limit(1)).getSingleOrNull())?.stationPublicKey;
+
+  /// Verifies and stores the signed ballot and its images. The first load
+  /// pins the station key; later loads must come from the same laptop, and
+  /// a different ballot cannot replace one that already has votes.
   Future<BallotDefinition> loadBallot(String signedBallotJson,
-      {required List<int> stationPublicKey}) async {
+      {required List<int> stationPublicKey, Map<String, Uint8List> media = const {}}) async {
+    final pinned = await pinnedStationKey();
+    if (pinned != null && !constantTimeEquals(pinned, stationPublicKey)) {
+      throw CastBallotException(CastFailure.otherStation);
+    }
     final a = await SignedArtifact.parseAndVerify(signedBallotJson,
         expectedKind: ArtifactKind.ballot, trustedSigners: [stationPublicKey]);
     final def = BallotDefinition.fromJson(a.payload);
-    await db.into(db.ballotDefinitions).insertOnConflictUpdate(BallotDefinitionsCompanion.insert(
-        electionId: def.electionId, signedBallot: a.encode()));
+    final existing = await (db.select(db.ballotDefinitions)..limit(1)).getSingleOrNull();
+    if (existing != null && await ballotCount() > 0) {
+      final same = SignedArtifact.parse(existing.signedBallot).hashHex == a.hashHex;
+      if (!same) throw CastBallotException(CastFailure.votesExist);
+    }
+    await db.transaction(() async {
+      await db.delete(db.ballotDefinitions).go();
+      await db.into(db.ballotDefinitions).insert(BallotDefinitionsCompanion.insert(
+          electionId: def.electionId,
+          signedBallot: a.encode(),
+          stationPublicKey: Uint8List.fromList(stationPublicKey)));
+      for (final e in media.entries) {
+        await db.into(db.ballotMedia).insertOnConflictUpdate(
+            BallotMediaCompanion.insert(sha256: e.key, bytes: e.value));
+      }
+    });
     await audit.append(
         actor: 'booth ${boothKeys.deviceId}',
         action: 'ballot.loaded',
-        payload: {'ballotHash': a.hashHex});
+        payload: {'ballotHash': a.hashHex, 'fingerprint': a.fingerprint});
     return _ballot = def;
   }
 
-  /// Re-opens a ballot stored earlier (after a restart), checking it again.
-  Future<BallotDefinition?> restoreBallot({required List<int> stationPublicKey}) async {
-    final row = await db.select(db.ballotDefinitions).getSingleOrNull();
+  /// Re-opens the stored ballot after a restart, checking it again.
+  Future<BallotDefinition?> restoreBallot() async {
+    final row = await (db.select(db.ballotDefinitions)..limit(1)).getSingleOrNull();
     if (row == null) return null;
     final a = await SignedArtifact.parseAndVerify(row.signedBallot,
-        expectedKind: ArtifactKind.ballot, trustedSigners: [stationPublicKey]);
+        expectedKind: ArtifactKind.ballot, trustedSigners: [row.stationPublicKey]);
     return _ballot = BallotDefinition.fromJson(a.payload);
+  }
+
+  Future<SignedArtifact?> signedBallot() async {
+    final row = await (db.select(db.ballotDefinitions)..limit(1)).getSingleOrNull();
+    return row == null ? null : SignedArtifact.parse(row.signedBallot);
+  }
+
+  /// Image bytes by hash (candidate photo, symbol or logo).
+  Future<Map<String, Uint8List>> media(Iterable<String> hashes) async {
+    final list = hashes.toList();
+    if (list.isEmpty) return const {};
+    final rows = await (db.select(db.ballotMedia)..where((m) => m.sha256.isIn(list))).get();
+    return {for (final r in rows) r.sha256: r.bytes};
   }
 
   Future<void> activateToken(String tokenHash) async {

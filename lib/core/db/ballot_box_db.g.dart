@@ -31,8 +31,24 @@ class $BallotDefinitionsTable extends BallotDefinitions
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _stationPublicKeyMeta = const VerificationMeta(
+    'stationPublicKey',
+  );
   @override
-  List<GeneratedColumn> get $columns => [electionId, signedBallot];
+  late final GeneratedColumn<Uint8List> stationPublicKey =
+      GeneratedColumn<Uint8List>(
+        'station_public_key',
+        aliasedName,
+        false,
+        type: DriftSqlType.blob,
+        requiredDuringInsert: true,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    electionId,
+    signedBallot,
+    stationPublicKey,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -64,6 +80,17 @@ class $BallotDefinitionsTable extends BallotDefinitions
     } else if (isInserting) {
       context.missing(_signedBallotMeta);
     }
+    if (data.containsKey('station_public_key')) {
+      context.handle(
+        _stationPublicKeyMeta,
+        stationPublicKey.isAcceptableOrUnknown(
+          data['station_public_key']!,
+          _stationPublicKeyMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_stationPublicKeyMeta);
+    }
     return context;
   }
 
@@ -81,6 +108,10 @@ class $BallotDefinitionsTable extends BallotDefinitions
         DriftSqlType.string,
         data['${effectivePrefix}signed_ballot'],
       )!,
+      stationPublicKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}station_public_key'],
+      )!,
     );
   }
 
@@ -93,12 +124,20 @@ class $BallotDefinitionsTable extends BallotDefinitions
 class StoredBallot extends DataClass implements Insertable<StoredBallot> {
   final String electionId;
   final String signedBallot;
-  const StoredBallot({required this.electionId, required this.signedBallot});
+
+  /// The station laptop's signing key, pinned when the first ballot is loaded.
+  final Uint8List stationPublicKey;
+  const StoredBallot({
+    required this.electionId,
+    required this.signedBallot,
+    required this.stationPublicKey,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['election_id'] = Variable<String>(electionId);
     map['signed_ballot'] = Variable<String>(signedBallot);
+    map['station_public_key'] = Variable<Uint8List>(stationPublicKey);
     return map;
   }
 
@@ -106,6 +145,7 @@ class StoredBallot extends DataClass implements Insertable<StoredBallot> {
     return BallotDefinitionsCompanion(
       electionId: Value(electionId),
       signedBallot: Value(signedBallot),
+      stationPublicKey: Value(stationPublicKey),
     );
   }
 
@@ -117,6 +157,9 @@ class StoredBallot extends DataClass implements Insertable<StoredBallot> {
     return StoredBallot(
       electionId: serializer.fromJson<String>(json['electionId']),
       signedBallot: serializer.fromJson<String>(json['signedBallot']),
+      stationPublicKey: serializer.fromJson<Uint8List>(
+        json['stationPublicKey'],
+      ),
     );
   }
   @override
@@ -125,14 +168,19 @@ class StoredBallot extends DataClass implements Insertable<StoredBallot> {
     return <String, dynamic>{
       'electionId': serializer.toJson<String>(electionId),
       'signedBallot': serializer.toJson<String>(signedBallot),
+      'stationPublicKey': serializer.toJson<Uint8List>(stationPublicKey),
     };
   }
 
-  StoredBallot copyWith({String? electionId, String? signedBallot}) =>
-      StoredBallot(
-        electionId: electionId ?? this.electionId,
-        signedBallot: signedBallot ?? this.signedBallot,
-      );
+  StoredBallot copyWith({
+    String? electionId,
+    String? signedBallot,
+    Uint8List? stationPublicKey,
+  }) => StoredBallot(
+    electionId: electionId ?? this.electionId,
+    signedBallot: signedBallot ?? this.signedBallot,
+    stationPublicKey: stationPublicKey ?? this.stationPublicKey,
+  );
   StoredBallot copyWithCompanion(BallotDefinitionsCompanion data) {
     return StoredBallot(
       electionId: data.electionId.present
@@ -141,6 +189,9 @@ class StoredBallot extends DataClass implements Insertable<StoredBallot> {
       signedBallot: data.signedBallot.present
           ? data.signedBallot.value
           : this.signedBallot,
+      stationPublicKey: data.stationPublicKey.present
+          ? data.stationPublicKey.value
+          : this.stationPublicKey,
     );
   }
 
@@ -148,44 +199,59 @@ class StoredBallot extends DataClass implements Insertable<StoredBallot> {
   String toString() {
     return (StringBuffer('StoredBallot(')
           ..write('electionId: $electionId, ')
-          ..write('signedBallot: $signedBallot')
+          ..write('signedBallot: $signedBallot, ')
+          ..write('stationPublicKey: $stationPublicKey')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(electionId, signedBallot);
+  int get hashCode => Object.hash(
+    electionId,
+    signedBallot,
+    $driftBlobEquality.hash(stationPublicKey),
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is StoredBallot &&
           other.electionId == this.electionId &&
-          other.signedBallot == this.signedBallot);
+          other.signedBallot == this.signedBallot &&
+          $driftBlobEquality.equals(
+            other.stationPublicKey,
+            this.stationPublicKey,
+          ));
 }
 
 class BallotDefinitionsCompanion extends UpdateCompanion<StoredBallot> {
   final Value<String> electionId;
   final Value<String> signedBallot;
+  final Value<Uint8List> stationPublicKey;
   final Value<int> rowid;
   const BallotDefinitionsCompanion({
     this.electionId = const Value.absent(),
     this.signedBallot = const Value.absent(),
+    this.stationPublicKey = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   BallotDefinitionsCompanion.insert({
     required String electionId,
     required String signedBallot,
+    required Uint8List stationPublicKey,
     this.rowid = const Value.absent(),
   }) : electionId = Value(electionId),
-       signedBallot = Value(signedBallot);
+       signedBallot = Value(signedBallot),
+       stationPublicKey = Value(stationPublicKey);
   static Insertable<StoredBallot> custom({
     Expression<String>? electionId,
     Expression<String>? signedBallot,
+    Expression<Uint8List>? stationPublicKey,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (electionId != null) 'election_id': electionId,
       if (signedBallot != null) 'signed_ballot': signedBallot,
+      if (stationPublicKey != null) 'station_public_key': stationPublicKey,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -193,11 +259,13 @@ class BallotDefinitionsCompanion extends UpdateCompanion<StoredBallot> {
   BallotDefinitionsCompanion copyWith({
     Value<String>? electionId,
     Value<String>? signedBallot,
+    Value<Uint8List>? stationPublicKey,
     Value<int>? rowid,
   }) {
     return BallotDefinitionsCompanion(
       electionId: electionId ?? this.electionId,
       signedBallot: signedBallot ?? this.signedBallot,
+      stationPublicKey: stationPublicKey ?? this.stationPublicKey,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -211,6 +279,9 @@ class BallotDefinitionsCompanion extends UpdateCompanion<StoredBallot> {
     if (signedBallot.present) {
       map['signed_ballot'] = Variable<String>(signedBallot.value);
     }
+    if (stationPublicKey.present) {
+      map['station_public_key'] = Variable<Uint8List>(stationPublicKey.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -222,6 +293,215 @@ class BallotDefinitionsCompanion extends UpdateCompanion<StoredBallot> {
     return (StringBuffer('BallotDefinitionsCompanion(')
           ..write('electionId: $electionId, ')
           ..write('signedBallot: $signedBallot, ')
+          ..write('stationPublicKey: $stationPublicKey, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BallotMediaTable extends BallotMedia
+    with TableInfo<$BallotMediaTable, MediaItem> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BallotMediaTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _sha256Meta = const VerificationMeta('sha256');
+  @override
+  late final GeneratedColumn<String> sha256 = GeneratedColumn<String>(
+    'sha256',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bytesMeta = const VerificationMeta('bytes');
+  @override
+  late final GeneratedColumn<Uint8List> bytes = GeneratedColumn<Uint8List>(
+    'bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [sha256, bytes];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ballot_media';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MediaItem> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('sha256')) {
+      context.handle(
+        _sha256Meta,
+        sha256.isAcceptableOrUnknown(data['sha256']!, _sha256Meta),
+      );
+    } else if (isInserting) {
+      context.missing(_sha256Meta);
+    }
+    if (data.containsKey('bytes')) {
+      context.handle(
+        _bytesMeta,
+        bytes.isAcceptableOrUnknown(data['bytes']!, _bytesMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_bytesMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {sha256};
+  @override
+  MediaItem map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MediaItem(
+      sha256: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sha256'],
+      )!,
+      bytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}bytes'],
+      )!,
+    );
+  }
+
+  @override
+  $BallotMediaTable createAlias(String alias) {
+    return $BallotMediaTable(attachedDatabase, alias);
+  }
+}
+
+class MediaItem extends DataClass implements Insertable<MediaItem> {
+  final String sha256;
+  final Uint8List bytes;
+  const MediaItem({required this.sha256, required this.bytes});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['sha256'] = Variable<String>(sha256);
+    map['bytes'] = Variable<Uint8List>(bytes);
+    return map;
+  }
+
+  BallotMediaCompanion toCompanion(bool nullToAbsent) {
+    return BallotMediaCompanion(sha256: Value(sha256), bytes: Value(bytes));
+  }
+
+  factory MediaItem.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MediaItem(
+      sha256: serializer.fromJson<String>(json['sha256']),
+      bytes: serializer.fromJson<Uint8List>(json['bytes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'sha256': serializer.toJson<String>(sha256),
+      'bytes': serializer.toJson<Uint8List>(bytes),
+    };
+  }
+
+  MediaItem copyWith({String? sha256, Uint8List? bytes}) =>
+      MediaItem(sha256: sha256 ?? this.sha256, bytes: bytes ?? this.bytes);
+  MediaItem copyWithCompanion(BallotMediaCompanion data) {
+    return MediaItem(
+      sha256: data.sha256.present ? data.sha256.value : this.sha256,
+      bytes: data.bytes.present ? data.bytes.value : this.bytes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MediaItem(')
+          ..write('sha256: $sha256, ')
+          ..write('bytes: $bytes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(sha256, $driftBlobEquality.hash(bytes));
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MediaItem &&
+          other.sha256 == this.sha256 &&
+          $driftBlobEquality.equals(other.bytes, this.bytes));
+}
+
+class BallotMediaCompanion extends UpdateCompanion<MediaItem> {
+  final Value<String> sha256;
+  final Value<Uint8List> bytes;
+  final Value<int> rowid;
+  const BallotMediaCompanion({
+    this.sha256 = const Value.absent(),
+    this.bytes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BallotMediaCompanion.insert({
+    required String sha256,
+    required Uint8List bytes,
+    this.rowid = const Value.absent(),
+  }) : sha256 = Value(sha256),
+       bytes = Value(bytes);
+  static Insertable<MediaItem> custom({
+    Expression<String>? sha256,
+    Expression<Uint8List>? bytes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (sha256 != null) 'sha256': sha256,
+      if (bytes != null) 'bytes': bytes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BallotMediaCompanion copyWith({
+    Value<String>? sha256,
+    Value<Uint8List>? bytes,
+    Value<int>? rowid,
+  }) {
+    return BallotMediaCompanion(
+      sha256: sha256 ?? this.sha256,
+      bytes: bytes ?? this.bytes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (sha256.present) {
+      map['sha256'] = Variable<String>(sha256.value);
+    }
+    if (bytes.present) {
+      map['bytes'] = Variable<Uint8List>(bytes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BallotMediaCompanion(')
+          ..write('sha256: $sha256, ')
+          ..write('bytes: $bytes, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1543,6 +1823,7 @@ abstract class _$BallotBoxDb extends GeneratedDatabase {
   $BallotBoxDbManager get managers => $BallotBoxDbManager(this);
   late final $BallotDefinitionsTable ballotDefinitions =
       $BallotDefinitionsTable(this);
+  late final $BallotMediaTable ballotMedia = $BallotMediaTable(this);
   late final $VotesTable votes = $VotesTable(this);
   late final $ActiveTokensTable activeTokens = $ActiveTokensTable(this);
   late final $UsedTokensTable usedTokens = $UsedTokensTable(this);
@@ -1554,6 +1835,7 @@ abstract class _$BallotBoxDb extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     ballotDefinitions,
+    ballotMedia,
     votes,
     activeTokens,
     usedTokens,
@@ -1566,12 +1848,14 @@ typedef $$BallotDefinitionsTableCreateCompanionBuilder =
     BallotDefinitionsCompanion Function({
       required String electionId,
       required String signedBallot,
+      required Uint8List stationPublicKey,
       Value<int> rowid,
     });
 typedef $$BallotDefinitionsTableUpdateCompanionBuilder =
     BallotDefinitionsCompanion Function({
       Value<String> electionId,
       Value<String> signedBallot,
+      Value<Uint8List> stationPublicKey,
       Value<int> rowid,
     });
 
@@ -1591,6 +1875,11 @@ class $$BallotDefinitionsTableFilterComposer
 
   ColumnFilters<String> get signedBallot => $composableBuilder(
     column: $table.signedBallot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get stationPublicKey => $composableBuilder(
+    column: $table.stationPublicKey,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -1613,6 +1902,11 @@ class $$BallotDefinitionsTableOrderingComposer
     column: $table.signedBallot,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<Uint8List> get stationPublicKey => $composableBuilder(
+    column: $table.stationPublicKey,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$BallotDefinitionsTableAnnotationComposer
@@ -1631,6 +1925,11 @@ class $$BallotDefinitionsTableAnnotationComposer
 
   GeneratedColumn<String> get signedBallot => $composableBuilder(
     column: $table.signedBallot,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<Uint8List> get stationPublicKey => $composableBuilder(
+    column: $table.stationPublicKey,
     builder: (column) => column,
   );
 }
@@ -1677,20 +1976,24 @@ class $$BallotDefinitionsTableTableManager
               ({
                 Value<String> electionId = const Value.absent(),
                 Value<String> signedBallot = const Value.absent(),
+                Value<Uint8List> stationPublicKey = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BallotDefinitionsCompanion(
                 electionId: electionId,
                 signedBallot: signedBallot,
+                stationPublicKey: stationPublicKey,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required String electionId,
                 required String signedBallot,
+                required Uint8List stationPublicKey,
                 Value<int> rowid = const Value.absent(),
               }) => BallotDefinitionsCompanion.insert(
                 electionId: electionId,
                 signedBallot: signedBallot,
+                stationPublicKey: stationPublicKey,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -1725,6 +2028,155 @@ typedef $$BallotDefinitionsTableProcessedTableManager =
         BaseReferences<_$BallotBoxDb, $BallotDefinitionsTable, StoredBallot>,
       ),
       StoredBallot,
+      PrefetchHooks Function()
+    >;
+typedef $$BallotMediaTableCreateCompanionBuilder =
+    BallotMediaCompanion Function({
+      required String sha256,
+      required Uint8List bytes,
+      Value<int> rowid,
+    });
+typedef $$BallotMediaTableUpdateCompanionBuilder =
+    BallotMediaCompanion Function({
+      Value<String> sha256,
+      Value<Uint8List> bytes,
+      Value<int> rowid,
+    });
+
+class $$BallotMediaTableFilterComposer
+    extends Composer<_$BallotBoxDb, $BallotMediaTable> {
+  $$BallotMediaTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get sha256 => $composableBuilder(
+    column: $table.sha256,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get bytes => $composableBuilder(
+    column: $table.bytes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BallotMediaTableOrderingComposer
+    extends Composer<_$BallotBoxDb, $BallotMediaTable> {
+  $$BallotMediaTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get sha256 => $composableBuilder(
+    column: $table.sha256,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<Uint8List> get bytes => $composableBuilder(
+    column: $table.bytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BallotMediaTableAnnotationComposer
+    extends Composer<_$BallotBoxDb, $BallotMediaTable> {
+  $$BallotMediaTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get sha256 =>
+      $composableBuilder(column: $table.sha256, builder: (column) => column);
+
+  GeneratedColumn<Uint8List> get bytes =>
+      $composableBuilder(column: $table.bytes, builder: (column) => column);
+}
+
+class $$BallotMediaTableTableManager
+    extends
+        RootTableManager<
+          _$BallotBoxDb,
+          $BallotMediaTable,
+          MediaItem,
+          $$BallotMediaTableFilterComposer,
+          $$BallotMediaTableOrderingComposer,
+          $$BallotMediaTableAnnotationComposer,
+          $$BallotMediaTableCreateCompanionBuilder,
+          $$BallotMediaTableUpdateCompanionBuilder,
+          (
+            MediaItem,
+            BaseReferences<_$BallotBoxDb, $BallotMediaTable, MediaItem>,
+          ),
+          MediaItem,
+          PrefetchHooks Function()
+        > {
+  $$BallotMediaTableTableManager(_$BallotBoxDb db, $BallotMediaTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BallotMediaTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BallotMediaTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BallotMediaTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> sha256 = const Value.absent(),
+                Value<Uint8List> bytes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BallotMediaCompanion(
+                sha256: sha256,
+                bytes: bytes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String sha256,
+                required Uint8List bytes,
+                Value<int> rowid = const Value.absent(),
+              }) => BallotMediaCompanion.insert(
+                sha256: sha256,
+                bytes: bytes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$BallotMediaTable, MediaItem>(table),
+                  BaseReferences<_$BallotBoxDb, $BallotMediaTable, MediaItem>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BallotMediaTableProcessedTableManager =
+    ProcessedTableManager<
+      _$BallotBoxDb,
+      $BallotMediaTable,
+      MediaItem,
+      $$BallotMediaTableFilterComposer,
+      $$BallotMediaTableOrderingComposer,
+      $$BallotMediaTableAnnotationComposer,
+      $$BallotMediaTableCreateCompanionBuilder,
+      $$BallotMediaTableUpdateCompanionBuilder,
+      (MediaItem, BaseReferences<_$BallotBoxDb, $BallotMediaTable, MediaItem>),
+      MediaItem,
       PrefetchHooks Function()
     >;
 typedef $$VotesTableCreateCompanionBuilder = VotesCompanion Function({
@@ -2544,6 +2996,8 @@ class $BallotBoxDbManager {
   $BallotBoxDbManager(this._db);
   $$BallotDefinitionsTableTableManager get ballotDefinitions =>
       $$BallotDefinitionsTableTableManager(_db, _db.ballotDefinitions);
+  $$BallotMediaTableTableManager get ballotMedia =>
+      $$BallotMediaTableTableManager(_db, _db.ballotMedia);
   $$VotesTableTableManager get votes =>
       $$VotesTableTableManager(_db, _db.votes);
   $$ActiveTokensTableTableManager get activeTokens =>

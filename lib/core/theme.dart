@@ -70,6 +70,18 @@ double contrastRatio(Color a, Color b) {
 bool meetsTextContrast(Color fg, Color bg, {bool largeText = false}) =>
     contrastRatio(fg, bg) >= (largeText ? 3.0 : 4.5);
 
+/// Bold button text of a given size in the current theme's fonts, with the
+/// fallback list (so Arabic and Dinka letters never show as empty boxes).
+TextStyle buttonTextStyle(BuildContext context, double size) {
+  final base = Theme.of(context).textTheme.bodyLarge!;
+  return TextStyle(
+    fontSize: size,
+    fontWeight: FontWeight.w700,
+    fontFamily: base.fontFamily,
+    fontFamilyFallback: base.fontFamilyFallback,
+  );
+}
+
 ThemeData buildRakubaTheme({required bool arabic}) {
   final family = RakubaFonts.familyFor(arabic: arabic);
   final fallback = RakubaFonts.fallbackFor(arabic: arabic);

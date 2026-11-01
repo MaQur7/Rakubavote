@@ -1501,7 +1501,7 @@ abstract class AppLocalizations {
   /// No description provided for @tokenNote.
   ///
   /// In en, this message translates to:
-  /// **'Printed on a slip for the voter. Not linked to the vote, so the ballot stays secret.'**
+  /// **'Give this code to the voter, for example written on a slip. It is not linked to the vote, so the ballot stays secret.'**
   String get tokenNote;
 
   /// No description provided for @nextVoter.
@@ -1669,8 +1669,332 @@ abstract class AppLocalizations {
   /// No description provided for @statusJustCheckedIn.
   ///
   /// In en, this message translates to:
-  /// **'Checked in now. Give the slip to the voter.'**
+  /// **'Checked in now. Give the code to the voter.'**
   String get statusJustCheckedIn;
+
+  /// No description provided for @officialBallot.
+  ///
+  /// In en, this message translates to:
+  /// **'Official ballot'**
+  String get officialBallot;
+
+  /// No description provided for @typeCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Type the code the official gave you'**
+  String get typeCode;
+
+  /// No description provided for @startVoting.
+  ///
+  /// In en, this message translates to:
+  /// **'Start voting'**
+  String get startVoting;
+
+  /// No description provided for @secrecyFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Your vote is secret. Nobody can see who you vote for.'**
+  String get secrecyFooter;
+
+  /// No description provided for @numbersHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Each candidate has a number and a symbol to help you find them.'**
+  String get numbersHelp;
+
+  /// No description provided for @poweredBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Powered by Rakubavote'**
+  String get poweredBy;
+
+  /// No description provided for @codeNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'That code was not found. Check your slip or ask an official.'**
+  String get codeNotFound;
+
+  /// No description provided for @codeUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'This code has already been used. Ask an official.'**
+  String get codeUsed;
+
+  /// No description provided for @tooManyTries.
+  ///
+  /// In en, this message translates to:
+  /// **'Please ask an official for help. You can try again in one minute.'**
+  String get tooManyTries;
+
+  /// No description provided for @helpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to vote'**
+  String get helpTitle;
+
+  /// No description provided for @helpText.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Type your code and press Start voting.\n2. For each position, tap the candidate you choose, or tap No choice.\n3. Check your choices, then press Confirm my vote.\n\nYour vote is secret. Ask an official if you need help.'**
+  String get helpText;
+
+  /// No description provided for @positionOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Position {current} of {total}'**
+  String positionOf(Object current, Object total);
+
+  /// No description provided for @tapOneOrNoChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap one candidate, or choose No choice'**
+  String get tapOneOrNoChoice;
+
+  /// No description provided for @tapOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap one candidate'**
+  String get tapOne;
+
+  /// No description provided for @tapUpToOrNoChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap up to {count} candidates, or choose No choice'**
+  String tapUpToOrNoChoice(Object count);
+
+  /// No description provided for @tapUpTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap up to {count} candidates'**
+  String tapUpTo(Object count);
+
+  /// No description provided for @noChoiceForPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'No choice for this position'**
+  String get noChoiceForPosition;
+
+  /// No description provided for @changeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Tapping another option changes your choice. You can check everything before confirming.'**
+  String get changeNote;
+
+  /// No description provided for @nextPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: {title}'**
+  String nextPosition(Object title);
+
+  /// No description provided for @reviewButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get reviewButton;
+
+  /// No description provided for @bigListHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} candidates. Tap one, or type their number below.'**
+  String bigListHeader(Object count);
+
+  /// No description provided for @candidateNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate number'**
+  String get candidateNumberLabel;
+
+  /// No description provided for @showsMatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows the matching candidate'**
+  String get showsMatching;
+
+  /// No description provided for @yourChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Your choice'**
+  String get yourChoice;
+
+  /// No description provided for @noCandidateWithNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no candidate with that number.'**
+  String get noCandidateWithNumber;
+
+  /// No description provided for @chosenCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {max} chosen'**
+  String chosenCount(Object count, Object max);
+
+  /// No description provided for @checkChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your choices'**
+  String get checkChoices;
+
+  /// No description provided for @notSavedUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Your vote is not saved until you press Confirm.'**
+  String get notSavedUntil;
+
+  /// No description provided for @change.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get change;
+
+  /// No description provided for @confirmMyVote.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm my vote'**
+  String get confirmMyVote;
+
+  /// No description provided for @cannotChangeAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'After confirming, your choices cannot be changed.'**
+  String get cannotChangeAfter;
+
+  /// No description provided for @codeUsedElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'This code was already used at another booth. Ask an official.'**
+  String get codeUsedElsewhere;
+
+  /// No description provided for @endTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'End'**
+  String get endTitle;
+
+  /// No description provided for @thankYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you. Your vote has been recorded.'**
+  String get thankYou;
+
+  /// No description provided for @beepNote.
+  ///
+  /// In en, this message translates to:
+  /// **'A long beep sounds to confirm your vote is saved.'**
+  String get beepNote;
+
+  /// No description provided for @clearsIn.
+  ///
+  /// In en, this message translates to:
+  /// **'This screen will clear in {seconds} seconds for the next voter.'**
+  String clearsIn(Object seconds);
+
+  /// No description provided for @boothSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting booth'**
+  String get boothSetupTitle;
+
+  /// No description provided for @loadBallot.
+  ///
+  /// In en, this message translates to:
+  /// **'Load ballot from USB'**
+  String get loadBallot;
+
+  /// No description provided for @noBallotYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No ballot loaded yet.'**
+  String get noBallotYet;
+
+  /// No description provided for @ballotLoadedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ballot loaded'**
+  String get ballotLoadedTitle;
+
+  /// No description provided for @ballotFingerprintCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check that this fingerprint matches the one on the laptop:'**
+  String get ballotFingerprintCheck;
+
+  /// No description provided for @stationIdLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Laptop: {id}'**
+  String stationIdLine(Object id);
+
+  /// No description provided for @startBooth.
+  ///
+  /// In en, this message translates to:
+  /// **'Start voting booth'**
+  String get startBooth;
+
+  /// No description provided for @votesOnBooth.
+  ///
+  /// In en, this message translates to:
+  /// **'Votes on this booth: {count}'**
+  String votesOnBooth(Object count);
+
+  /// No description provided for @leaveBoothTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Officer PIN to leave the booth screen'**
+  String get leaveBoothTitle;
+
+  /// No description provided for @leaveBooth.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get leaveBooth;
+
+  /// No description provided for @codesNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Codes reach this booth from the laptop over the station Wi-Fi.'**
+  String get codesNote;
+
+  /// No description provided for @errPackageMalformed.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is not a Rakubavote ballot.'**
+  String get errPackageMalformed;
+
+  /// No description provided for @errPackageSignature.
+  ///
+  /// In en, this message translates to:
+  /// **'The ballot\'s signature does not check. Do not use this file.'**
+  String get errPackageSignature;
+
+  /// No description provided for @errPackageWrongStation.
+  ///
+  /// In en, this message translates to:
+  /// **'This ballot comes from a different laptop than the one this booth trusts.'**
+  String get errPackageWrongStation;
+
+  /// No description provided for @errPackageImage.
+  ///
+  /// In en, this message translates to:
+  /// **'An image in this ballot is missing or was changed. Do not use this file.'**
+  String get errPackageImage;
+
+  /// No description provided for @errVotesExist.
+  ///
+  /// In en, this message translates to:
+  /// **'This booth already has votes for another ballot.'**
+  String get errVotesExist;
+
+  /// No description provided for @saveBallotForBooths.
+  ///
+  /// In en, this message translates to:
+  /// **'Save ballot for booths (USB)'**
+  String get saveBallotForBooths;
+
+  /// No description provided for @ballotSavedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Ballot saved in {path}'**
+  String ballotSavedIn(Object path);
 }
 
 class _AppLocalizationsDelegate
