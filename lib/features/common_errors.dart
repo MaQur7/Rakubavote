@@ -1,4 +1,5 @@
 import '../l10n/app_localizations.dart';
+import 'checkin/checkin_service.dart';
 import 'register_lock/review_service.dart';
 import 'registration/registration_service.dart';
 import 'setup/election_service.dart';
@@ -13,6 +14,18 @@ String describeError(AppLocalizations t, Object e) {
       SetupFailure.duplicateCandidateNumber => t.errDuplicateNumber,
       SetupFailure.lowContrastColour => t.errLowContrast,
       SetupFailure.invalidValue => t.errInvalidValue,
+    };
+  }
+  if (e is CheckInException) {
+    return switch (e.failure) {
+      CheckInFailure.noElection => t.errNoElection,
+      CheckInFailure.pollsNotOpen => t.errPollsNotOpen,
+      CheckInFailure.voterNotFound => t.cardNotOnRegister,
+      CheckInFailure.voterRemoved => t.errVoterRemoved,
+      CheckInFailure.alreadyCheckedIn => t.alreadyHasToken,
+      CheckInFailure.reasonRequired => t.errReasonRequired,
+      CheckInFailure.ballotNotSigned => t.errBallotNotSigned,
+      CheckInFailure.registerNotLocked => t.errRegisterNotLocked,
     };
   }
   if (e is ReviewException) {

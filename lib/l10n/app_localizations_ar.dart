@@ -756,4 +756,137 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get errInvalidDates =>
       'يجب أن يكون اليوم الأخير في اليوم الأول أو بعده.';
+
+  @override
+  String checkinDeskTitle(Object station) {
+    return 'مكتب التحقق · $station';
+  }
+
+  @override
+  String get findVoter => 'البحث عن ناخب';
+
+  @override
+  String get nameOrVoterNumber => 'الاسم أو رقم الناخب';
+
+  @override
+  String get scanHint =>
+      'لمسح البطاقة، وجّه ماسح USB نحو رمز QR. سيكتب الرقم في هذا المربع.';
+
+  @override
+  String get photoFromRegistration => 'صورة التسجيل';
+
+  @override
+  String voterNoLine(Object number) {
+    return 'رقم الناخب $number';
+  }
+
+  @override
+  String get statusNotVoted => 'مسجل · لم يصوت';
+
+  @override
+  String get statusCheckedIn => 'تم التحقق منه مسبقًا';
+
+  @override
+  String get comparePhoto => 'قارن الصورة بالشخص الذي أمامك قبل التأكيد.';
+
+  @override
+  String get confirmIssueToken => 'تأكيد وإصدار رمز التصويت';
+
+  @override
+  String get tokenTitle => 'رمز تصويت لمرة واحدة';
+
+  @override
+  String get tokenNote =>
+      'يُطبع على قسيمة للناخب. غير مرتبط بالصوت، لذلك يبقى الاقتراع سريًا.';
+
+  @override
+  String get nextVoter => 'الناخب التالي';
+
+  @override
+  String get manualTitle => 'لم يُعثر على الناخب أو توجد مشكلة في الجهاز؟';
+
+  @override
+  String get manualText =>
+      'راجع السجل المطبوع وسجّل السبب، ثم أصدر الرمز يدويًا.';
+
+  @override
+  String get manualCheckin => 'تحقق يدوي';
+
+  @override
+  String get manualVoterNo => 'رقم الناخب في السجل المطبوع';
+
+  @override
+  String get manualReason => 'السبب';
+
+  @override
+  String get reasonCardLost => 'البطاقة مفقودة';
+
+  @override
+  String get reasonCardUnreadable => 'لا يمكن قراءة البطاقة';
+
+  @override
+  String get reasonPhotoMissing => 'لا توجد صورة أو الصورة غير واضحة';
+
+  @override
+  String get reasonDeviceProblem => 'مشكلة في الجهاز';
+
+  @override
+  String get reasonOther => 'أخرى (اشرح)';
+
+  @override
+  String get manualDetails => 'التفاصيل';
+
+  @override
+  String get cardReplaced =>
+      'تم استبدال هذه البطاقة. اطلب البطاقة الجديدة أو استخدم التحقق اليدوي.';
+
+  @override
+  String get cardInvalid =>
+      'تعذر التحقق من هذه البطاقة. استخدم السجل المطبوع والتحقق اليدوي.';
+
+  @override
+  String get cardNotOnRegister =>
+      'رقم الناخب هذا غير موجود في السجل. راجع السجل المطبوع.';
+
+  @override
+  String get noVotersFound => 'لم يُعثر على ناخب. تحقق من الاسم أو الرقم.';
+
+  @override
+  String checkedInCount(Object count, Object total) {
+    return 'تم التحقق: $count من $total';
+  }
+
+  @override
+  String get alreadyHasToken => 'هذا الناخب حصل على رمز من قبل.';
+
+  @override
+  String get errPollsNotOpen =>
+      'الاقتراع لم يُفتح بعد. يفتحه رئيس المركز من المراجعة والقفل.';
+
+  @override
+  String get errVoterRemoved => 'تم حذف هذا الناخب من السجل.';
+
+  @override
+  String get errReasonRequired => 'اختر سببًا وأضف التفاصيل.';
+
+  @override
+  String get errRegisterNotLocked => 'اقفل السجل قبل فتح الاقتراع.';
+
+  @override
+  String get openPolls => 'فتح الاقتراع';
+
+  @override
+  String get openPollsConfirm => 'فتح الاقتراع الآن؟ يمكن بدء التحقق بعد ذلك.';
+
+  @override
+  String get pollsOpen => 'الاقتراع مفتوح.';
+
+  @override
+  String get openCheckinDesk => 'مكتب التحقق';
+
+  @override
+  String get backToAdmin => 'العودة إلى الإدارة';
+
+  @override
+  String get statusJustCheckedIn => 'تم التحقق الآن. أعطِ القسيمة للناخب.';
 }

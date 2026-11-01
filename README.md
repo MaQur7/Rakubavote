@@ -100,7 +100,26 @@ You do not need internet at the polling station. Download the files once, before
    observers. After locking, no names can be added, changed or removed, and the ballot cannot
    be changed. A lost card can still be reprinted.
 
-Guides for election day and closing will be added as those parts are finished.
+### Election day: open the polls and check voters in
+
+1. In **3 Review and lock**, after the register is locked, press **Open the polls** and confirm.
+2. Press **Check-in desk** in the top bar.
+3. For each voter:
+   - Scan the voter card with the USB QR scanner (it types into the *Find voter* box), or
+     type the name or voter number.
+   - **Compare the photo with the person in front of you.**
+   - Press **Confirm and issue voting token**. Copy the code onto the slip for the voter.
+     (Printing slips is added in a later update.)
+   - Press **Next voter**.
+4. If the app says *This voter has already received a token*, do not give another code; call
+   the presiding officer.
+5. If a card was replaced, ask for the new card. If the voter is not found or a device fails,
+   find the voter on the printed register and use **Manual check-in**: type the voter number,
+   choose the reason and add details. Manual check-ins are recorded one by one.
+6. A lost slip cannot be replaced: codes are not linked to voters, so a new code would allow a
+   second vote. Ask the voter to find the slip.
+
+Voting booths (milestone 5) and closing the polls (milestone 6) will be added next.
 
 ## Project status
 
@@ -110,7 +129,7 @@ Guides for election day and closing will be added as those parts are finished.
 | 1 | Data model, encryption, signatures, audit log | Done |
 | 2 | Election setup and voter registration | Done |
 | 3 | Public review, objections and register lock | Done |
-| 4 | Check-in and voting codes | Planned |
+| 4 | Check-in and voting codes | Done |
 | 5 | Voting booth screens | Planned |
 | 6 | Station network, closing and results | Planned |
 | 7 | Printing (receipts, voter cards, registers, results) | Planned |

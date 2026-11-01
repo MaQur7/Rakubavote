@@ -839,6 +839,26 @@ class _LockCard extends ConsumerWidget {
                   },
                 ),
                 const SizedBox(height: 12),
+                if (election.state == ElectionState.locked.name)
+                  FilledButton(
+                    key: const ValueKey('open-polls'),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: RakubaColors.acaciaGreen,
+                    ),
+                    onPressed: () => _openPolls(context, ref),
+                    child: Text(t.openPolls),
+                  )
+                else if (election.state == ElectionState.polling.name)
+                  Text(
+                    t.pollsOpen,
+                    key: const ValueKey('polls-open'),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: RakubaColors.acaciaGreen,
+                    ),
+                  ),
+                const SizedBox(height: 12),
                 Tooltip(
                   message: t.comingLater,
                   child: OutlinedButton(
@@ -886,6 +906,35 @@ class _LockCard extends ConsumerWidget {
         },
       ),
     );
+  }
+
+  Future<void> _openPolls(BuildContext context, WidgetRef ref) async {
+    final t = AppLocalizations.of(context);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        content: Text(t.openPollsConfirm, style: const TextStyle(fontSize: 18)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(c, false),
+            child: Text(t.cancel),
+          ),
+          FilledButton(
+            key: const ValueKey('open-polls-confirm'),
+            onPressed: () => Navigator.pop(c, true),
+            child: Text(t.openPolls),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    try {
+      await ref
+          .read(checkInServiceProvider)
+          .openPolls(official: ref.read(officialProvider));
+    } catch (err) {
+      if (context.mounted) showMessage(context, describeError(t, err));
+    }
   }
 
   Widget _afterLocking(AppLocalizations t) => Container(

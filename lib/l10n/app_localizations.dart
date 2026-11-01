@@ -1431,6 +1431,246 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The last day must be on or after the first day.'**
   String get errInvalidDates;
+
+  /// No description provided for @checkinDeskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in desk · {station}'**
+  String checkinDeskTitle(Object station);
+
+  /// No description provided for @findVoter.
+  ///
+  /// In en, this message translates to:
+  /// **'Find voter'**
+  String get findVoter;
+
+  /// No description provided for @nameOrVoterNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Name or voter number'**
+  String get nameOrVoterNumber;
+
+  /// No description provided for @scanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'To scan a card, point the USB scanner at the QR code. It types into this box.'**
+  String get scanHint;
+
+  /// No description provided for @photoFromRegistration.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo from registration'**
+  String get photoFromRegistration;
+
+  /// No description provided for @voterNoLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Voter No. {number}'**
+  String voterNoLine(Object number);
+
+  /// No description provided for @statusNotVoted.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered · Has not voted'**
+  String get statusNotVoted;
+
+  /// No description provided for @statusCheckedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Already checked in'**
+  String get statusCheckedIn;
+
+  /// No description provided for @comparePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare the photo with the person in front of you before confirming.'**
+  String get comparePhoto;
+
+  /// No description provided for @confirmIssueToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm and issue voting token'**
+  String get confirmIssueToken;
+
+  /// No description provided for @tokenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One-time voting token'**
+  String get tokenTitle;
+
+  /// No description provided for @tokenNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Printed on a slip for the voter. Not linked to the vote, so the ballot stays secret.'**
+  String get tokenNote;
+
+  /// No description provided for @nextVoter.
+  ///
+  /// In en, this message translates to:
+  /// **'Next voter'**
+  String get nextVoter;
+
+  /// No description provided for @manualTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voter not found or device problem?'**
+  String get manualTitle;
+
+  /// No description provided for @manualText.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the printed register, record the reason, then issue a token manually.'**
+  String get manualText;
+
+  /// No description provided for @manualCheckin.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual check-in'**
+  String get manualCheckin;
+
+  /// No description provided for @manualVoterNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Voter No. on the printed register'**
+  String get manualVoterNo;
+
+  /// No description provided for @manualReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get manualReason;
+
+  /// No description provided for @reasonCardLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Card lost'**
+  String get reasonCardLost;
+
+  /// No description provided for @reasonCardUnreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'Card cannot be read'**
+  String get reasonCardUnreadable;
+
+  /// No description provided for @reasonPhotoMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No photo or photo unclear'**
+  String get reasonPhotoMissing;
+
+  /// No description provided for @reasonDeviceProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Device problem'**
+  String get reasonDeviceProblem;
+
+  /// No description provided for @reasonOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other (explain)'**
+  String get reasonOther;
+
+  /// No description provided for @manualDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get manualDetails;
+
+  /// No description provided for @cardReplaced.
+  ///
+  /// In en, this message translates to:
+  /// **'This card was replaced. Ask for the new card, or use manual check-in.'**
+  String get cardReplaced;
+
+  /// No description provided for @cardInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This card could not be checked. Use the printed register and manual check-in.'**
+  String get cardInvalid;
+
+  /// No description provided for @cardNotOnRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'This voter number is not on the register. Check the printed register.'**
+  String get cardNotOnRegister;
+
+  /// No description provided for @noVotersFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No voter found. Check the spelling or the number.'**
+  String get noVotersFound;
+
+  /// No description provided for @checkedInCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in: {count} of {total}'**
+  String checkedInCount(Object count, Object total);
+
+  /// No description provided for @alreadyHasToken.
+  ///
+  /// In en, this message translates to:
+  /// **'This voter has already received a token.'**
+  String get alreadyHasToken;
+
+  /// No description provided for @errPollsNotOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'The polls are not open yet. The presiding officer opens them in Review and lock.'**
+  String get errPollsNotOpen;
+
+  /// No description provided for @errVoterRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'This voter was removed from the register.'**
+  String get errVoterRemoved;
+
+  /// No description provided for @errReasonRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a reason and add details.'**
+  String get errReasonRequired;
+
+  /// No description provided for @errRegisterNotLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock the register before opening the polls.'**
+  String get errRegisterNotLocked;
+
+  /// No description provided for @openPolls.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the polls'**
+  String get openPolls;
+
+  /// No description provided for @openPollsConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the polls now? Check-in can start after this.'**
+  String get openPollsConfirm;
+
+  /// No description provided for @pollsOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'The polls are open.'**
+  String get pollsOpen;
+
+  /// No description provided for @openCheckinDesk.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in desk'**
+  String get openCheckinDesk;
+
+  /// No description provided for @backToAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to admin'**
+  String get backToAdmin;
+
+  /// No description provided for @statusJustCheckedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in now. Give the slip to the voter.'**
+  String get statusJustCheckedIn;
 }
 
 class _AppLocalizationsDelegate

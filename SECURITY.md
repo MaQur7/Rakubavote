@@ -44,7 +44,9 @@ time, or a counter that shows the order of voting.
 
 ### The one-time voting code
 
-1. At check-in, the official confirms the voter's identity. The laptop marks the voter as
+1. The presiding officer opens the polls. At check-in, the official finds the voter by voter
+   card (a signed QR code holding only the voter number) or by name, and confirms identity
+   against the registration photo. The laptop marks the voter as
    checked in (with the hour only, for turnout) and creates a random 6-character code such as
    `7K4-Q9M`, which is printed on a slip for the voter.
 2. The code itself is **never stored**. Only a one-way hash of it is stored, in a table that
@@ -143,6 +145,8 @@ Be honest with voters and agents about these limits:
   the result itself reveals choices. This is true of any ballot.
 - **The check-in official can see the code on screen** while printing it. The code cannot be
   linked to a ballot afterwards, but officials should not write codes down.
+- **A lost voting slip cannot be replaced.** Because nothing links a code to a voter, the app
+  cannot cancel the lost code; issuing a second one would allow two votes. This is deliberate.
 
 ## Personal data
 

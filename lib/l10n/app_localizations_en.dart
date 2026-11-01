@@ -760,4 +760,142 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errInvalidDates =>
       'The last day must be on or after the first day.';
+
+  @override
+  String checkinDeskTitle(Object station) {
+    return 'Check-in desk · $station';
+  }
+
+  @override
+  String get findVoter => 'Find voter';
+
+  @override
+  String get nameOrVoterNumber => 'Name or voter number';
+
+  @override
+  String get scanHint =>
+      'To scan a card, point the USB scanner at the QR code. It types into this box.';
+
+  @override
+  String get photoFromRegistration => 'Photo from registration';
+
+  @override
+  String voterNoLine(Object number) {
+    return 'Voter No. $number';
+  }
+
+  @override
+  String get statusNotVoted => 'Registered · Has not voted';
+
+  @override
+  String get statusCheckedIn => 'Already checked in';
+
+  @override
+  String get comparePhoto =>
+      'Compare the photo with the person in front of you before confirming.';
+
+  @override
+  String get confirmIssueToken => 'Confirm and issue voting token';
+
+  @override
+  String get tokenTitle => 'One-time voting token';
+
+  @override
+  String get tokenNote =>
+      'Printed on a slip for the voter. Not linked to the vote, so the ballot stays secret.';
+
+  @override
+  String get nextVoter => 'Next voter';
+
+  @override
+  String get manualTitle => 'Voter not found or device problem?';
+
+  @override
+  String get manualText =>
+      'Check the printed register, record the reason, then issue a token manually.';
+
+  @override
+  String get manualCheckin => 'Manual check-in';
+
+  @override
+  String get manualVoterNo => 'Voter No. on the printed register';
+
+  @override
+  String get manualReason => 'Reason';
+
+  @override
+  String get reasonCardLost => 'Card lost';
+
+  @override
+  String get reasonCardUnreadable => 'Card cannot be read';
+
+  @override
+  String get reasonPhotoMissing => 'No photo or photo unclear';
+
+  @override
+  String get reasonDeviceProblem => 'Device problem';
+
+  @override
+  String get reasonOther => 'Other (explain)';
+
+  @override
+  String get manualDetails => 'Details';
+
+  @override
+  String get cardReplaced =>
+      'This card was replaced. Ask for the new card, or use manual check-in.';
+
+  @override
+  String get cardInvalid =>
+      'This card could not be checked. Use the printed register and manual check-in.';
+
+  @override
+  String get cardNotOnRegister =>
+      'This voter number is not on the register. Check the printed register.';
+
+  @override
+  String get noVotersFound =>
+      'No voter found. Check the spelling or the number.';
+
+  @override
+  String checkedInCount(Object count, Object total) {
+    return 'Checked in: $count of $total';
+  }
+
+  @override
+  String get alreadyHasToken => 'This voter has already received a token.';
+
+  @override
+  String get errPollsNotOpen =>
+      'The polls are not open yet. The presiding officer opens them in Review and lock.';
+
+  @override
+  String get errVoterRemoved => 'This voter was removed from the register.';
+
+  @override
+  String get errReasonRequired => 'Choose a reason and add details.';
+
+  @override
+  String get errRegisterNotLocked =>
+      'Lock the register before opening the polls.';
+
+  @override
+  String get openPolls => 'Open the polls';
+
+  @override
+  String get openPollsConfirm =>
+      'Open the polls now? Check-in can start after this.';
+
+  @override
+  String get pollsOpen => 'The polls are open.';
+
+  @override
+  String get openCheckinDesk => 'Check-in desk';
+
+  @override
+  String get backToAdmin => 'Back to admin';
+
+  @override
+  String get statusJustCheckedIn =>
+      'Checked in now. Give the slip to the voter.';
 }

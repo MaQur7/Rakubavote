@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../features/checkin/checkin_service.dart';
 import '../features/register_lock/review_service.dart';
 import '../features/registration/registration_service.dart';
 import '../features/setup/election_service.dart';
@@ -76,4 +77,10 @@ final officialProvider = Provider<String>((ref) => _requireSession(ref).official
 final reviewServiceProvider = Provider<ReviewService>((ref) {
   final s = _requireSession(ref);
   return ReviewService(s.registry!, s.keys);
+});
+
+/// One instance per session, so activation listeners stay attached.
+final checkInServiceProvider = Provider<CheckInService>((ref) {
+  final s = _requireSession(ref);
+  return CheckInService(s.registry!, s.keys);
 });
