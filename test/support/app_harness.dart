@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:rakubavote/app/device_store.dart';
 import 'package:rakubavote/app/providers.dart';
 import 'package:rakubavote/core/crypto/device_keys.dart';
 import 'package:rakubavote/core/crypto/key_vault.dart';
+import 'package:rakubavote/printing/pdf_output.dart';
 
 import 'fixtures.dart';
 
@@ -37,12 +39,32 @@ void useLaptopScreen(WidgetTester tester) {
 /// station server or read providers in tests).
 late ProviderContainer lastContainer;
 
+/// Records PDFs instead of printing them.
+class FakePdfOutput implements PdfOutput {
+  final printed = <String>[];
+  final saved = <String>[];
+  @override
+  Future<bool> printPdf(Uint8List bytes, {required String name}) async {
+    printed.add(name);
+    return true;
+  }
+
+  @override
+  Future<String?> savePdf(Uint8List bytes, {required String name}) async {
+    saved.add(name);
+    return '/tmp/$name.pdf';
+  }
+}
+
+late FakePdfOutput lastPdfOutput;
+
 Widget appWithSession(DeviceSession session, {Locale locale = const Locale('en')}) {
   // Each test opens its own in-memory databases; drift's duplicate-instance
   // warning does not apply.
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   final container = ProviderContainer(overrides: [
     deviceStoreProvider.overrideWith((ref) async => DeviceStore(Directory.systemTemp, kdf: KdfParams.fast)),
+    pdfOutputProvider.overrideWith((ref) => lastPdfOutput = FakePdfOutput()),
   ]);
   container.read(sessionProvider.notifier).unlocked(session);
   container.read(localeProvider.notifier).set(locale);

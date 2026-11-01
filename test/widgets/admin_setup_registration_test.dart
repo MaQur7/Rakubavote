@@ -86,7 +86,14 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('reg-save')));
     await settle(tester);
     expect(find.text('Saved. Voter No. 0001.'), findsOneWidget);
+    // The card print dialog opens; print the card (fake printer).
+    expect(find.text('Print voter cards'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('cards-print')));
+    await settle(tester);
+    await settle(tester);
+    expect(lastPdfOutput.printed.single, 'rakubavote-cards-0001');
     expect(find.text('0001'), findsOneWidget);
+    expect(find.text('Printed'), findsOneWidget);
 
     await tester.enterText(find.byKey(const ValueKey('reg-name')), 'Mary Akol Deng');
     await tester.enterText(find.byKey(const ValueKey('reg-group')), 'Juba');

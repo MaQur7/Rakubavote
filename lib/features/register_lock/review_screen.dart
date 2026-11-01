@@ -9,6 +9,7 @@ import '../../core/theme.dart';
 import '../../core/widgets/common.dart';
 import '../../l10n/app_localizations.dart';
 import '../common_errors.dart';
+import '../../printing/print_dialogs.dart';
 import '../registration/registration_service.dart';
 import 'review_service.dart';
 
@@ -859,12 +860,10 @@ class _LockCard extends ConsumerWidget {
                     ),
                   ),
                 const SizedBox(height: 12),
-                Tooltip(
-                  message: t.comingLater,
-                  child: OutlinedButton(
-                    onPressed: null,
-                    child: Text(t.printRegister),
-                  ),
+                OutlinedButton(
+                  key: const ValueKey('print-register'),
+                  onPressed: () => printRegister(context, ref),
+                  child: Text(t.printRegister),
                 ),
                 const SizedBox(height: 12),
                 _afterLocking(t),
@@ -881,12 +880,10 @@ class _LockCard extends ConsumerWidget {
                   ...common,
                   Text(t.lockText, style: const TextStyle(fontSize: 16)),
                   const SizedBox(height: 16),
-                  Tooltip(
-                    message: t.comingLater,
-                    child: OutlinedButton(
-                      onPressed: null,
-                      child: Text(t.printRegister),
-                    ),
+                  OutlinedButton(
+                    key: const ValueKey('print-register'),
+                    onPressed: () => printRegister(context, ref),
+                    child: Text(t.printRegister),
                   ),
                   const SizedBox(height: 12),
                   FilledButton(

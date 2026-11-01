@@ -100,6 +100,8 @@ class Voters extends Table {
   TextColumn get status => text().withDefault(const Constant('active'))();
   /// Registered without paying under the allow_flagged policy.
   BoolColumn get unpaidFlag => boolean().withDefault(const Constant(false))();
+  /// The card issue last printed (null: never printed). Not personal data.
+  IntColumn get cardPrintedIssue => integer().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -231,7 +233,7 @@ class RegistryDb extends _$RegistryDb {
   RegistryDb(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -240,6 +242,9 @@ class RegistryDb extends _$RegistryDb {
           for (final t in [...auditTriggers, ...registryTriggers]) {
             await customStatement(t);
           }
+        },
+        onUpgrade: (m, from, to) async {
+          if (from < 2) await m.addColumn(voters, voters.cardPrintedIssue);
         },
       );
 }

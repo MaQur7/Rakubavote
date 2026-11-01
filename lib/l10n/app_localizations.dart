@@ -2499,6 +2499,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Waiting for the laptop to approve. On the laptop, check that the device id is {id}.'**
   String waitingApproval(Object id);
+
+  /// No description provided for @cardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voter registration card'**
+  String get cardTitle;
+
+  /// No description provided for @cardFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get cardFullName;
+
+  /// No description provided for @cardVoterNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Voter No.'**
+  String get cardVoterNo;
+
+  /// No description provided for @cardFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee'**
+  String get cardFee;
+
+  /// No description provided for @cardRegisteredLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered {date} at {station}. Not transferable.'**
+  String cardRegisteredLine(Object date, Object station);
+
+  /// No description provided for @cardQrNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Voter No. + signature only. No personal data.'**
+  String get cardQrNote;
+
+  /// No description provided for @cardOfficialSignature.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration official: name and signature'**
+  String get cardOfficialSignature;
+
+  /// No description provided for @cardOfficialSeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Official seal'**
+  String get cardOfficialSeal;
+
+  /// No description provided for @feePaidReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid · {receipt}'**
+  String feePaidReceipt(Object receipt);
+
+  /// No description provided for @printCardsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Print voter cards'**
+  String get printCardsTitle;
+
+  /// No description provided for @cardLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Card size'**
+  String get cardLayout;
+
+  /// No description provided for @cardLayoutIdA4.
+  ///
+  /// In en, this message translates to:
+  /// **'ID cards on A4 paper (10 per page, cut out)'**
+  String get cardLayoutIdA4;
+
+  /// No description provided for @cardLayoutIdSingle.
+  ///
+  /// In en, this message translates to:
+  /// **'One ID card per page (card printer)'**
+  String get cardLayoutIdSingle;
+
+  /// No description provided for @cardLayoutA6.
+  ///
+  /// In en, this message translates to:
+  /// **'A6 card (larger)'**
+  String get cardLayoutA6;
+
+  /// No description provided for @printButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Print'**
+  String get printButton;
+
+  /// No description provided for @savePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Save PDF'**
+  String get savePdf;
+
+  /// No description provided for @pdfSavedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF saved in {path}'**
+  String pdfSavedIn(Object path);
+
+  /// No description provided for @cardPrinted.
+  ///
+  /// In en, this message translates to:
+  /// **'Printed'**
+  String get cardPrinted;
+
+  /// No description provided for @cardNeedsReprint.
+  ///
+  /// In en, this message translates to:
+  /// **'New card to print'**
+  String get cardNeedsReprint;
+
+  /// No description provided for @printUnprinted.
+  ///
+  /// In en, this message translates to:
+  /// **'Print cards not yet printed ({count})'**
+  String printUnprinted(Object count);
+
+  /// No description provided for @noCardsToPrint.
+  ///
+  /// In en, this message translates to:
+  /// **'All cards are printed.'**
+  String get noCardsToPrint;
+
+  /// No description provided for @printCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Print card'**
+  String get printCard;
+
+  /// No description provided for @replaceCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace lost card'**
+  String get replaceCard;
+
+  /// No description provided for @replaceReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Why is a new card needed?'**
+  String get replaceReason;
+
+  /// No description provided for @replaceReasonLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Card lost'**
+  String get replaceReasonLost;
+
+  /// No description provided for @replaceReasonDamaged.
+  ///
+  /// In en, this message translates to:
+  /// **'Card damaged'**
+  String get replaceReasonDamaged;
+
+  /// No description provided for @replaceCardDone.
+  ///
+  /// In en, this message translates to:
+  /// **'New card issued. The old card no longer works.'**
+  String get replaceCardDone;
+
+  /// No description provided for @cardIssueLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Card issue: {issue}'**
+  String cardIssueLine(Object issue);
+
+  /// No description provided for @voterDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Voter {number}'**
+  String voterDetails(Object number);
+
+  /// No description provided for @registerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voter register'**
+  String get registerTitle;
+
+  /// No description provided for @registerDraftNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft: the register is not locked yet.'**
+  String get registerDraftNote;
+
+  /// No description provided for @registerLockedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked register. Fingerprint: {code}'**
+  String registerLockedNote(Object code);
+
+  /// No description provided for @printedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Printed {date}'**
+  String printedOn(Object date);
+
+  /// No description provided for @pageOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {page} of {pages}'**
+  String pageOf(Object page, Object pages);
+
+  /// No description provided for @registerTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} voters'**
+  String registerTotal(Object count);
+
+  /// No description provided for @printRegisterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Print the register'**
+  String get printRegisterTitle;
+
+  /// No description provided for @printRegisterNote.
+  ///
+  /// In en, this message translates to:
+  /// **'For the notice board and as a backup for manual check-in. Names, numbers, IDs and groups only: no photos and no fee details.'**
+  String get printRegisterNote;
 }
 
 class _AppLocalizationsDelegate

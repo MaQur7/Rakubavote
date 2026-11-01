@@ -8,6 +8,8 @@ import '../core/db/ballot_box_repository.dart';
 import '../features/checkin/checkin_backend.dart';
 import '../features/checkin/checkin_service.dart';
 import '../features/results/results_service.dart';
+import '../printing/card_service.dart';
+import '../printing/pdf_output.dart';
 import '../station/booth_link.dart';
 import '../station/station_client.dart';
 import '../station/station_server.dart';
@@ -164,3 +166,11 @@ final boothLinkProvider = Provider<BoothLink?>((ref) {
   ref.onDispose(link.stop);
   return link;
 });
+
+final cardServiceProvider = Provider<CardService>((ref) {
+  final s = _requireSession(ref);
+  return CardService(s.registry!, s.keys);
+});
+
+/// Print dialog or file; replaced in tests.
+final pdfOutputProvider = Provider<PdfOutput>((ref) => SystemPdfOutput());

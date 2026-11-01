@@ -71,20 +71,29 @@ You do not need internet at the polling station. Download the files once, before
    ID and group.
 2. If there is a fee, tick **Paid** and type the receipt number.
 3. If a yellow **Possible duplicate** box appears, check the other voter before saving.
-4. Press **Save and print voter card**. The voter number is given automatically.
-   (Card printing is added in a later update.)
-5. **Import list (CSV):** for a list such as party delegates. The first row must have a
+4. Press **Save and print voter card**. The voter number is given automatically and the print
+   window opens. Choose the card size:
+   - **ID cards on A4 paper** (10 per page, cut them out) for an ordinary printer,
+   - **One ID card per page** for a card printer,
+   - **A6 card** for a larger card.
+   Press **Print**, or **Save PDF** to print elsewhere. Sign the card and stamp it with the seal
+   before giving it to the voter.
+5. **Print cards not yet printed** prints every card still waiting, in one go.
+6. **Lost or damaged card:** tap the voter in the list, press **Replace lost card**, choose the
+   reason, then **Print card**. The old card stops working at check-in.
+7. **Import list (CSV):** for a list such as party delegates. The first row must have a
    `full_name` column; it may also have `member_id`, `group`, `fee_paid`, `currency` and
    `receipt_no`. The app tells you which lines it skipped and why.
-6. **Fee summary** shows totals by currency and by official.
-7. **Back up to USB** at the end of each day: choose the USB drive. The backup is encrypted
+8. **Fee summary** shows totals by currency and by official.
+9. **Back up to USB** at the end of each day: choose the USB drive. The backup is encrypted
    and needs the officer PIN to open.
 
 ### Phase 3: Public review and lock (tab "3 Review and lock")
 
 1. Press **Set dates** and choose the first and last day the register is posted for the public.
-2. Post the printed register on the notice board. (Printing is added in a later update; until
-   then use the Registration list.)
+2. Press **Print register for notice board** (or **Save PDF**) and post it. It lists voter
+   numbers, names, IDs and groups only. Keep a printed copy at the check-in desk as a backup for
+   manual check-in; after locking, print it again so it shows the fingerprint code.
 3. When someone objects, press **Record an objection** and choose:
    - **Possible duplicate:** type both voter numbers.
    - **Missing name:** type the name of the person who says they registered.
@@ -171,7 +180,7 @@ accept new codes until it is back; votes already recorded are safe.
 | 4 | Check-in and voting codes | Done |
 | 5 | Voting booth screens | Done |
 | 6 | Station network, closing and results | Done |
-| 7 | Printing voter registration cards | Planned |
+| 7 | Printing voter registration cards and the register PDF | Done |
 | 8 | Tablet kiosk mode and release packages | Planned |
 
 ## For developers

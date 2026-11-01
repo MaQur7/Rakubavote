@@ -2511,6 +2511,17 @@ class $VotersTable extends Voters with TableInfo<$VotersTable, Voter> {
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _cardPrintedIssueMeta = const VerificationMeta(
+    'cardPrintedIssue',
+  );
+  @override
+  late final GeneratedColumn<int> cardPrintedIssue = GeneratedColumn<int>(
+    'card_printed_issue',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2525,6 +2536,7 @@ class $VotersTable extends Voters with TableInfo<$VotersTable, Voter> {
     registeredBy,
     status,
     unpaidFlag,
+    cardPrintedIssue,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2625,6 +2637,15 @@ class $VotersTable extends Voters with TableInfo<$VotersTable, Voter> {
         unpaidFlag.isAcceptableOrUnknown(data['unpaid_flag']!, _unpaidFlagMeta),
       );
     }
+    if (data.containsKey('card_printed_issue')) {
+      context.handle(
+        _cardPrintedIssueMeta,
+        cardPrintedIssue.isAcceptableOrUnknown(
+          data['card_printed_issue']!,
+          _cardPrintedIssueMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -2686,6 +2707,10 @@ class $VotersTable extends Voters with TableInfo<$VotersTable, Voter> {
         DriftSqlType.bool,
         data['${effectivePrefix}unpaid_flag'],
       )!,
+      cardPrintedIssue: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}card_printed_issue'],
+      ),
     );
   }
 
@@ -2716,6 +2741,9 @@ class Voter extends DataClass implements Insertable<Voter> {
 
   /// Registered without paying under the allow_flagged policy.
   final bool unpaidFlag;
+
+  /// The card issue last printed (null: never printed). Not personal data.
+  final int? cardPrintedIssue;
   const Voter({
     required this.id,
     required this.electionId,
@@ -2729,6 +2757,7 @@ class Voter extends DataClass implements Insertable<Voter> {
     required this.registeredBy,
     required this.status,
     required this.unpaidFlag,
+    this.cardPrintedIssue,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2747,6 +2776,9 @@ class Voter extends DataClass implements Insertable<Voter> {
     map['registered_by'] = Variable<String>(registeredBy);
     map['status'] = Variable<String>(status);
     map['unpaid_flag'] = Variable<bool>(unpaidFlag);
+    if (!nullToAbsent || cardPrintedIssue != null) {
+      map['card_printed_issue'] = Variable<int>(cardPrintedIssue);
+    }
     return map;
   }
 
@@ -2766,6 +2798,9 @@ class Voter extends DataClass implements Insertable<Voter> {
       registeredBy: Value(registeredBy),
       status: Value(status),
       unpaidFlag: Value(unpaidFlag),
+      cardPrintedIssue: cardPrintedIssue == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cardPrintedIssue),
     );
   }
 
@@ -2787,6 +2822,7 @@ class Voter extends DataClass implements Insertable<Voter> {
       registeredBy: serializer.fromJson<String>(json['registeredBy']),
       status: serializer.fromJson<String>(json['status']),
       unpaidFlag: serializer.fromJson<bool>(json['unpaidFlag']),
+      cardPrintedIssue: serializer.fromJson<int?>(json['cardPrintedIssue']),
     );
   }
   @override
@@ -2805,6 +2841,7 @@ class Voter extends DataClass implements Insertable<Voter> {
       'registeredBy': serializer.toJson<String>(registeredBy),
       'status': serializer.toJson<String>(status),
       'unpaidFlag': serializer.toJson<bool>(unpaidFlag),
+      'cardPrintedIssue': serializer.toJson<int?>(cardPrintedIssue),
     };
   }
 
@@ -2821,6 +2858,7 @@ class Voter extends DataClass implements Insertable<Voter> {
     String? registeredBy,
     String? status,
     bool? unpaidFlag,
+    Value<int?> cardPrintedIssue = const Value.absent(),
   }) => Voter(
     id: id ?? this.id,
     electionId: electionId ?? this.electionId,
@@ -2834,6 +2872,9 @@ class Voter extends DataClass implements Insertable<Voter> {
     registeredBy: registeredBy ?? this.registeredBy,
     status: status ?? this.status,
     unpaidFlag: unpaidFlag ?? this.unpaidFlag,
+    cardPrintedIssue: cardPrintedIssue.present
+        ? cardPrintedIssue.value
+        : this.cardPrintedIssue,
   );
   Voter copyWithCompanion(VotersCompanion data) {
     return Voter(
@@ -2857,6 +2898,9 @@ class Voter extends DataClass implements Insertable<Voter> {
       unpaidFlag: data.unpaidFlag.present
           ? data.unpaidFlag.value
           : this.unpaidFlag,
+      cardPrintedIssue: data.cardPrintedIssue.present
+          ? data.cardPrintedIssue.value
+          : this.cardPrintedIssue,
     );
   }
 
@@ -2874,7 +2918,8 @@ class Voter extends DataClass implements Insertable<Voter> {
           ..write('registeredOn: $registeredOn, ')
           ..write('registeredBy: $registeredBy, ')
           ..write('status: $status, ')
-          ..write('unpaidFlag: $unpaidFlag')
+          ..write('unpaidFlag: $unpaidFlag, ')
+          ..write('cardPrintedIssue: $cardPrintedIssue')
           ..write(')'))
         .toString();
   }
@@ -2893,6 +2938,7 @@ class Voter extends DataClass implements Insertable<Voter> {
     registeredBy,
     status,
     unpaidFlag,
+    cardPrintedIssue,
   );
   @override
   bool operator ==(Object other) =>
@@ -2909,7 +2955,8 @@ class Voter extends DataClass implements Insertable<Voter> {
           other.registeredOn == this.registeredOn &&
           other.registeredBy == this.registeredBy &&
           other.status == this.status &&
-          other.unpaidFlag == this.unpaidFlag);
+          other.unpaidFlag == this.unpaidFlag &&
+          other.cardPrintedIssue == this.cardPrintedIssue);
 }
 
 class VotersCompanion extends UpdateCompanion<Voter> {
@@ -2925,6 +2972,7 @@ class VotersCompanion extends UpdateCompanion<Voter> {
   final Value<String> registeredBy;
   final Value<String> status;
   final Value<bool> unpaidFlag;
+  final Value<int?> cardPrintedIssue;
   final Value<int> rowid;
   const VotersCompanion({
     this.id = const Value.absent(),
@@ -2939,6 +2987,7 @@ class VotersCompanion extends UpdateCompanion<Voter> {
     this.registeredBy = const Value.absent(),
     this.status = const Value.absent(),
     this.unpaidFlag = const Value.absent(),
+    this.cardPrintedIssue = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   VotersCompanion.insert({
@@ -2954,6 +3003,7 @@ class VotersCompanion extends UpdateCompanion<Voter> {
     required String registeredBy,
     this.status = const Value.absent(),
     this.unpaidFlag = const Value.absent(),
+    this.cardPrintedIssue = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        electionId = Value(electionId),
@@ -2974,6 +3024,7 @@ class VotersCompanion extends UpdateCompanion<Voter> {
     Expression<String>? registeredBy,
     Expression<String>? status,
     Expression<bool>? unpaidFlag,
+    Expression<int>? cardPrintedIssue,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2989,6 +3040,7 @@ class VotersCompanion extends UpdateCompanion<Voter> {
       if (registeredBy != null) 'registered_by': registeredBy,
       if (status != null) 'status': status,
       if (unpaidFlag != null) 'unpaid_flag': unpaidFlag,
+      if (cardPrintedIssue != null) 'card_printed_issue': cardPrintedIssue,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3006,6 +3058,7 @@ class VotersCompanion extends UpdateCompanion<Voter> {
     Value<String>? registeredBy,
     Value<String>? status,
     Value<bool>? unpaidFlag,
+    Value<int?>? cardPrintedIssue,
     Value<int>? rowid,
   }) {
     return VotersCompanion(
@@ -3021,6 +3074,7 @@ class VotersCompanion extends UpdateCompanion<Voter> {
       registeredBy: registeredBy ?? this.registeredBy,
       status: status ?? this.status,
       unpaidFlag: unpaidFlag ?? this.unpaidFlag,
+      cardPrintedIssue: cardPrintedIssue ?? this.cardPrintedIssue,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3064,6 +3118,9 @@ class VotersCompanion extends UpdateCompanion<Voter> {
     if (unpaidFlag.present) {
       map['unpaid_flag'] = Variable<bool>(unpaidFlag.value);
     }
+    if (cardPrintedIssue.present) {
+      map['card_printed_issue'] = Variable<int>(cardPrintedIssue.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3085,6 +3142,7 @@ class VotersCompanion extends UpdateCompanion<Voter> {
           ..write('registeredBy: $registeredBy, ')
           ..write('status: $status, ')
           ..write('unpaidFlag: $unpaidFlag, ')
+          ..write('cardPrintedIssue: $cardPrintedIssue, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -8941,6 +8999,7 @@ typedef $$VotersTableCreateCompanionBuilder = VotersCompanion Function({
   required String registeredBy,
   Value<String> status,
   Value<bool> unpaidFlag,
+  Value<int?> cardPrintedIssue,
   Value<int> rowid,
 });
 typedef $$VotersTableUpdateCompanionBuilder = VotersCompanion Function({
@@ -8956,6 +9015,7 @@ typedef $$VotersTableUpdateCompanionBuilder = VotersCompanion Function({
   Value<String> registeredBy,
   Value<String> status,
   Value<bool> unpaidFlag,
+  Value<int?> cardPrintedIssue,
   Value<int> rowid,
 });
 
@@ -9078,6 +9138,11 @@ class $$VotersTableFilterComposer extends Composer<_$RegistryDb, $VotersTable> {
 
   ColumnFilters<bool> get unpaidFlag => $composableBuilder(
     column: $table.unpaidFlag,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get cardPrintedIssue => $composableBuilder(
+    column: $table.cardPrintedIssue,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -9219,6 +9284,11 @@ class $$VotersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get cardPrintedIssue => $composableBuilder(
+    column: $table.cardPrintedIssue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$ElectionsTableOrderingComposer get electionId {
     final $$ElectionsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -9288,6 +9358,11 @@ class $$VotersTableAnnotationComposer
 
   GeneratedColumn<bool> get unpaidFlag => $composableBuilder(
     column: $table.unpaidFlag,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get cardPrintedIssue => $composableBuilder(
+    column: $table.cardPrintedIssue,
     builder: (column) => column,
   );
 
@@ -9409,6 +9484,7 @@ class $$VotersTableTableManager
                 Value<String> registeredBy = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<bool> unpaidFlag = const Value.absent(),
+                Value<int?> cardPrintedIssue = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => VotersCompanion(
                 id: id,
@@ -9423,6 +9499,7 @@ class $$VotersTableTableManager
                 registeredBy: registeredBy,
                 status: status,
                 unpaidFlag: unpaidFlag,
+                cardPrintedIssue: cardPrintedIssue,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -9439,6 +9516,7 @@ class $$VotersTableTableManager
                 required String registeredBy,
                 Value<String> status = const Value.absent(),
                 Value<bool> unpaidFlag = const Value.absent(),
+                Value<int?> cardPrintedIssue = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => VotersCompanion.insert(
                 id: id,
@@ -9453,6 +9531,7 @@ class $$VotersTableTableManager
                 registeredBy: registeredBy,
                 status: status,
                 unpaidFlag: unpaidFlag,
+                cardPrintedIssue: cardPrintedIssue,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

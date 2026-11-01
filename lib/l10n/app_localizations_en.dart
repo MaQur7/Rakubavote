@@ -1405,4 +1405,138 @@ class AppLocalizationsEn extends AppLocalizations {
   String waitingApproval(Object id) {
     return 'Waiting for the laptop to approve. On the laptop, check that the device id is $id.';
   }
+
+  @override
+  String get cardTitle => 'Voter registration card';
+
+  @override
+  String get cardFullName => 'Full name';
+
+  @override
+  String get cardVoterNo => 'Voter No.';
+
+  @override
+  String get cardFee => 'Fee';
+
+  @override
+  String cardRegisteredLine(Object date, Object station) {
+    return 'Registered $date at $station. Not transferable.';
+  }
+
+  @override
+  String get cardQrNote => 'Voter No. + signature only. No personal data.';
+
+  @override
+  String get cardOfficialSignature =>
+      'Registration official: name and signature';
+
+  @override
+  String get cardOfficialSeal => 'Official seal';
+
+  @override
+  String feePaidReceipt(Object receipt) {
+    return 'Paid · $receipt';
+  }
+
+  @override
+  String get printCardsTitle => 'Print voter cards';
+
+  @override
+  String get cardLayout => 'Card size';
+
+  @override
+  String get cardLayoutIdA4 => 'ID cards on A4 paper (10 per page, cut out)';
+
+  @override
+  String get cardLayoutIdSingle => 'One ID card per page (card printer)';
+
+  @override
+  String get cardLayoutA6 => 'A6 card (larger)';
+
+  @override
+  String get printButton => 'Print';
+
+  @override
+  String get savePdf => 'Save PDF';
+
+  @override
+  String pdfSavedIn(Object path) {
+    return 'PDF saved in $path';
+  }
+
+  @override
+  String get cardPrinted => 'Printed';
+
+  @override
+  String get cardNeedsReprint => 'New card to print';
+
+  @override
+  String printUnprinted(Object count) {
+    return 'Print cards not yet printed ($count)';
+  }
+
+  @override
+  String get noCardsToPrint => 'All cards are printed.';
+
+  @override
+  String get printCard => 'Print card';
+
+  @override
+  String get replaceCard => 'Replace lost card';
+
+  @override
+  String get replaceReason => 'Why is a new card needed?';
+
+  @override
+  String get replaceReasonLost => 'Card lost';
+
+  @override
+  String get replaceReasonDamaged => 'Card damaged';
+
+  @override
+  String get replaceCardDone =>
+      'New card issued. The old card no longer works.';
+
+  @override
+  String cardIssueLine(Object issue) {
+    return 'Card issue: $issue';
+  }
+
+  @override
+  String voterDetails(Object number) {
+    return 'Voter $number';
+  }
+
+  @override
+  String get registerTitle => 'Voter register';
+
+  @override
+  String get registerDraftNote => 'Draft: the register is not locked yet.';
+
+  @override
+  String registerLockedNote(Object code) {
+    return 'Locked register. Fingerprint: $code';
+  }
+
+  @override
+  String printedOn(Object date) {
+    return 'Printed $date';
+  }
+
+  @override
+  String pageOf(Object page, Object pages) {
+    return 'Page $page of $pages';
+  }
+
+  @override
+  String registerTotal(Object count) {
+    return '$count voters';
+  }
+
+  @override
+  String get printRegisterTitle => 'Print the register';
+
+  @override
+  String get printRegisterNote =>
+      'For the notice board and as a backup for manual check-in. Names, numbers, IDs and groups only: no photos and no fee details.';
 }

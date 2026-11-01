@@ -1386,4 +1386,138 @@ class AppLocalizationsAr extends AppLocalizations {
   String waitingApproval(Object id) {
     return 'في انتظار موافقة الحاسوب. تحقق على الحاسوب أن معرّف الجهاز هو $id.';
   }
+
+  @override
+  String get cardTitle => 'بطاقة تسجيل الناخب';
+
+  @override
+  String get cardFullName => 'الاسم الكامل';
+
+  @override
+  String get cardVoterNo => 'رقم الناخب';
+
+  @override
+  String get cardFee => 'الرسوم';
+
+  @override
+  String cardRegisteredLine(Object date, Object station) {
+    return 'سُجل في $date في $station. غير قابلة للتحويل.';
+  }
+
+  @override
+  String get cardQrNote => 'رقم الناخب + التوقيع فقط. لا بيانات شخصية.';
+
+  @override
+  String get cardOfficialSignature => 'مسؤول التسجيل: الاسم والتوقيع';
+
+  @override
+  String get cardOfficialSeal => 'الختم الرسمي';
+
+  @override
+  String feePaidReceipt(Object receipt) {
+    return 'مدفوع · $receipt';
+  }
+
+  @override
+  String get printCardsTitle => 'طباعة بطاقات الناخبين';
+
+  @override
+  String get cardLayout => 'حجم البطاقة';
+
+  @override
+  String get cardLayoutIdA4 =>
+      'بطاقات بحجم الهوية على ورق A4 (10 في الصفحة، تُقص)';
+
+  @override
+  String get cardLayoutIdSingle => 'بطاقة هوية واحدة في الصفحة (طابعة بطاقات)';
+
+  @override
+  String get cardLayoutA6 => 'بطاقة A6 (أكبر)';
+
+  @override
+  String get printButton => 'طباعة';
+
+  @override
+  String get savePdf => 'حفظ PDF';
+
+  @override
+  String pdfSavedIn(Object path) {
+    return 'تم حفظ PDF في $path';
+  }
+
+  @override
+  String get cardPrinted => 'مطبوعة';
+
+  @override
+  String get cardNeedsReprint => 'بطاقة جديدة للطباعة';
+
+  @override
+  String printUnprinted(Object count) {
+    return 'طباعة البطاقات غير المطبوعة ($count)';
+  }
+
+  @override
+  String get noCardsToPrint => 'كل البطاقات مطبوعة.';
+
+  @override
+  String get printCard => 'طباعة البطاقة';
+
+  @override
+  String get replaceCard => 'استبدال بطاقة مفقودة';
+
+  @override
+  String get replaceReason => 'لماذا تحتاج بطاقة جديدة؟';
+
+  @override
+  String get replaceReasonLost => 'البطاقة مفقودة';
+
+  @override
+  String get replaceReasonDamaged => 'البطاقة تالفة';
+
+  @override
+  String get replaceCardDone =>
+      'صدرت بطاقة جديدة. البطاقة القديمة لم تعد تعمل.';
+
+  @override
+  String cardIssueLine(Object issue) {
+    return 'إصدار البطاقة: $issue';
+  }
+
+  @override
+  String voterDetails(Object number) {
+    return 'الناخب $number';
+  }
+
+  @override
+  String get registerTitle => 'سجل الناخبين';
+
+  @override
+  String get registerDraftNote => 'مسودة: السجل غير مقفل بعد.';
+
+  @override
+  String registerLockedNote(Object code) {
+    return 'سجل مقفل. البصمة: $code';
+  }
+
+  @override
+  String printedOn(Object date) {
+    return 'طُبع في $date';
+  }
+
+  @override
+  String pageOf(Object page, Object pages) {
+    return 'صفحة $page من $pages';
+  }
+
+  @override
+  String registerTotal(Object count) {
+    return '$count ناخبًا';
+  }
+
+  @override
+  String get printRegisterTitle => 'طباعة السجل';
+
+  @override
+  String get printRegisterNote =>
+      'للوحة الإعلانات وكنسخة احتياطية للتحقق اليدوي. الأسماء والأرقام والهويات والمجموعات فقط: لا صور ولا تفاصيل رسوم.';
 }
