@@ -23,7 +23,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get modeAdminHint =>
-      'حاسوب محمول. إعداد الانتخاب وتسجيل الناخبين وإغلاق الاقتراع وطباعة النتائج.';
+      'حاسوب محمول. إعداد الانتخاب وتسجيل الناخبين وإغلاق الاقتراع وعرض النتائج.';
 
   @override
   String get modeCheckin => 'مكتب التحقق';
@@ -1530,4 +1530,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get poolModeOn => 'الرموز المحمّلة مسبقًا مستخدمة في هذا الكشك.';
+
+  @override
+  String get kioskFull =>
+      'قفل الكشك: كامل. لا يستطيع الناخبون مغادرة شاشة التصويت.';
+
+  @override
+  String get kioskPinningOnly =>
+      'قفل الكشك: تثبيت الشاشة فقط. اطلب من الفني إعداد هذا الجهاز ككشك مقفل (راجع الدليل).';
 }

@@ -11,6 +11,7 @@ import '../../core/theme.dart';
 import '../../core/widgets/common.dart';
 import '../../l10n/app_localizations.dart';
 import '../../platform/beep.dart';
+import '../../platform/kiosk.dart';
 import '../../station/ballot_package.dart';
 import '../../station/booth_link.dart';
 import '../../station/enrollment.dart';
@@ -105,6 +106,8 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
 
   Future<void> _start() async {
     final controller = BoothController(_repo);
+    await Kiosk.enter();
+    if (!mounted) return;
     await Navigator.of(context).push(MaterialPageRoute<void>(
       fullscreenDialog: true,
       builder: (c) => PopScope(
@@ -119,6 +122,7 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
         ),
       ),
     ));
+    await Kiosk.exit();
     await _refresh();
   }
 
@@ -263,6 +267,16 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
             ),
             _linkCard(t),
             _poolCard(t),
+            if (signed != null && Kiosk.supported)
+              FutureBuilder<bool>(
+                future: Kiosk.fullLockAvailable(),
+                builder: (context, s) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Text(s.data == true ? t.kioskFull : t.kioskPinningOnly,
+                      style: TextStyle(
+                          fontSize: 15, color: s.data == true ? RakubaColors.acaciaGreen : RakubaColors.clay)),
+                ),
+              ),
             if (signed != null) ...[
               NoticeBox(child: Text(t.codesNote)),
               const SizedBox(height: 16),

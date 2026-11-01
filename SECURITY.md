@@ -136,6 +136,13 @@ travel only over the paired, encrypted station network. USB is used only to take
   laptop locked and the PIN secret, and investigate any such report.
 - A code used at two booths that were both offline is reported the same way.
 
+## Booth lock (kiosk)
+
+Booth tablets run in Android lock-task mode. When the app is set as the tablet's device owner
+(README), voters cannot reach the home screen, other apps, settings or notifications. The booth
+leaves the lock only after an officer's long press and the officer PIN. Without device owner,
+Android's screen pinning is used and the booth panel warns that the lock is weaker.
+
 ## Network
 
 ### What the laptop learns on election day
@@ -151,6 +158,8 @@ day, that booth's batch reveals their choice; place booths so several voters use
   hotspot with mobile data off.
 - Online upload (Supabase) is **not built** and is off by default; it will only be added
   with the project lead's approval.
+- The station server is plain HTTP on the local hotspot (Android is told to allow this); this does
+  not weaken security, because every message is encrypted and signed by the app itself.
 - Tablets pair with the laptop using a short-lived code and the officer's approval after
   comparing device ids. Every message after that is signed (Ed25519) and encrypted (AES-GCM, key
   from X25519) per device, with replay protection (see `docs/protocol.md`).

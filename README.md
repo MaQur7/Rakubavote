@@ -6,9 +6,10 @@ Rakubavote is a free, open-source voting kit for schools, community associations
 bodies in South Sudan. One laptop and a few tablets register voters, check them in, record
 secret votes and print a count everyone can check — **with no internet**.
 
-> **Status: under construction.** The app is being built in milestones (see
+> **Status: pilot version 0.9.** All parts of the app are built (see
 > [Project status](#project-status)). Do not use it for a real election until the independent
-> code review described in the [concept note](docs/concept-note.md) has been done.
+> code review described in the [concept note](docs/concept-note.md) has been done, and run a
+> mock election first.
 
 ## What you need
 
@@ -27,7 +28,8 @@ You do not need internet at the polling station. Download the files once, before
 
 1. Open the [Releases page](../../releases) and download:
    - `rakubavote-windows-x64.zip` or `rakubavote-linux-x64.tar.gz` for the laptop
-   - `rakubavote-android-apk` for each tablet
+   - `rakubavote-android.apk` for each tablet
+   - `SHA256SUMS.txt`, to check the files were not changed (ask a technician to compare)
 2. **Laptop (Windows):** unzip the file into a folder, open the folder and double-click
    `rakubavote.exe`.
 3. **Laptop (Ubuntu):** extract the file into a folder, open the folder and double-click
@@ -36,6 +38,23 @@ You do not need internet at the polling station. Download the files once, before
    tap *Install*. If Android asks, allow installing from this source.
 5. Open Rakubavote and choose what the device will be used for: *Station admin*,
    *Check-in desk* or *Voting booth*.
+6. **Windows:** the first time you start the station network, Windows asks whether Rakubavote
+   may use the network. Tick **Private networks** and press **Allow**.
+
+### Lock the booth tablets (once, by a technician)
+
+So that voters cannot leave the voting screen, set each booth tablet up as a locked booth:
+
+1. Reset the tablet to factory settings. During setup, **skip adding a Google account**.
+2. Install the APK (step 4 above).
+3. On the tablet turn on *Developer options* and *USB debugging*. Connect it to a computer with
+   Android's `adb` tool and run:
+   `adb shell dpm set-device-owner org.rakubavote.rakubavote/.KioskAdminReceiver`
+4. Open Rakubavote: the booth panel says **Booth lock: full**.
+
+Without this step the booth uses Android's screen pinning, which is weaker; the booth panel
+then shows a warning. After the election, reset the tablet to factory settings to use it
+normally again.
 
 ### First start on the laptop
 
@@ -143,8 +162,9 @@ each screen, checks the choices, presses **Confirm my vote**, hears a long beep 
 
 ### Connect the tablets to the laptop (before polls open)
 
-1. Turn on the laptop's Wi-Fi hotspot (or a phone hotspot). **No internet is needed**; mobile
-   data can be switched off. Join all tablets to that Wi-Fi network.
+1. Turn on a Wi-Fi hotspot: the laptop's own hotspot, or a phone hotspot with **mobile data
+   switched off**. No internet is needed. (Some Windows laptops will not start a hotspot without
+   internet; then use a phone.) Join the laptop, if needed, and all tablets to that Wi-Fi.
 2. On the laptop, press the **Devices** icon in the top bar, then **Start the station network**
    and **Show pairing code**.
 3. On each tablet, choose **Connect to the laptop**. Scan the laptop's QR code, or type the
@@ -189,7 +209,7 @@ all booths are connected. Then, if the Wi-Fi fails during the day:
 | 5 | Voting booth screens | Done |
 | 6 | Station network, closing and results | Done |
 | 7 | Printing voter registration cards and the register PDF | Done |
-| 8 | Tablet kiosk mode and release packages | Planned |
+| 8 | Tablet kiosk mode and release packages | Done |
 
 ## For developers
 
@@ -202,6 +222,11 @@ dart run build_runner build --delete-conflicting-outputs
 flutter test
 flutter run -d linux   # or windows, or an Android device id
 ```
+
+Publishing a release: push a tag such as `v0.9.0`; GitHub Actions builds the three apps and
+attaches them, with checksums, to a GitHub Release. To sign the APK with a release key, add the
+repository secrets `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`
+and `ANDROID_KEY_PASSWORD` (keep the keystore safe: updates must use the same key).
 
 ## License
 

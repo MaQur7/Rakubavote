@@ -127,7 +127,7 @@ abstract class AppLocalizations {
   /// No description provided for @modeAdminHint.
   ///
   /// In en, this message translates to:
-  /// **'Laptop. Set up the election, register voters, close the polls and print results.'**
+  /// **'Laptop. Set up the election, register voters, close the polls and show the results.'**
   String get modeAdminHint;
 
   /// No description provided for @modeCheckin.
@@ -2739,6 +2739,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pre-loaded codes are in use on this booth.'**
   String get poolModeOn;
+
+  /// No description provided for @kioskFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Booth lock: full. Voters cannot leave the voting screen.'**
+  String get kioskFull;
+
+  /// No description provided for @kioskPinningOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Booth lock: screen pinning only. Ask the technician to set this tablet up as a locked booth (see the guide).'**
+  String get kioskPinningOnly;
 }
 
 class _AppLocalizationsDelegate

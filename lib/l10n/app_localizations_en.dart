@@ -23,7 +23,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get modeAdminHint =>
-      'Laptop. Set up the election, register voters, close the polls and print results.';
+      'Laptop. Set up the election, register voters, close the polls and show the results.';
 
   @override
   String get modeCheckin => 'Check-in desk';
@@ -1549,4 +1549,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get poolModeOn => 'Pre-loaded codes are in use on this booth.';
+
+  @override
+  String get kioskFull =>
+      'Booth lock: full. Voters cannot leave the voting screen.';
+
+  @override
+  String get kioskPinningOnly =>
+      'Booth lock: screen pinning only. Ask the technician to set this tablet up as a locked booth (see the guide).';
 }

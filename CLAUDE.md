@@ -26,6 +26,7 @@ Station protocol: docs/protocol.md · Secrecy design: SECURITY.md
 - Run app: `flutter run -d <device>`
 - Build tablet APK: `flutter build apk --release`
 - Build laptop app: `flutter build windows` / `flutter build linux`
+- Release: push a tag `v*` (CI attaches APK, Windows zip, Linux tarball and checksums).
 - In the cloud dev container Flutter lives at /opt/flutter/bin (add to PATH).
 
 ## Structure
@@ -34,7 +35,7 @@ Station protocol: docs/protocol.md · Secrecy design: SECURITY.md
 - lib/features/{device_setup,setup,registration,register_lock,checkin,booth,results}/
 - lib/station/ local server, client, protocol, USB bundles, multi-part QR
 - lib/printing/ voter registration cards (only printed item, D18)
-- lib/platform/ kiosk (Android lock task), camera
+- lib/platform/ kiosk (Android lock task, MainActivity.kt channel), camera, QR scan, beep
 - test/ unit + integration (incl. 500-voter simulation and secrecy tests); widget tests use
   test/support/app_harness.dart (end each with `finish()`; drift needs real-time pumps via `settle()`)
 

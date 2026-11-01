@@ -43,11 +43,27 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
+      - name: Release signing key (only if the repository secrets are set)
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        if: ${{ env.KEYSTORE_BASE64 != '' }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > android/release.jks
+          cat > android/key.properties <<EOF
+          storeFile=release.jks
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=$KEY_ALIAS
+          keyPassword=$KEY_PASSWORD
+          EOF
       - run: flutter build apk --release
+      - run: cp build/app/outputs/flutter-apk/app-release.apk rakubavote-android.apk
       - uses: actions/upload-artifact@v4
         with:
           name: rakubavote-android-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: rakubavote-android.apk
 
   linux:
     needs: test
@@ -66,6 +82,8 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter build linux --release
+      - name: Add icon and launcher
+        run: cp linux/rakubavote.png linux/rakubavote.desktop build/linux/x64/release/bundle/
       - run: tar -czf rakubavote-linux-x64.tar.gz -C build/linux/x64/release/bundle .
       - uses: actions/upload-artifact@v4
         with:
@@ -89,3 +107,25 @@ jobs:
         with:
           name: rakubavote-windows-x64
           path: rakubavote-windows-x64.zip
+
+  release:
+    # Push a tag such as v0.9.0 to publish the three builds on GitHub Releases.
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [android, linux, windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Checksums
+        run: cd dist && sha256sum * > SHA256SUMS.txt
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
+          body: |
+            Offline voting kit. Install by USB: see the README.
+            Check downloads against SHA256SUMS.txt.

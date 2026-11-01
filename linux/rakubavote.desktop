@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Rakubavote
+Comment=Offline voting for schools, associations and party bodies
+Exec=rakubavote
+Icon=rakubavote
+Categories=Office;
+Terminal=false

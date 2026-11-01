@@ -7,7 +7,7 @@
   "tagline": "Your vote, in the open.",
   "chooseDeviceMode": "What will this device be used for?",
   "modeAdmin": "Station admin",
-  "modeAdminHint": "Laptop. Set up the election, register voters, close the polls and print results.",
+  "modeAdminHint": "Laptop. Set up the election, register voters, close the polls and show the results.",
   "modeCheckin": "Check-in desk",
   "modeCheckinHint": "Laptop or tablet. Find voters and give each one a voting code.",
   "modeBooth": "Voting booth",
@@ -815,5 +815,7 @@
   "poolBoothNote": "Use only if this booth cannot reach the laptop. The officer PIN is needed, and the switch is recorded.",
   "poolStart": "Wi-Fi is down: use pre-loaded codes",
   "poolStop": "Wi-Fi is back: stop using pre-loaded codes",
-  "poolModeOn": "Pre-loaded codes are in use on this booth."
+  "poolModeOn": "Pre-loaded codes are in use on this booth.",
+  "kioskFull": "Booth lock: full. Voters cannot leave the voting screen.",
+  "kioskPinningOnly": "Booth lock: screen pinning only. Ask the technician to set this tablet up as a locked booth (see the guide)."
 }
