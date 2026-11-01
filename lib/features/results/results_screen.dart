@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -78,17 +77,6 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
     } finally {
       if (mounted) setState(() => _busy = false);
     }
-  }
-
-  Future<void> _importUsb() async {
-    final t = AppLocalizations.of(context);
-    final f = await FilePicker.pickFile();
-    if (f == null) return;
-    final text = f.path == null ? String.fromCharCodes(await f.readAsBytes()) : await File(f.path!).readAsString();
-    await _run(() async {
-      final b = await _svc.importBatch(text, official: ref.read(officialProvider));
-      if (mounted) showMessage(context, t.votesImported('${b.ballotCount}'));
-    });
   }
 
   Future<void> _show() async {
@@ -175,12 +163,6 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
             ),
           const SizedBox(height: 8),
           Wrap(spacing: 12, runSpacing: 12, children: [
-            OutlinedButton.icon(
-              key: const ValueKey('import-votes'),
-              icon: const Icon(Icons.usb),
-              label: Text(t.importVotesUsb),
-              onPressed: _busy ? null : _importUsb,
-            ),
             if (state == ElectionState.closed)
               FilledButton(
                 key: const ValueKey('show-results'),

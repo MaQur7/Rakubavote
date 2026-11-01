@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,7 +18,6 @@ import 'package:rakubavote/features/booth/booth_home.dart';
 import 'package:rakubavote/features/booth/booth_screen.dart';
 import 'package:rakubavote/l10n/app_localizations.dart';
 import 'package:rakubavote/platform/beep.dart';
-import 'package:rakubavote/station/ballot_package.dart';
 
 import '../support/app_harness.dart';
 import '../support/fixtures.dart';
@@ -163,25 +164,23 @@ void main() {
     await close(tester);
   });
 
-  testWidgets('officer loads a ballot file and sees the fingerprint to compare', (tester) async {
+  testWidgets('pool mode needs the officer PIN; the booth then accepts pool codes', (tester) async {
     useTablet(tester);
-    final keys = (await tester.runAsync(DeviceKeys.generate))!;
-    final secrets = DeviceSecrets.generate();
-    final boothKeys = (await tester.runAsync(() => DeviceKeys.fromSeeds(secrets.signingSeed, secrets.exchangeSeed)))!;
-    final session = DeviceSession(
-      info: DeviceInfo(mode: DeviceMode.booth, deviceId: boothKeys.deviceId),
-      keys: boothKeys,
-      secrets: secrets,
-      official: 'Booth officer',
-      ballotBox: memoryBallotBox(),
-    );
-    final signed = (await tester.runAsync(
-        () => SignedArtifact.sign(ArtifactKind.ballot, sampleBallot().toJson(), keys)))!;
-    final good = BallotPackage(signedBallot: signed, stationPublicKey: keys.signingPublic, media: const {}).encode();
-    final tampered = good.replaceFirst('Chairman', 'Chairperson');
-    var next = tampered;
+    final dir = (await tester.runAsync(() => Directory.systemTemp.createTemp('rkv-booth')))!;
+    final store = DeviceStore(dir, kdf: KdfParams.fast);
+    final session = (await tester.runAsync(() => store.setUp(mode: DeviceMode.booth, pin: '482913', official: 'Booth officer')))!;
+    final station = (await tester.runAsync(DeviceKeys.generate))!;
+    final repo = BallotBoxRepository(session.ballotBox!, session.keys);
+    final poolHash = VotingToken.tokenHash('e1', 'PQRSTU');
+    await tester.runAsync(() async {
+      final signed = await SignedArtifact.sign(ArtifactKind.ballot, sampleBallot().toJson(), station);
+      await repo.loadBallot(signed.encode(), stationPublicKey: station.signingPublic);
+      await repo.storePool([poolHash]);
+    });
+    expect(await tester.runAsync(() => repo.checkToken(poolHash)), CastFailure.codeNotActive,
+        reason: 'pool codes do nothing until pool mode is on');
 
-    final c = ProviderContainer();
+    final c = ProviderContainer(overrides: [deviceStoreProvider.overrideWith((ref) async => store)]);
     c.read(sessionProvider.notifier).unlocked(session);
     await tester.pumpWidget(UncontrolledProviderScope(
       container: c,
@@ -189,22 +188,35 @@ void main() {
         theme: buildRakubaTheme(arabic: false),
         localizationsDelegates: rakubaLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: BoothHome(pickPackage: () async => next),
+        home: const BoothHome(),
       ),
     ));
     await settle(tester);
-    expect(find.text('No ballot loaded yet.'), findsOneWidget);
+    expect(find.text('This booth holds 1 pre-loaded codes.'), findsOneWidget);
+    expect(find.textContaining('USB'), findsNothing, reason: 'no USB inputs on the booth');
 
-    await tester.tap(find.byKey(const ValueKey('load-ballot')));
+    await tester.tap(find.byKey(const ValueKey('pool-on')));
     await settle(tester);
-    expect(find.text("The ballot's signature does not check. Do not use this file."), findsOneWidget);
+    await tester.enterText(find.byKey(const ValueKey('leave-pin')), '000000');
+    await tester.tap(find.byKey(const ValueKey('leave-confirm')));
+    // Checking the PIN reads the vault (real time).
+    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 500)));
+    await settle(tester);
+    expect(find.byKey(const ValueKey('pool-mode-on')), findsNothing, reason: 'wrong PIN');
 
-    next = good;
-    await tester.tap(find.byKey(const ValueKey('load-ballot')));
+    await tester.tap(find.byKey(const ValueKey('pool-on')));
     await settle(tester);
-    expect(tester.widget<Text>(find.byKey(const ValueKey('booth-ballot-fingerprint'))).data, signed.fingerprint);
-    expect(find.text('Laptop: ${keys.deviceId}'), findsOneWidget);
-    expect(find.byKey(const ValueKey('start-booth')), findsOneWidget);
-    await finish(tester, session);
+    await tester.enterText(find.byKey(const ValueKey('leave-pin')), '482913');
+    await tester.tap(find.byKey(const ValueKey('leave-confirm')));
+    await pumpUntilFound(tester, find.byKey(const ValueKey('pool-mode-on')));
+    expect(find.text('Pre-loaded codes are in use on this booth.'), findsOneWidget);
+    expect(await tester.runAsync(() => repo.checkToken(poolHash)), isNull);
+    final log = (await tester.runAsync(() => repo.audit.entries()))!;
+    expect(log.last.action, 'token.pool_fallback');
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 1));
+    await tester.runAsync(session.close);
+    await tester.runAsync(() => dir.delete(recursive: true));
   });
 }

@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,7 +14,6 @@ import '../../platform/beep.dart';
 import '../../station/ballot_package.dart';
 import '../../station/booth_link.dart';
 import '../../station/enrollment.dart';
-import '../../platform/photo_capture.dart';
 import '../device_setup/pair_screen.dart';
 import 'booth_controller.dart';
 import 'booth_screen.dart';
@@ -39,10 +36,7 @@ String packageFailureText(AppLocalizations t, Object e) {
 /// Officer panel on a booth tablet: load the signed ballot, compare its
 /// fingerprint with the laptop, then start the voter screen.
 class BoothHome extends ConsumerStatefulWidget {
-  const BoothHome({super.key, this.pickPackage});
-
-  /// Returns the text of a ballot package file (overridable in tests).
-  final Future<String?> Function()? pickPackage;
+  const BoothHome({super.key});
 
   @override
   ConsumerState<BoothHome> createState() => _BoothHomeState();
@@ -91,49 +85,22 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
     await _refresh();
   }
 
-  Future<void> _saveVotesUsb() async {
-    final t = AppLocalizations.of(context);
-    final dir = await pickFolder();
-    if (dir == null) return;
-    final batch = await _repo.exportBatch();
-    final f = File('$dir/rakubavote-votes-${_repo.boothKeys.deviceId}-${batch.fingerprint}.json');
-    await f.writeAsString(batch.encode(), flush: true);
-    if (mounted) showMessage(context, t.votesSavedIn(f.path));
-  }
 
   Future<void> _refresh() async {
     final def = await _repo.restoreBallot();
     final signed = await _repo.signedBallot();
     final key = await _repo.pinnedStationKey();
     final votes = await _repo.ballotCount();
+    final poolSize = await _repo.poolSize();
+    final poolMode = await _repo.poolMode();
     if (!mounted) return;
     setState(() {
+      _poolSize = poolSize;
+      _poolMode = poolMode;
       _signed = def == null ? null : signed;
       _stationId = key == null ? null : deviceIdFor(key);
       _votes = votes;
     });
-  }
-
-  Future<String?> _pick() async {
-    final f = await FilePicker.pickFile();
-    if (f == null) return null;
-    final path = f.path;
-    return path == null ? String.fromCharCodes(await f.readAsBytes()) : File(path).readAsString();
-  }
-
-  Future<void> _load() async {
-    final t = AppLocalizations.of(context);
-    final text = await (widget.pickPackage ?? _pick)();
-    if (text == null) return;
-    try {
-      final pkg = await BallotPackage.decodeAndVerify(text, pinnedStationKey: await _repo.pinnedStationKey());
-      await _repo.loadBallot(pkg.signedBallot.encode(),
-          stationPublicKey: pkg.stationPublicKey, media: pkg.media);
-      setState(() => _error = null);
-      await _refresh();
-    } catch (e) {
-      setState(() => _error = packageFailureText(t, e));
-    }
   }
 
   Future<void> _start() async {
@@ -181,6 +148,46 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
     if (entered == null) return false;
     final store = await ref.read(deviceStoreProvider.future);
     return store.verifyPin(entered);
+  }
+
+  int _poolSize = 0;
+  bool _poolMode = false;
+
+  Widget _poolCard(AppLocalizations t) {
+    if (_poolSize == 0) return const SizedBox.shrink();
+    return SectionCard(
+      title: t.poolTitle,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Text(t.poolBoothReady('$_poolSize'), style: const TextStyle(fontSize: 16)),
+        const SizedBox(height: 8),
+        if (_poolMode) ...[
+          NoticeBox(child: Text(t.poolModeOn, key: const ValueKey('pool-mode-on'), style: const TextStyle(fontWeight: FontWeight.w700))),
+          const SizedBox(height: 8),
+          OutlinedButton(
+            key: const ValueKey('pool-off'),
+            onPressed: () async {
+              await _repo.setPoolMode(false, official: ref.read(officialProvider));
+              await _refresh();
+            },
+            child: Text(t.poolStop),
+          ),
+        ] else ...[
+          Text(t.poolBoothNote, style: const TextStyle(fontSize: 15)),
+          const SizedBox(height: 8),
+          OutlinedButton(
+            key: const ValueKey('pool-on'),
+            style: OutlinedButton.styleFrom(
+                foregroundColor: RakubaColors.clay, side: const BorderSide(color: RakubaColors.clay, width: 2)),
+            onPressed: () async {
+              if (!await _askPin(context)) return;
+              await _repo.setPoolMode(true, official: ref.read(officialProvider));
+              await _refresh();
+            },
+            child: Text(t.poolStart),
+          ),
+        ],
+      ]),
+    );
   }
 
   Widget _linkCard(AppLocalizations t) {
@@ -244,12 +251,7 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
                   Text(t.votesOnBooth('$_votes'), key: const ValueKey('booth-votes')),
                   const SizedBox(height: 16),
                 ],
-                OutlinedButton.icon(
-                  key: const ValueKey('load-ballot'),
-                  icon: const Icon(Icons.usb),
-                  label: Text(t.loadBallot),
-                  onPressed: _load,
-                ),
+                if (signed == null) Text(t.ballotComesFromLaptop, style: const TextStyle(fontSize: 16)),
                 if (_error != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 12),
@@ -260,6 +262,7 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
               ]),
             ),
             _linkCard(t),
+            _poolCard(t),
             if (signed != null) ...[
               NoticeBox(child: Text(t.codesNote)),
               const SizedBox(height: 16),
@@ -269,13 +272,7 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
                 onPressed: _start,
                 child: Text(t.startBooth),
               ),
-              const SizedBox(height: 12),
-              OutlinedButton.icon(
-                key: const ValueKey('save-votes-usb'),
-                icon: const Icon(Icons.usb),
-                label: Text(t.saveVotesUsb),
-                onPressed: _saveVotesUsb,
-              ),
+
             ],
           ]),
         ),

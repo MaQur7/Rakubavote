@@ -5392,6 +5392,268 @@ class IssuedTokensCompanion extends UpdateCompanion<IssuedToken> {
   }
 }
 
+class $CodePoolTable extends CodePool
+    with TableInfo<$CodePoolTable, CodePoolData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CodePoolTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tokenHashMeta = const VerificationMeta(
+    'tokenHash',
+  );
+  @override
+  late final GeneratedColumn<String> tokenHash = GeneratedColumn<String>(
+    'token_hash',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _electionIdMeta = const VerificationMeta(
+    'electionId',
+  );
+  @override
+  late final GeneratedColumn<String> electionId = GeneratedColumn<String>(
+    'election_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _codeMeta = const VerificationMeta('code');
+  @override
+  late final GeneratedColumn<String> code = GeneratedColumn<String>(
+    'code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [tokenHash, electionId, code];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'code_pool';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CodePoolData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('token_hash')) {
+      context.handle(
+        _tokenHashMeta,
+        tokenHash.isAcceptableOrUnknown(data['token_hash']!, _tokenHashMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tokenHashMeta);
+    }
+    if (data.containsKey('election_id')) {
+      context.handle(
+        _electionIdMeta,
+        electionId.isAcceptableOrUnknown(data['election_id']!, _electionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_electionIdMeta);
+    }
+    if (data.containsKey('code')) {
+      context.handle(
+        _codeMeta,
+        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tokenHash};
+  @override
+  CodePoolData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CodePoolData(
+      tokenHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}token_hash'],
+      )!,
+      electionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}election_id'],
+      )!,
+      code: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}code'],
+      ),
+    );
+  }
+
+  @override
+  $CodePoolTable createAlias(String alias) {
+    return $CodePoolTable(attachedDatabase, alias);
+  }
+
+  @override
+  bool get withoutRowId => true;
+}
+
+class CodePoolData extends DataClass implements Insertable<CodePoolData> {
+  final String tokenHash;
+  final String electionId;
+
+  /// Null once issued.
+  final String? code;
+  const CodePoolData({
+    required this.tokenHash,
+    required this.electionId,
+    this.code,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['token_hash'] = Variable<String>(tokenHash);
+    map['election_id'] = Variable<String>(electionId);
+    if (!nullToAbsent || code != null) {
+      map['code'] = Variable<String>(code);
+    }
+    return map;
+  }
+
+  CodePoolCompanion toCompanion(bool nullToAbsent) {
+    return CodePoolCompanion(
+      tokenHash: Value(tokenHash),
+      electionId: Value(electionId),
+      code: code == null && nullToAbsent ? const Value.absent() : Value(code),
+    );
+  }
+
+  factory CodePoolData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CodePoolData(
+      tokenHash: serializer.fromJson<String>(json['tokenHash']),
+      electionId: serializer.fromJson<String>(json['electionId']),
+      code: serializer.fromJson<String?>(json['code']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tokenHash': serializer.toJson<String>(tokenHash),
+      'electionId': serializer.toJson<String>(electionId),
+      'code': serializer.toJson<String?>(code),
+    };
+  }
+
+  CodePoolData copyWith({
+    String? tokenHash,
+    String? electionId,
+    Value<String?> code = const Value.absent(),
+  }) => CodePoolData(
+    tokenHash: tokenHash ?? this.tokenHash,
+    electionId: electionId ?? this.electionId,
+    code: code.present ? code.value : this.code,
+  );
+  CodePoolData copyWithCompanion(CodePoolCompanion data) {
+    return CodePoolData(
+      tokenHash: data.tokenHash.present ? data.tokenHash.value : this.tokenHash,
+      electionId: data.electionId.present
+          ? data.electionId.value
+          : this.electionId,
+      code: data.code.present ? data.code.value : this.code,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CodePoolData(')
+          ..write('tokenHash: $tokenHash, ')
+          ..write('electionId: $electionId, ')
+          ..write('code: $code')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(tokenHash, electionId, code);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CodePoolData &&
+          other.tokenHash == this.tokenHash &&
+          other.electionId == this.electionId &&
+          other.code == this.code);
+}
+
+class CodePoolCompanion extends UpdateCompanion<CodePoolData> {
+  final Value<String> tokenHash;
+  final Value<String> electionId;
+  final Value<String?> code;
+  const CodePoolCompanion({
+    this.tokenHash = const Value.absent(),
+    this.electionId = const Value.absent(),
+    this.code = const Value.absent(),
+  });
+  CodePoolCompanion.insert({
+    required String tokenHash,
+    required String electionId,
+    this.code = const Value.absent(),
+  }) : tokenHash = Value(tokenHash),
+       electionId = Value(electionId);
+  static Insertable<CodePoolData> custom({
+    Expression<String>? tokenHash,
+    Expression<String>? electionId,
+    Expression<String>? code,
+  }) {
+    return RawValuesInsertable({
+      if (tokenHash != null) 'token_hash': tokenHash,
+      if (electionId != null) 'election_id': electionId,
+      if (code != null) 'code': code,
+    });
+  }
+
+  CodePoolCompanion copyWith({
+    Value<String>? tokenHash,
+    Value<String>? electionId,
+    Value<String?>? code,
+  }) {
+    return CodePoolCompanion(
+      tokenHash: tokenHash ?? this.tokenHash,
+      electionId: electionId ?? this.electionId,
+      code: code ?? this.code,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tokenHash.present) {
+      map['token_hash'] = Variable<String>(tokenHash.value);
+    }
+    if (electionId.present) {
+      map['election_id'] = Variable<String>(electionId.value);
+    }
+    if (code.present) {
+      map['code'] = Variable<String>(code.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CodePoolCompanion(')
+          ..write('tokenHash: $tokenHash, ')
+          ..write('electionId: $electionId, ')
+          ..write('code: $code')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $DeviceEnrollmentsTable extends DeviceEnrollments
     with TableInfo<$DeviceEnrollmentsTable, DeviceEnrollment> {
   @override
@@ -6726,6 +6988,7 @@ abstract class _$RegistryDb extends GeneratedDatabase {
   late final $RegisterLocksTable registerLocks = $RegisterLocksTable(this);
   late final $CheckInsTable checkIns = $CheckInsTable(this);
   late final $IssuedTokensTable issuedTokens = $IssuedTokensTable(this);
+  late final $CodePoolTable codePool = $CodePoolTable(this);
   late final $DeviceEnrollmentsTable deviceEnrollments =
       $DeviceEnrollmentsTable(this);
   late final $ResultRecordsTable resultRecords = $ResultRecordsTable(this);
@@ -6745,6 +7008,7 @@ abstract class _$RegistryDb extends GeneratedDatabase {
     registerLocks,
     checkIns,
     issuedTokens,
+    codePool,
     deviceEnrollments,
     resultRecords,
     auditLog,
@@ -11352,6 +11616,171 @@ typedef $$IssuedTokensTableProcessedTableManager =
       IssuedToken,
       PrefetchHooks Function()
     >;
+typedef $$CodePoolTableCreateCompanionBuilder = CodePoolCompanion Function({
+  required String tokenHash,
+  required String electionId,
+  Value<String?> code,
+});
+typedef $$CodePoolTableUpdateCompanionBuilder = CodePoolCompanion Function({
+  Value<String> tokenHash,
+  Value<String> electionId,
+  Value<String?> code,
+});
+
+class $$CodePoolTableFilterComposer
+    extends Composer<_$RegistryDb, $CodePoolTable> {
+  $$CodePoolTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get tokenHash => $composableBuilder(
+    column: $table.tokenHash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get electionId => $composableBuilder(
+    column: $table.electionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CodePoolTableOrderingComposer
+    extends Composer<_$RegistryDb, $CodePoolTable> {
+  $$CodePoolTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get tokenHash => $composableBuilder(
+    column: $table.tokenHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get electionId => $composableBuilder(
+    column: $table.electionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CodePoolTableAnnotationComposer
+    extends Composer<_$RegistryDb, $CodePoolTable> {
+  $$CodePoolTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get tokenHash =>
+      $composableBuilder(column: $table.tokenHash, builder: (column) => column);
+
+  GeneratedColumn<String> get electionId => $composableBuilder(
+    column: $table.electionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get code =>
+      $composableBuilder(column: $table.code, builder: (column) => column);
+}
+
+class $$CodePoolTableTableManager
+    extends
+        RootTableManager<
+          _$RegistryDb,
+          $CodePoolTable,
+          CodePoolData,
+          $$CodePoolTableFilterComposer,
+          $$CodePoolTableOrderingComposer,
+          $$CodePoolTableAnnotationComposer,
+          $$CodePoolTableCreateCompanionBuilder,
+          $$CodePoolTableUpdateCompanionBuilder,
+          (
+            CodePoolData,
+            BaseReferences<_$RegistryDb, $CodePoolTable, CodePoolData>,
+          ),
+          CodePoolData,
+          PrefetchHooks Function()
+        > {
+  $$CodePoolTableTableManager(_$RegistryDb db, $CodePoolTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CodePoolTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CodePoolTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CodePoolTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> tokenHash = const Value.absent(),
+                Value<String> electionId = const Value.absent(),
+                Value<String?> code = const Value.absent(),
+              }) => CodePoolCompanion(
+                tokenHash: tokenHash,
+                electionId: electionId,
+                code: code,
+              ),
+          createCompanionCallback:
+              ({
+                required String tokenHash,
+                required String electionId,
+                Value<String?> code = const Value.absent(),
+              }) => CodePoolCompanion.insert(
+                tokenHash: tokenHash,
+                electionId: electionId,
+                code: code,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CodePoolTable, CodePoolData>(table),
+                  BaseReferences<_$RegistryDb, $CodePoolTable, CodePoolData>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CodePoolTableProcessedTableManager =
+    ProcessedTableManager<
+      _$RegistryDb,
+      $CodePoolTable,
+      CodePoolData,
+      $$CodePoolTableFilterComposer,
+      $$CodePoolTableOrderingComposer,
+      $$CodePoolTableAnnotationComposer,
+      $$CodePoolTableCreateCompanionBuilder,
+      $$CodePoolTableUpdateCompanionBuilder,
+      (
+        CodePoolData,
+        BaseReferences<_$RegistryDb, $CodePoolTable, CodePoolData>,
+      ),
+      CodePoolData,
+      PrefetchHooks Function()
+    >;
 typedef $$DeviceEnrollmentsTableCreateCompanionBuilder =
     DeviceEnrollmentsCompanion Function({
       required String deviceId,
@@ -12201,6 +12630,8 @@ class $RegistryDbManager {
       $$CheckInsTableTableManager(_db, _db.checkIns);
   $$IssuedTokensTableTableManager get issuedTokens =>
       $$IssuedTokensTableTableManager(_db, _db.issuedTokens);
+  $$CodePoolTableTableManager get codePool =>
+      $$CodePoolTableTableManager(_db, _db.codePool);
   $$DeviceEnrollmentsTableTableManager get deviceEnrollments =>
       $$DeviceEnrollmentsTableTableManager(_db, _db.deviceEnrollments);
   $$ResultRecordsTableTableManager get resultRecords =>

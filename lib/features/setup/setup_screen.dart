@@ -12,10 +12,7 @@ import '../../core/widgets/common.dart';
 import '../../l10n/app_localizations.dart';
 import '../common_errors.dart';
 
-import 'dart:io';
 
-import '../../platform/photo_capture.dart';
-import '../../station/ballot_package.dart';
 import 'candidate_dialog.dart';
 import 'election_service.dart';
 
@@ -1020,28 +1017,6 @@ class _SignBar extends ConsumerWidget {
               fontSize: 16,
             ),
           ),
-          if (signed)
-            OutlinedButton.icon(
-              key: const ValueKey('save-ballot-package'),
-              icon: const Icon(Icons.usb),
-              label: Text(t.saveBallotForBooths),
-              onPressed: () async {
-                final dir = await pickFolder();
-                if (dir == null) return;
-                final svc = ref.read(electionServiceProvider);
-                final session = ref.read(sessionProvider)!;
-                final pkg = BallotPackage(
-                  signedBallot: (await svc.signedBallot(election.id))!,
-                  stationPublicKey: session.keys.signingPublic,
-                  media: await svc.ballotMedia(election.id),
-                );
-                final file = File('$dir/${pkg.suggestedFileName()}');
-                await file.writeAsString(pkg.encode(), flush: true);
-                if (context.mounted) {
-                  showMessage(context, t.ballotSavedIn(file.path));
-                }
-              },
-            ),
           FilledButton(
             key: const ValueKey('sign-ballot'),
             onPressed: () async {

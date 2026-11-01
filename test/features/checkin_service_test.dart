@@ -160,4 +160,31 @@ void main() {
     expect(c.checkedIn, 1);
     expect(c.registered, 5);
   });
+
+  group('code pool (D1)', () {
+    test('prepare sizes the pool to the register plus a margin', () async {
+      expect(await desk.preparePool(official: 'PO'), 15, reason: '5 voters + at least 10 spare');
+      expect(await desk.preparePool(official: 'PO'), 0, reason: 'already full');
+      final s = await desk.poolStatus();
+      expect((s.total, s.remaining), (15, 15));
+      expect((await desk.audit.entries()).last.action, 'token.pool_prepared');
+    });
+
+    test('check-in draws pool codes and erases their plain text', () async {
+      await desk.preparePool(official: 'PO');
+      final token = await desk.checkIn((await voter(1)).id, method: 'name', official: official);
+      final hash = VotingToken.tokenHash(id, token);
+      final row = await (db.select(db.codePool)..where((p) => p.tokenHash.equals(hash))).getSingle();
+      expect(row.code, isNull, reason: 'plain code erased once issued');
+      expect((await desk.poolStatus()).remaining, 14);
+      expect((await db.select(db.issuedTokens).getSingle()).tokenHash, hash);
+      expect(await desk.poolHashes(), contains(hash));
+    });
+
+    test('without a pool, check-in still works with fresh codes', () async {
+      final token = await desk.checkIn((await voter(1)).id, method: 'name', official: official);
+      expect(token, hasLength(6));
+      expect((await desk.poolStatus()).total, 0);
+    });
+  });
 }

@@ -129,7 +129,35 @@ class BallotBoxRepository {
     if (used != null) return CastFailure.codeAlreadyUsed;
     final active = await (db.select(db.activeTokens)..where((t) => t.tokenHash.equals(tokenHash)))
         .getSingleOrNull();
-    return active == null ? CastFailure.codeNotActive : null;
+    if (active != null) return null;
+    if (await poolMode()) {
+      final pooled = await (db.select(db.poolTokens)..where((t) => t.tokenHash.equals(tokenHash))).getSingleOrNull();
+      if (pooled != null) return null;
+    }
+    return CastFailure.codeNotActive;
+  }
+
+  // ---- Pre-loaded code pool (D1) ----
+
+  /// Replaces the stored pool hashes with the laptop's current list.
+  Future<void> storePool(Iterable<String> hashes) => db.transaction(() async {
+        await db.delete(db.poolTokens).go();
+        for (final h in hashes) {
+          await db.into(db.poolTokens).insert(PoolTokensCompanion.insert(tokenHash: h), mode: InsertMode.insertOrIgnore);
+        }
+      });
+
+  Future<int> poolSize() async =>
+      (await db.customSelect('SELECT COUNT(*) AS n FROM pool_tokens').getSingle()).read<int>('n');
+
+  Future<bool> poolMode() async =>
+      (await (db.select(db.boothFlags)..where((f) => f.name.equals('pool_mode'))).getSingleOrNull())?.value == 'on';
+
+  /// Switches pool mode on or off (the booth panel asks for the officer PIN
+  /// first). Written to the booth's audit log.
+  Future<void> setPoolMode(bool on, {required String official}) async {
+    await db.into(db.boothFlags).insertOnConflictUpdate(BoothFlagsCompanion.insert(name: 'pool_mode', value: on ? 'on' : 'off'));
+    await audit.append(actor: official, action: AuditAction.tokenPoolFallback, payload: {'on': on, 'booth': boothKeys.deviceId});
   }
 
   /// Records one ballot. [selections] maps position id to chosen candidate

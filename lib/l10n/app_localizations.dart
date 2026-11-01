@@ -1894,12 +1894,6 @@ abstract class AppLocalizations {
   /// **'Voting booth'**
   String get boothSetupTitle;
 
-  /// No description provided for @loadBallot.
-  ///
-  /// In en, this message translates to:
-  /// **'Load ballot from USB'**
-  String get loadBallot;
-
   /// No description provided for @noBallotYet.
   ///
   /// In en, this message translates to:
@@ -1983,18 +1977,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This booth already has votes for another ballot.'**
   String get errVotesExist;
-
-  /// No description provided for @saveBallotForBooths.
-  ///
-  /// In en, this message translates to:
-  /// **'Save ballot for booths (USB)'**
-  String get saveBallotForBooths;
-
-  /// No description provided for @ballotSavedIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Ballot saved in {path}'**
-  String ballotSavedIn(Object path);
 
   /// No description provided for @addDevice.
   ///
@@ -2188,12 +2170,6 @@ abstract class AppLocalizations {
   /// **'This is not the laptop shown in the QR code.'**
   String get errWrongLaptop;
 
-  /// No description provided for @importVotesUsb.
-  ///
-  /// In en, this message translates to:
-  /// **'Import votes from USB'**
-  String get importVotesUsb;
-
   /// No description provided for @invalidVotes.
   ///
   /// In en, this message translates to:
@@ -2362,12 +2338,6 @@ abstract class AppLocalizations {
   /// **'Save signed file to USB'**
   String get saveSignedFile;
 
-  /// No description provided for @saveVotesUsb.
-  ///
-  /// In en, this message translates to:
-  /// **'Save votes to USB'**
-  String get saveVotesUsb;
-
   /// No description provided for @scanLaptopQr.
   ///
   /// In en, this message translates to:
@@ -2475,18 +2445,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tie: {count} candidates have {votes} votes. The committee decides, as the election rules say.'**
   String tieNotice(Object count, Object votes);
-
-  /// No description provided for @votesImported.
-  ///
-  /// In en, this message translates to:
-  /// **'Votes received: {count}.'**
-  String votesImported(Object count);
-
-  /// No description provided for @votesSavedIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Votes saved in {path}'**
-  String votesSavedIn(Object path);
 
   /// No description provided for @votesSentToLaptop.
   ///
@@ -2721,6 +2679,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'For the notice board and as a backup for manual check-in. Names, numbers, IDs and groups only: no photos and no fee details.'**
   String get printRegisterNote;
+
+  /// No description provided for @ballotComesFromLaptop.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to the laptop. The ballot arrives from the laptop by itself.'**
+  String get ballotComesFromLaptop;
+
+  /// No description provided for @poolTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-loaded codes (if the Wi-Fi fails)'**
+  String get poolTitle;
+
+  /// No description provided for @poolLaptopNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare the code pool before opening the polls, while all booths are connected. Every code the check-in desk gives out then also works at a booth that has lost the Wi-Fi.'**
+  String get poolLaptopNote;
+
+  /// No description provided for @poolLaptopStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'{remaining} codes ready, {issued} given out'**
+  String poolLaptopStatus(Object remaining, Object issued);
+
+  /// No description provided for @poolPrepare.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare code pool'**
+  String get poolPrepare;
+
+  /// No description provided for @poolBoothReady.
+  ///
+  /// In en, this message translates to:
+  /// **'This booth holds {count} pre-loaded codes.'**
+  String poolBoothReady(Object count);
+
+  /// No description provided for @poolBoothNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Use only if this booth cannot reach the laptop. The officer PIN is needed, and the switch is recorded.'**
+  String get poolBoothNote;
+
+  /// No description provided for @poolStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi is down: use pre-loaded codes'**
+  String get poolStart;
+
+  /// No description provided for @poolStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi is back: stop using pre-loaded codes'**
+  String get poolStop;
+
+  /// No description provided for @poolModeOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-loaded codes are in use on this booth.'**
+  String get poolModeOn;
 }
 
 class _AppLocalizationsDelegate

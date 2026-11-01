@@ -120,6 +120,22 @@ rule; the committee announces results from the recorded data.
   re-encrypts only the vault, not the databases.
 - Without the PIN, a stolen laptop or tablet does not reveal voter data or votes.
 
+## No USB inputs (D23)
+
+Nothing that affects the count can be brought in on a USB drive or file: ballots, codes and votes
+travel only over the paired, encrypted station network. USB is used only to take things **out**
+(the signed results file, the encrypted backup, PDFs), which cannot change any result.
+
+## Pre-loaded codes for Wi-Fi failures (D1, D23)
+
+- Booths hold only hashes of the pool codes, and accept them only after the booth officer
+  switches on pool mode with the PIN; the switch is audit-logged.
+- The laptop keeps each plain pool code only until it is issued, then erases it (secure delete).
+- Someone who copied an unused pool code from the laptop could try to vote with it at a booth in
+  pool mode. The results screen then reports *a code used at a booth was never issued*. Keep the
+  laptop locked and the PIN secret, and investigate any such report.
+- A code used at two booths that were both offline is reported the same way.
+
 ## Network
 
 ### What the laptop learns on election day
@@ -131,7 +147,8 @@ polling, so this cannot be linked to how anyone voted. If only one person votes 
 day, that booth's batch reveals their choice; place booths so several voters use each one.
 
 
-- Everything works with **no internet**. The station uses its own local Wi-Fi.
+- Everything works with **no internet**. The station network is the laptop's hotspot or a phone
+  hotspot with mobile data off.
 - Online upload (Supabase) is **not built** and is off by default; it will only be added
   with the project lead's approval.
 - Tablets pair with the laptop using a short-lived code and the officer's approval after

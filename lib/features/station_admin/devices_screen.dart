@@ -158,6 +158,30 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                 ]),
               ),
             SectionCard(
+              title: t.poolTitle,
+              child: StreamBuilder<({int total, int remaining})>(
+                stream: ref.watch(checkInServiceProvider).watchPoolStatus(),
+                builder: (context, snap) {
+                  final p = snap.data;
+                  return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                    Text(t.poolLaptopNote, style: const TextStyle(fontSize: 16)),
+                    const SizedBox(height: 8),
+                    if (p != null && p.total > 0)
+                      Text(t.poolLaptopStatus('${p.remaining}', '${p.total - p.remaining}'),
+                          key: const ValueKey('pool-status'), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 8),
+                    OutlinedButton(
+                      key: const ValueKey('prepare-pool'),
+                      onPressed: () async {
+                        await ref.read(checkInServiceProvider).preparePool(official: ref.read(officialProvider));
+                      },
+                      child: Text(t.poolPrepare),
+                    ),
+                  ]);
+                },
+              ),
+            ),
+            SectionCard(
               title: t.pairedDevices,
               child: StreamBuilder<List<DeviceEnrollment>>(
                 stream: server.enrollment.watchActive(),

@@ -1033,9 +1033,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get boothSetupTitle => 'Voting booth';
 
   @override
-  String get loadBallot => 'Load ballot from USB';
-
-  @override
   String get noBallotYet => 'No ballot loaded yet.';
 
   @override
@@ -1086,14 +1083,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errVotesExist =>
       'This booth already has votes for another ballot.';
-
-  @override
-  String get saveBallotForBooths => 'Save ballot for booths (USB)';
-
-  @override
-  String ballotSavedIn(Object path) {
-    return 'Ballot saved in $path';
-  }
 
   @override
   String get addDevice => 'Add a tablet';
@@ -1211,9 +1200,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errWrongLaptop => 'This is not the laptop shown in the QR code.';
 
   @override
-  String get importVotesUsb => 'Import votes from USB';
-
-  @override
   String get invalidVotes => 'Invalid';
 
   @override
@@ -1323,9 +1309,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveSignedFile => 'Save signed file to USB';
 
   @override
-  String get saveVotesUsb => 'Save votes to USB';
-
-  @override
   String get scanLaptopQr => 'Scan the laptop\'s QR code';
 
   @override
@@ -1384,16 +1367,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String tieNotice(Object count, Object votes) {
     return 'Tie: $count candidates have $votes votes. The committee decides, as the election rules say.';
-  }
-
-  @override
-  String votesImported(Object count) {
-    return 'Votes received: $count.';
-  }
-
-  @override
-  String votesSavedIn(Object path) {
-    return 'Votes saved in $path';
   }
 
   @override
@@ -1539,4 +1512,41 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get printRegisterNote =>
       'For the notice board and as a backup for manual check-in. Names, numbers, IDs and groups only: no photos and no fee details.';
+
+  @override
+  String get ballotComesFromLaptop =>
+      'Connect to the laptop. The ballot arrives from the laptop by itself.';
+
+  @override
+  String get poolTitle => 'Pre-loaded codes (if the Wi-Fi fails)';
+
+  @override
+  String get poolLaptopNote =>
+      'Prepare the code pool before opening the polls, while all booths are connected. Every code the check-in desk gives out then also works at a booth that has lost the Wi-Fi.';
+
+  @override
+  String poolLaptopStatus(Object remaining, Object issued) {
+    return '$remaining codes ready, $issued given out';
+  }
+
+  @override
+  String get poolPrepare => 'Prepare code pool';
+
+  @override
+  String poolBoothReady(Object count) {
+    return 'This booth holds $count pre-loaded codes.';
+  }
+
+  @override
+  String get poolBoothNote =>
+      'Use only if this booth cannot reach the laptop. The officer PIN is needed, and the switch is recorded.';
+
+  @override
+  String get poolStart => 'Wi-Fi is down: use pre-loaded codes';
+
+  @override
+  String get poolStop => 'Wi-Fi is back: stop using pre-loaded codes';
+
+  @override
+  String get poolModeOn => 'Pre-loaded codes are in use on this booth.';
 }

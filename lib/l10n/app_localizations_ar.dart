@@ -1021,9 +1021,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get boothSetupTitle => 'كشك التصويت';
 
   @override
-  String get loadBallot => 'تحميل ورقة الاقتراع من USB';
-
-  @override
   String get noBallotYet => 'لم تُحمّل ورقة اقتراع بعد.';
 
   @override
@@ -1073,14 +1070,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errVotesExist => 'هذا الكشك يحتوي على أصوات لورقة اقتراع أخرى.';
-
-  @override
-  String get saveBallotForBooths => 'حفظ ورقة الاقتراع للأكشاك (USB)';
-
-  @override
-  String ballotSavedIn(Object path) {
-    return 'تم حفظ ورقة الاقتراع في $path';
-  }
 
   @override
   String get addDevice => 'إضافة جهاز لوحي';
@@ -1194,9 +1183,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errWrongLaptop => 'هذا ليس الحاسوب الظاهر في رمز QR.';
 
   @override
-  String get importVotesUsb => 'استيراد الأصوات من USB';
-
-  @override
   String get invalidVotes => 'غير صالح';
 
   @override
@@ -1305,9 +1291,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get saveSignedFile => 'حفظ الملف الموقع على USB';
 
   @override
-  String get saveVotesUsb => 'حفظ الأصوات على USB';
-
-  @override
   String get scanLaptopQr => 'امسح رمز QR الخاص بالحاسوب';
 
   @override
@@ -1365,16 +1348,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String tieNotice(Object count, Object votes) {
     return 'تعادل: $count مرشحين لديهم $votes أصوات. تقرر اللجنة وفق قواعد الانتخاب.';
-  }
-
-  @override
-  String votesImported(Object count) {
-    return 'الأصوات المستلمة: $count.';
-  }
-
-  @override
-  String votesSavedIn(Object path) {
-    return 'تم حفظ الأصوات في $path';
   }
 
   @override
@@ -1520,4 +1493,41 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get printRegisterNote =>
       'للوحة الإعلانات وكنسخة احتياطية للتحقق اليدوي. الأسماء والأرقام والهويات والمجموعات فقط: لا صور ولا تفاصيل رسوم.';
+
+  @override
+  String get ballotComesFromLaptop =>
+      'اتصل بالحاسوب. تصل ورقة الاقتراع من الحاسوب تلقائيًا.';
+
+  @override
+  String get poolTitle => 'رموز محمّلة مسبقًا (عند تعطل Wi-Fi)';
+
+  @override
+  String get poolLaptopNote =>
+      'جهّز مجموعة الرموز قبل فتح الاقتراع وجميع الأكشاك متصلة. كل رمز يعطيه مكتب التحقق يعمل أيضًا في كشك فقد الاتصال بشبكة Wi-Fi.';
+
+  @override
+  String poolLaptopStatus(Object remaining, Object issued) {
+    return '$remaining رمزًا جاهزًا، $issued أُعطيت';
+  }
+
+  @override
+  String get poolPrepare => 'تجهيز مجموعة الرموز';
+
+  @override
+  String poolBoothReady(Object count) {
+    return 'يحمل هذا الكشك $count رمزًا محمّلًا مسبقًا.';
+  }
+
+  @override
+  String get poolBoothNote =>
+      'استخدمها فقط إذا تعذر على هذا الكشك الوصول إلى الحاسوب. يلزم رمز المسؤول، ويُسجَّل التحويل.';
+
+  @override
+  String get poolStart => 'Wi-Fi متعطل: استخدم الرموز المحمّلة مسبقًا';
+
+  @override
+  String get poolStop => 'عاد Wi-Fi: أوقف استخدام الرموز المحمّلة مسبقًا';
+
+  @override
+  String get poolModeOn => 'الرموز المحمّلة مسبقًا مستخدمة في هذا الكشك.';
 }

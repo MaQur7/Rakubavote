@@ -100,6 +100,9 @@ class BoothLink {
         for (final h in active) {
           await repo.activateToken(h);
         }
+      case Msg.tokenPool:
+        await repo.storePool((body['hashes'] as List).cast<String>());
+        _state.add(state);
       case Msg.pollsState:
         pollsState = body['state'] as String;
         if (pollsState == 'closed') {

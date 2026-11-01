@@ -187,6 +187,22 @@ class IssuedTokens extends Table {
   bool get withoutRowId => true;
 }
 
+/// Pre-loaded codes for Wi-Fi failures (D1). The plain code is kept only
+/// until it is issued, then erased (secure_delete overwrites it). No voter,
+/// no time; random key, WITHOUT ROWID.
+class CodePool extends Table {
+  TextColumn get tokenHash => text()();
+  TextColumn get electionId => text()();
+  /// Null once issued.
+  TextColumn get code => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {tokenHash};
+
+  @override
+  bool get withoutRowId => true;
+}
+
 class DeviceEnrollments extends Table {
   TextColumn get deviceId => text()();
   /// admin | checkin | booth
@@ -225,6 +241,7 @@ class ResultRecords extends Table {
   RegisterLocks,
   CheckIns,
   IssuedTokens,
+  CodePool,
   DeviceEnrollments,
   ResultRecords,
   AuditLog,
@@ -233,7 +250,7 @@ class RegistryDb extends _$RegistryDb {
   RegistryDb(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -245,6 +262,7 @@ class RegistryDb extends _$RegistryDb {
         },
         onUpgrade: (m, from, to) async {
           if (from < 2) await m.addColumn(voters, voters.cardPrintedIssue);
+          if (from < 3) await m.createTable(codePool);
         },
       );
 }

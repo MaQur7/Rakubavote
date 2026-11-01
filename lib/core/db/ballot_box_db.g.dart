@@ -1452,6 +1452,362 @@ class UsedTokensCompanion extends UpdateCompanion<UsedToken> {
   }
 }
 
+class $PoolTokensTable extends PoolTokens
+    with TableInfo<$PoolTokensTable, PoolToken> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PoolTokensTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tokenHashMeta = const VerificationMeta(
+    'tokenHash',
+  );
+  @override
+  late final GeneratedColumn<String> tokenHash = GeneratedColumn<String>(
+    'token_hash',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [tokenHash];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'pool_tokens';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PoolToken> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('token_hash')) {
+      context.handle(
+        _tokenHashMeta,
+        tokenHash.isAcceptableOrUnknown(data['token_hash']!, _tokenHashMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tokenHashMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tokenHash};
+  @override
+  PoolToken map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PoolToken(
+      tokenHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}token_hash'],
+      )!,
+    );
+  }
+
+  @override
+  $PoolTokensTable createAlias(String alias) {
+    return $PoolTokensTable(attachedDatabase, alias);
+  }
+
+  @override
+  bool get withoutRowId => true;
+}
+
+class PoolToken extends DataClass implements Insertable<PoolToken> {
+  final String tokenHash;
+  const PoolToken({required this.tokenHash});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['token_hash'] = Variable<String>(tokenHash);
+    return map;
+  }
+
+  PoolTokensCompanion toCompanion(bool nullToAbsent) {
+    return PoolTokensCompanion(tokenHash: Value(tokenHash));
+  }
+
+  factory PoolToken.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PoolToken(tokenHash: serializer.fromJson<String>(json['tokenHash']));
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{'tokenHash': serializer.toJson<String>(tokenHash)};
+  }
+
+  PoolToken copyWith({String? tokenHash}) =>
+      PoolToken(tokenHash: tokenHash ?? this.tokenHash);
+  PoolToken copyWithCompanion(PoolTokensCompanion data) {
+    return PoolToken(
+      tokenHash: data.tokenHash.present ? data.tokenHash.value : this.tokenHash,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PoolToken(')
+          ..write('tokenHash: $tokenHash')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => tokenHash.hashCode;
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PoolToken && other.tokenHash == this.tokenHash);
+}
+
+class PoolTokensCompanion extends UpdateCompanion<PoolToken> {
+  final Value<String> tokenHash;
+  const PoolTokensCompanion({this.tokenHash = const Value.absent()});
+  PoolTokensCompanion.insert({required String tokenHash})
+    : tokenHash = Value(tokenHash);
+  static Insertable<PoolToken> custom({Expression<String>? tokenHash}) {
+    return RawValuesInsertable({
+      if (tokenHash != null) 'token_hash': tokenHash,
+    });
+  }
+
+  PoolTokensCompanion copyWith({Value<String>? tokenHash}) {
+    return PoolTokensCompanion(tokenHash: tokenHash ?? this.tokenHash);
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tokenHash.present) {
+      map['token_hash'] = Variable<String>(tokenHash.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PoolTokensCompanion(')
+          ..write('tokenHash: $tokenHash')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BoothFlagsTable extends BoothFlags
+    with TableInfo<$BoothFlagsTable, BoothFlag> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BoothFlagsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<String> value = GeneratedColumn<String>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [name, value];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'booth_flags';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BoothFlag> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {name};
+  @override
+  BoothFlag map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BoothFlag(
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}value'],
+      )!,
+    );
+  }
+
+  @override
+  $BoothFlagsTable createAlias(String alias) {
+    return $BoothFlagsTable(attachedDatabase, alias);
+  }
+}
+
+class BoothFlag extends DataClass implements Insertable<BoothFlag> {
+  final String name;
+  final String value;
+  const BoothFlag({required this.name, required this.value});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['name'] = Variable<String>(name);
+    map['value'] = Variable<String>(value);
+    return map;
+  }
+
+  BoothFlagsCompanion toCompanion(bool nullToAbsent) {
+    return BoothFlagsCompanion(name: Value(name), value: Value(value));
+  }
+
+  factory BoothFlag.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BoothFlag(
+      name: serializer.fromJson<String>(json['name']),
+      value: serializer.fromJson<String>(json['value']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'name': serializer.toJson<String>(name),
+      'value': serializer.toJson<String>(value),
+    };
+  }
+
+  BoothFlag copyWith({String? name, String? value}) =>
+      BoothFlag(name: name ?? this.name, value: value ?? this.value);
+  BoothFlag copyWithCompanion(BoothFlagsCompanion data) {
+    return BoothFlag(
+      name: data.name.present ? data.name.value : this.name,
+      value: data.value.present ? data.value.value : this.value,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BoothFlag(')
+          ..write('name: $name, ')
+          ..write('value: $value')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(name, value);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BoothFlag &&
+          other.name == this.name &&
+          other.value == this.value);
+}
+
+class BoothFlagsCompanion extends UpdateCompanion<BoothFlag> {
+  final Value<String> name;
+  final Value<String> value;
+  final Value<int> rowid;
+  const BoothFlagsCompanion({
+    this.name = const Value.absent(),
+    this.value = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BoothFlagsCompanion.insert({
+    required String name,
+    required String value,
+    this.rowid = const Value.absent(),
+  }) : name = Value(name),
+       value = Value(value);
+  static Insertable<BoothFlag> custom({
+    Expression<String>? name,
+    Expression<String>? value,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (name != null) 'name': name,
+      if (value != null) 'value': value,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BoothFlagsCompanion copyWith({
+    Value<String>? name,
+    Value<String>? value,
+    Value<int>? rowid,
+  }) {
+    return BoothFlagsCompanion(
+      name: name ?? this.name,
+      value: value ?? this.value,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<String>(value.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BoothFlagsCompanion(')
+          ..write('name: $name, ')
+          ..write('value: $value, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $BatchExportsTable extends BatchExports
     with TableInfo<$BatchExportsTable, BatchExport> {
   @override
@@ -2160,6 +2516,8 @@ abstract class _$BallotBoxDb extends GeneratedDatabase {
   late final $VotesTable votes = $VotesTable(this);
   late final $ActiveTokensTable activeTokens = $ActiveTokensTable(this);
   late final $UsedTokensTable usedTokens = $UsedTokensTable(this);
+  late final $PoolTokensTable poolTokens = $PoolTokensTable(this);
+  late final $BoothFlagsTable boothFlags = $BoothFlagsTable(this);
   late final $BatchExportsTable batchExports = $BatchExportsTable(this);
   late final $AuditLogTable auditLog = $AuditLogTable(this);
   @override
@@ -2173,6 +2531,8 @@ abstract class _$BallotBoxDb extends GeneratedDatabase {
     votes,
     activeTokens,
     usedTokens,
+    poolTokens,
+    boothFlags,
     batchExports,
     auditLog,
   ];
@@ -3121,6 +3481,263 @@ typedef $$UsedTokensTableProcessedTableManager =
       UsedToken,
       PrefetchHooks Function()
     >;
+typedef $$PoolTokensTableCreateCompanionBuilder = PoolTokensCompanion Function({
+  required String tokenHash,
+});
+typedef $$PoolTokensTableUpdateCompanionBuilder = PoolTokensCompanion Function({
+  Value<String> tokenHash,
+});
+
+class $$PoolTokensTableFilterComposer
+    extends Composer<_$BallotBoxDb, $PoolTokensTable> {
+  $$PoolTokensTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get tokenHash => $composableBuilder(
+    column: $table.tokenHash,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PoolTokensTableOrderingComposer
+    extends Composer<_$BallotBoxDb, $PoolTokensTable> {
+  $$PoolTokensTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get tokenHash => $composableBuilder(
+    column: $table.tokenHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PoolTokensTableAnnotationComposer
+    extends Composer<_$BallotBoxDb, $PoolTokensTable> {
+  $$PoolTokensTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get tokenHash =>
+      $composableBuilder(column: $table.tokenHash, builder: (column) => column);
+}
+
+class $$PoolTokensTableTableManager
+    extends
+        RootTableManager<
+          _$BallotBoxDb,
+          $PoolTokensTable,
+          PoolToken,
+          $$PoolTokensTableFilterComposer,
+          $$PoolTokensTableOrderingComposer,
+          $$PoolTokensTableAnnotationComposer,
+          $$PoolTokensTableCreateCompanionBuilder,
+          $$PoolTokensTableUpdateCompanionBuilder,
+          (
+            PoolToken,
+            BaseReferences<_$BallotBoxDb, $PoolTokensTable, PoolToken>,
+          ),
+          PoolToken,
+          PrefetchHooks Function()
+        > {
+  $$PoolTokensTableTableManager(_$BallotBoxDb db, $PoolTokensTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PoolTokensTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PoolTokensTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PoolTokensTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> tokenHash = const Value.absent(),
+          }) => PoolTokensCompanion(tokenHash: tokenHash),
+          createCompanionCallback: ({required String tokenHash}) =>
+              PoolTokensCompanion.insert(tokenHash: tokenHash),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$PoolTokensTable, PoolToken>(table),
+                  BaseReferences<_$BallotBoxDb, $PoolTokensTable, PoolToken>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PoolTokensTableProcessedTableManager =
+    ProcessedTableManager<
+      _$BallotBoxDb,
+      $PoolTokensTable,
+      PoolToken,
+      $$PoolTokensTableFilterComposer,
+      $$PoolTokensTableOrderingComposer,
+      $$PoolTokensTableAnnotationComposer,
+      $$PoolTokensTableCreateCompanionBuilder,
+      $$PoolTokensTableUpdateCompanionBuilder,
+      (PoolToken, BaseReferences<_$BallotBoxDb, $PoolTokensTable, PoolToken>),
+      PoolToken,
+      PrefetchHooks Function()
+    >;
+typedef $$BoothFlagsTableCreateCompanionBuilder = BoothFlagsCompanion Function({
+  required String name,
+  required String value,
+  Value<int> rowid,
+});
+typedef $$BoothFlagsTableUpdateCompanionBuilder = BoothFlagsCompanion Function({
+  Value<String> name,
+  Value<String> value,
+  Value<int> rowid,
+});
+
+class $$BoothFlagsTableFilterComposer
+    extends Composer<_$BallotBoxDb, $BoothFlagsTable> {
+  $$BoothFlagsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BoothFlagsTableOrderingComposer
+    extends Composer<_$BallotBoxDb, $BoothFlagsTable> {
+  $$BoothFlagsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BoothFlagsTableAnnotationComposer
+    extends Composer<_$BallotBoxDb, $BoothFlagsTable> {
+  $$BoothFlagsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+}
+
+class $$BoothFlagsTableTableManager
+    extends
+        RootTableManager<
+          _$BallotBoxDb,
+          $BoothFlagsTable,
+          BoothFlag,
+          $$BoothFlagsTableFilterComposer,
+          $$BoothFlagsTableOrderingComposer,
+          $$BoothFlagsTableAnnotationComposer,
+          $$BoothFlagsTableCreateCompanionBuilder,
+          $$BoothFlagsTableUpdateCompanionBuilder,
+          (
+            BoothFlag,
+            BaseReferences<_$BallotBoxDb, $BoothFlagsTable, BoothFlag>,
+          ),
+          BoothFlag,
+          PrefetchHooks Function()
+        > {
+  $$BoothFlagsTableTableManager(_$BallotBoxDb db, $BoothFlagsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BoothFlagsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BoothFlagsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BoothFlagsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> name = const Value.absent(),
+            Value<String> value = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) => BoothFlagsCompanion(name: name, value: value, rowid: rowid),
+          createCompanionCallback:
+              ({
+                required String name,
+                required String value,
+                Value<int> rowid = const Value.absent(),
+              }) => BoothFlagsCompanion.insert(
+                name: name,
+                value: value,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$BoothFlagsTable, BoothFlag>(table),
+                  BaseReferences<_$BallotBoxDb, $BoothFlagsTable, BoothFlag>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BoothFlagsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$BallotBoxDb,
+      $BoothFlagsTable,
+      BoothFlag,
+      $$BoothFlagsTableFilterComposer,
+      $$BoothFlagsTableOrderingComposer,
+      $$BoothFlagsTableAnnotationComposer,
+      $$BoothFlagsTableCreateCompanionBuilder,
+      $$BoothFlagsTableUpdateCompanionBuilder,
+      (BoothFlag, BaseReferences<_$BallotBoxDb, $BoothFlagsTable, BoothFlag>),
+      BoothFlag,
+      PrefetchHooks Function()
+    >;
 typedef $$BatchExportsTableCreateCompanionBuilder =
     BatchExportsCompanion Function({
       Value<int> batchSeq,
@@ -3540,6 +4157,10 @@ class $BallotBoxDbManager {
       $$ActiveTokensTableTableManager(_db, _db.activeTokens);
   $$UsedTokensTableTableManager get usedTokens =>
       $$UsedTokensTableTableManager(_db, _db.usedTokens);
+  $$PoolTokensTableTableManager get poolTokens =>
+      $$PoolTokensTableTableManager(_db, _db.poolTokens);
+  $$BoothFlagsTableTableManager get boothFlags =>
+      $$BoothFlagsTableTableManager(_db, _db.boothFlags);
   $$BatchExportsTableTableManager get batchExports =>
       $$BatchExportsTableTableManager(_db, _db.batchExports);
   $$AuditLogTableTableManager get auditLog =>

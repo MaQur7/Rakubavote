@@ -47,7 +47,10 @@ Station protocol: docs/protocol.md · Secrecy design: SECURITY.md
   Votes are shuffled before every export and before counting.
   Booth audit entries record counts only, never individual votes. Check-ins keep only an hour bucket.
 - Tokens: only SHA-256(election id + token) is stored, never linked to a voter; booths accept a
-  token only after live activation from the laptop (pool fallback needs officer PIN, D1).
+  token only after live activation from the laptop, or from the pre-loaded pool once the officer
+  switches the booth to pool mode with the PIN (D1, D23). Pool plain codes are erased when issued.
+- No USB or file inputs that can change what is counted (D23): ballots and votes travel only over
+  the paired, encrypted station network (laptop or phone hotspot, no internet).
 - Every ballot definition, locked register, vote batch and result file is signed (Ed25519);
   verify signatures on import and show failures in plain words.
 - Audit log is append-only and hash-chained; never add update/delete for it (triggers block it).

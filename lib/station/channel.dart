@@ -170,6 +170,7 @@ abstract final class Msg {
   static const tokenActivate = 'token.activate';
   static const tokenSync = 'token.sync';
   static const tokenUsed = 'token.used';
+  static const tokenPool = 'token.pool';
   static const pollsState = 'polls.state';
   static const heartbeat = 'heartbeat';
 }

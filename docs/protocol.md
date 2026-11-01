@@ -2,7 +2,8 @@
 
 How the station laptop and the tablets talk. Implemented in `lib/station/`. Everything stays
 inside the polling station: the laptop runs a `shelf` HTTP and WebSocket server (default port
-47800) on the station Wi-Fi (travel router or laptop hotspot). No internet, no outside service.
+47800) on the station Wi-Fi: the laptop's own hotspot or any phone hotspot, **without internet**
+(D23). No outside service is ever contacted.
 
 ## Roles
 
@@ -64,26 +65,38 @@ disconnected). Then:
 | `token.sync` | laptop → booth (on connect) | All active code hashes, sorted |
 | `token.activate` | laptop → booths | One new code hash (never the code, never a voter) |
 | `token.used` | booth → laptop → other booths | One code hash |
+| `token.pool` | laptop → booth (on connect and when the pool grows) | All pre-loaded code hashes, sorted (D23) |
 
 The laptop watches its issued-codes table, so a code from any check-in desk reaches the booths.
 Votes are **not** streamed during polling; booths keep them until the polls close.
 
-## Ballot package (USB) — `.rkvballot`
+## Ballot package
 
 `{"type":"rakubavote-ballot-package","v":1,"station":<laptop Ed25519 key>,"ballot":<signed
-ballot>,"media":{<sha256>:<base64url image>}}`. The booth verifies the signature, every image
-hash and that every hash the ballot refers to is present. The first package pins the laptop's
-key (D19). No personal data.
+ballot>,"media":{<sha256>:<base64url image>}}`, delivered only by `ballot.get` over the paired
+channel. The booth verifies the signature, every image hash and that every hash the ballot refers
+to is present. The first package pins the laptop's key (D19). No personal data.
 
-## Vote batch (USB fallback) — `rakubavote-votes-<booth>-<fingerprint>.json`
+## No USB inputs (D23)
 
-The booth's signed batch artifact (D12), saved from the booth panel with **Save votes to USB**
-and loaded on the laptop with **Import votes from USB**. Same checks as over Wi-Fi.
+Ballots, codes and votes travel only over the paired, encrypted station network. There is no
+USB or QR path for anything that affects the count. Outputs only: the signed results file, the
+encrypted backup and PDFs.
 
-## When Wi-Fi fails
+## When Wi-Fi fails: the pre-loaded code pool (D1, D23)
 
-- Booths keep the votes they already recorded. They cannot accept new codes until Wi-Fi is back
-  (live activation, D1). Used codes are reported on reconnect.
-- Votes can always be moved by USB.
-- **Not built yet:** the pre-loaded code pool that D1 allows with the officer PIN, and moving
-  results by multi-part QR codes. Until then, keep the station router powered.
+1. Before the polls open, while every booth is connected, the presiding officer presses
+   **Prepare code pool** on the laptop: one code per registered voter plus 5% (at least 10).
+   Plain codes stay on the laptop (encrypted database); booths receive only the hashes
+   (`token.pool`). Pool hashes do nothing at a booth on their own.
+2. From then on every code the check-in desk issues is drawn at random from the pool, and its
+   plain text is erased from the laptop as it is issued. It is also activated live as usual.
+3. If a booth loses Wi-Fi, its officer presses **Wi-Fi is down: use pre-loaded codes** and enters
+   the officer PIN. The switch is written to the booth's audit log. The booth then accepts pool
+   codes it has not seen used.
+4. When the booth reconnects it reports the codes it used; the laptop marks them used and tells
+   the other booths. At closing, a code used at two booths, or a pool code used without being
+   issued, is flagged on the results screen.
+
+Votes stay on the booth until it reconnects; bring the tablet within range of the hotspot to
+close.

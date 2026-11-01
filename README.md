@@ -17,9 +17,9 @@ secret votes and print a count everyone can check — **with no internet**.
 | Laptop (Windows 10+ or Ubuntu Linux) | 1 | Setting up the election, registration, results |
 | Android tablet, 10 inch, Android 10+ | 2–3 | Voting booths (one spare) |
 | Printer (any printer the laptop can print to) | 1 | Voter registration cards |
-| Travel Wi-Fi router (optional) | 1 | A local network with no internet |
+| A Wi-Fi hotspot with **no internet**: the laptop's own hotspot, or any phone hotspot | 1 | The station network all tablets join |
 | Power banks or a solar panel | 3–4 | A full day without mains power |
-| USB drives | 2 | Backups and moving files between devices |
+| USB drive | 1 | End-of-day encrypted backup and saving the signed results |
 
 ## Installing the app
 
@@ -130,13 +130,11 @@ You do not need internet at the polling station. Download the files once, before
 
 ### Election day: set up each voting booth (tablet)
 
-1. On the laptop, in **1 Setup**, after signing the ballot press **Save ballot for booths (USB)**
-   and choose the USB drive.
-2. On the tablet (set up as *Voting booth*), press **Load ballot from USB** and choose the file.
-3. **Compare the fingerprint code** on the tablet with the one the laptop showed when the ballot
+1. Connect the tablet to the laptop (see below). The ballot arrives from the laptop by itself.
+2. **Compare the fingerprint code** on the tablet with the one the laptop showed when the ballot
    was signed. If they differ, do not use the tablet.
-4. Press **Start voting booth**. The voter screen appears.
-5. To leave the voter screen, press and hold the top corner for a few seconds and type the
+3. Press **Start voting booth**. The voter screen appears.
+4. To leave the voter screen, press and hold the top corner for a few seconds and type the
    officer PIN.
 
 What the voter does: types the code, chooses a language, picks a candidate (or *No choice*) on
@@ -145,29 +143,39 @@ each screen, checks the choices, presses **Confirm my vote**, hears a long beep 
 
 ### Connect the tablets to the laptop (before polls open)
 
-1. Switch on the travel router (or the laptop hotspot) and join the laptop and all tablets to it.
+1. Turn on the laptop's Wi-Fi hotspot (or a phone hotspot). **No internet is needed**; mobile
+   data can be switched off. Join all tablets to that Wi-Fi network.
 2. On the laptop, press the **Devices** icon in the top bar, then **Start the station network**
    and **Show pairing code**.
 3. On each tablet, choose **Connect to the laptop**. Scan the laptop's QR code, or type the
    laptop address and the pairing code shown on the laptop.
 4. The laptop shows a request with a device id. Check that the tablet shows **the same id**,
    then press **Approve**.
-5. A booth then loads the ballot from the laptop by itself (or use the USB file). A check-in
+5. A booth then loads the ballot from the laptop by itself. A check-in
    tablet shows the check-in desk.
 
-Each code is valid at the booths as soon as it is issued. If the Wi-Fi drops, booths cannot
-accept new codes until it is back; votes already recorded are safe.
+Each code is valid at the booths as soon as it is issued.
+
+**Before opening the polls**, on the laptop's **Devices** page press **Prepare code pool** while
+all booths are connected. Then, if the Wi-Fi fails during the day:
+
+- On the booth that lost Wi-Fi, open the officer panel (long press on the corner, PIN) and press
+  **Wi-Fi is down: use pre-loaded codes**, then type the officer PIN. Voters checked in at the
+  laptop can keep voting there.
+- When the Wi-Fi is back, press **Wi-Fi is back: stop using pre-loaded codes**. The booth tells
+  the laptop which codes it used.
 
 ### Closing the polls and results (tab "4 Results")
 
 1. Press **Close the polls** and confirm. Check-in stops; booths finish and send their votes.
-2. Wait until every booth shows **Votes received**. If a booth cannot reach the laptop, on that
-   booth press **Save votes to USB**, then on the laptop press **Import votes from USB**.
+2. Wait until every booth shows **Votes received**. If a booth cannot reach the laptop, bring it
+   closer to the hotspot; its votes are sent as soon as it reconnects. (Votes are never moved by
+   USB, so nobody can slip in a file.)
 3. Press **Show results**. The laptop counts, checks that check-ins match votes, and flags ties.
    Ties are not broken: the committee decides, as the election rules say.
 4. Read out the **results fingerprint**. Agents and observers copy it, or scan **Show signed QR
    code**. Press **Save signed file to USB** to keep the signed results.
-5. If a late batch arrives, import it and press **Count again**.
+5. If a booth's votes arrive late, press **Count again**.
 
 ## Project status
 

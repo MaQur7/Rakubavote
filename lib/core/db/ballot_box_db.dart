@@ -72,6 +72,27 @@ class UsedTokens extends Table {
   bool get withoutRowId => true;
 }
 
+/// Hashes of the laptop's pre-loaded codes (D1). Accepted only while the
+/// officer has switched the booth to pool mode. No link to any vote.
+class PoolTokens extends Table {
+  TextColumn get tokenHash => text()();
+
+  @override
+  Set<Column> get primaryKey => {tokenHash};
+
+  @override
+  bool get withoutRowId => true;
+}
+
+/// Small booth settings (for example pool mode on/off).
+class BoothFlags extends Table {
+  TextColumn get name => text()();
+  TextColumn get value => text()();
+
+  @override
+  Set<Column> get primaryKey => {name};
+}
+
 /// One row per exported batch (counts only).
 class BatchExports extends Table {
   IntColumn get batchSeq => integer()();
@@ -94,15 +115,21 @@ class ImportedBatches extends Table {
   Set<Column> get primaryKey => {boothId};
 }
 
-@DriftDatabase(tables: [BallotDefinitions, BallotMedia, ImportedBatches, Votes, ActiveTokens, UsedTokens, BatchExports, AuditLog])
+@DriftDatabase(tables: [BallotDefinitions, BallotMedia, ImportedBatches, Votes, ActiveTokens, UsedTokens, PoolTokens, BoothFlags, BatchExports, AuditLog])
 class BallotBoxDb extends _$BallotBoxDb {
   BallotBoxDb(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            await m.createTable(poolTokens);
+            await m.createTable(boothFlags);
+          }
+        },
         onCreate: (m) async {
           await m.createAll();
           for (final t in auditTriggers) {

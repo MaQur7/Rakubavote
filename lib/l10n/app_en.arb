@@ -508,7 +508,6 @@
     }
   },
   "boothSetupTitle": "Voting booth",
-  "loadBallot": "Load ballot from USB",
   "noBallotYet": "No ballot loaded yet.",
   "ballotLoadedTitle": "Ballot loaded",
   "ballotFingerprintCheck": "Check that this fingerprint matches the one on the laptop:",
@@ -533,13 +532,6 @@
   "errPackageWrongStation": "This ballot comes from a different laptop than the one this booth trusts.",
   "errPackageImage": "An image in this ballot is missing or was changed. Do not use this file.",
   "errVotesExist": "This booth already has votes for another ballot.",
-  "saveBallotForBooths": "Save ballot for booths (USB)",
-  "ballotSavedIn": "Ballot saved in {path}",
-  "@ballotSavedIn": {
-    "placeholders": {
-      "path": {}
-    }
-  },
   "addDevice": "Add a tablet",
   "addDeviceNote": "On the tablet, choose Connect to the laptop, then scan this QR code or type the address and code. Compare the device id before approving.",
   "approve": "Approve",
@@ -587,7 +579,6 @@
   "errStartNetwork": "The station network could not start. Check the laptop's Wi-Fi.",
   "errUnknownBooth": "These votes come from a booth this laptop does not know.",
   "errWrongLaptop": "This is not the laptop shown in the QR code.",
-  "importVotesUsb": "Import votes from USB",
   "invalidVotes": "Invalid",
   "issueBallotsVsCodes": "Votes ({ballots}) differ from codes used ({codes}).",
   "@issueBallotsVsCodes": {
@@ -674,7 +665,6 @@
     }
   },
   "saveSignedFile": "Save signed file to USB",
-  "saveVotesUsb": "Save votes to USB",
   "scanLaptopQr": "Scan the laptop's QR code",
   "scanQrCard": "Scan QR card",
   "sendOnline": "Send online (when internet is available)",
@@ -702,18 +692,6 @@
     "placeholders": {
       "count": {},
       "votes": {}
-    }
-  },
-  "votesImported": "Votes received: {count}.",
-  "@votesImported": {
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "votesSavedIn": "Votes saved in {path}",
-  "@votesSavedIn": {
-    "placeholders": {
-      "path": {}
     }
   },
   "votesSentToLaptop": "Votes sent to the laptop: {count}",
@@ -816,5 +794,26 @@
     }
   },
   "printRegisterTitle": "Print the register",
-  "printRegisterNote": "For the notice board and as a backup for manual check-in. Names, numbers, IDs and groups only: no photos and no fee details."
+  "printRegisterNote": "For the notice board and as a backup for manual check-in. Names, numbers, IDs and groups only: no photos and no fee details.",
+  "ballotComesFromLaptop": "Connect to the laptop. The ballot arrives from the laptop by itself.",
+  "poolTitle": "Pre-loaded codes (if the Wi-Fi fails)",
+  "poolLaptopNote": "Prepare the code pool before opening the polls, while all booths are connected. Every code the check-in desk gives out then also works at a booth that has lost the Wi-Fi.",
+  "poolLaptopStatus": "{remaining} codes ready, {issued} given out",
+  "@poolLaptopStatus": {
+    "placeholders": {
+      "remaining": {},
+      "issued": {}
+    }
+  },
+  "poolPrepare": "Prepare code pool",
+  "poolBoothReady": "This booth holds {count} pre-loaded codes.",
+  "@poolBoothReady": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "poolBoothNote": "Use only if this booth cannot reach the laptop. The officer PIN is needed, and the switch is recorded.",
+  "poolStart": "Wi-Fi is down: use pre-loaded codes",
+  "poolStop": "Wi-Fi is back: stop using pre-loaded codes",
+  "poolModeOn": "Pre-loaded codes are in use on this booth."
 }

@@ -96,6 +96,68 @@ class CheckInService {
     if (e.state != ElectionState.polling.name) throw CheckInException(CheckInFailure.pollsNotOpen);
   }
 
+  // ---- Pre-loaded code pool (D1) ----
+
+  /// Prepares codes for Wi-Fi failures: one per registered voter plus a
+  /// margin (5%, at least 10), minus codes already waiting in the pool.
+  /// Only their hashes go to the booths. Returns how many were added.
+  Future<int> preparePool({required String official, int? count}) async {
+    final e = await _election();
+    final voters = (await db
+            .customSelect("SELECT COUNT(*) AS n FROM voters WHERE election_id = ? AND status = 'active'",
+                variables: [Variable.withString(e.id)])
+            .getSingle())
+        .read<int>('n');
+    final waiting = (await poolStatus()).remaining;
+    final margin = voters ~/ 20 < 10 ? 10 : voters ~/ 20;
+    final target = count ?? voters + margin;
+    final add = target - waiting;
+    if (add <= 0) return 0;
+    await db.transaction(() async {
+      var added = 0;
+      while (added < add) {
+        final code = VotingToken.generate();
+        final hash = VotingToken.tokenHash(e.id, code);
+        final clash = await (db.select(db.issuedTokens)..where((t) => t.tokenHash.equals(hash))).getSingleOrNull();
+        if (clash != null) continue;
+        final inserted = await db.into(db.codePool).insert(
+            CodePoolCompanion.insert(tokenHash: hash, electionId: e.id, code: Value(code)),
+            mode: InsertMode.insertOrIgnore);
+        if (inserted != 0) added++;
+      }
+      await audit.append(actor: official, action: 'token.pool_prepared', payload: {'count': add});
+    });
+    return add;
+  }
+
+  Future<({int total, int remaining})> poolStatus() async {
+    final r = await db
+        .customSelect('SELECT COUNT(*) AS t, COUNT(code) AS r FROM code_pool')
+        .getSingle();
+    return (total: r.read<int>('t'), remaining: r.read<int>('r'));
+  }
+
+  Stream<({int total, int remaining})> watchPoolStatus() => db
+      .customSelect('SELECT COUNT(*) AS t, COUNT(code) AS r FROM code_pool', readsFrom: {db.codePool})
+      .watchSingle()
+      .map((r) => (total: r.read<int>('t'), remaining: r.read<int>('r')));
+
+  /// Hashes of every pool code (issued or not), for the booths.
+  Future<List<String>> poolHashes() async =>
+      [for (final r in await db.select(db.codePool).get()) r.tokenHash]..sort();
+
+  /// Takes a random unused pool code and erases its plain text, or returns
+  /// null when the pool is empty. Must run inside the check-in transaction.
+  Future<String?> _drawPoolCode() async {
+    final row = await db
+        .customSelect('SELECT token_hash, code FROM code_pool WHERE code IS NOT NULL ORDER BY random() LIMIT 1')
+        .getSingleOrNull();
+    if (row == null) return null;
+    await (db.update(db.codePool)..where((p) => p.tokenHash.equals(row.read<String>('token_hash'))))
+        .write(const CodePoolCompanion(code: Value(null)));
+    return row.read<String>('code');
+  }
+
   // ---- Finding voters ----
 
   Future<Voter?> _byNumber(String electionId, int n) =>
@@ -163,10 +225,13 @@ class CheckInService {
     }
 
     final now = _clock();
-    final token = VotingToken.generate();
-    final hash = VotingToken.tokenHash(e.id, token);
+    late String token;
     await db.transaction(() async {
       if (await isCheckedIn(v.id)) throw CheckInException(CheckInFailure.alreadyCheckedIn);
+      // A pool code if one is waiting (so booths in pool mode accept it),
+      // otherwise a fresh code that works only through live activation.
+      token = await _drawPoolCode() ?? VotingToken.generate();
+      final hash = VotingToken.tokenHash(e.id, token);
       await _logFinishedHours(e.id, now, official);
       await db.into(db.checkIns).insert(CheckInsCompanion.insert(
             voterId: v.id,
@@ -187,6 +252,7 @@ class CheckInService {
         });
       }
     });
+    final hash = VotingToken.tokenHash(e.id, token);
     for (final l in activationListeners) {
       l(hash);
     }

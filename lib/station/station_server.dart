@@ -72,6 +72,8 @@ class StationServer {
   int _badCodes = 0;
   StreamSubscription<Election?>? _electionSub;
   StreamSubscription<List<IssuedToken>>? _tokenSub;
+  StreamSubscription<({int total, int remaining})>? _poolSub;
+  int _lastPoolTotal = -1;
   Set<String> _knownActive = {};
   String? _lastState;
 
@@ -105,6 +107,12 @@ class StationServer {
       }
       _knownActive = now;
     });
+    // Pool hashes go to the booths whenever the pool grows (D1).
+    _poolSub = checkIn.watchPoolStatus().listen((p) async {
+      if (p.total == _lastPoolTotal) return;
+      _lastPoolTotal = p.total;
+      if (p.total > 0) await _broadcast(Msg.tokenPool, {'hashes': await checkIn.poolHashes()}, role: DeviceRole.booth);
+    });
     _electionSub = ElectionService(registry, keys).watchElection().listen((e) {
       if (e != null && e.state != _lastState) {
         _lastState = e.state;
@@ -116,6 +124,7 @@ class StationServer {
 
   Future<void> stop() async {
     await _tokenSub?.cancel();
+    await _poolSub?.cancel();
     await _electionSub?.cancel();
     final open = _sockets.values.toList();
     _sockets.clear();
@@ -334,7 +343,11 @@ class StationServer {
           }
           await _sendTo(deviceId!, Msg.pollsState, {'state': (await _election()).state});
           final d = await enrollment.byId(deviceId!);
-          if (d?.role == DeviceRole.booth.name) await _sendTo(deviceId!, Msg.tokenSync, {'active': await _activeHashes()});
+          if (d?.role == DeviceRole.booth.name) {
+            await _sendTo(deviceId!, Msg.tokenSync, {'active': await _activeHashes()});
+            final pool = await checkIn.poolHashes();
+            if (pool.isNotEmpty) await _sendTo(deviceId!, Msg.tokenPool, {'hashes': pool});
+          }
           return;
         }
         if (env.type == Msg.tokenUsed) await _markUsed(body['hash'] as String, from: deviceId!);

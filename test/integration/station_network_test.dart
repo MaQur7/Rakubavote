@@ -5,6 +5,7 @@ import 'package:rakubavote/core/crypto/device_keys.dart';
 import 'package:rakubavote/core/db/ballot_box_db.dart';
 import 'package:rakubavote/core/db/ballot_box_repository.dart';
 import 'package:rakubavote/core/db/registry_db.dart';
+import 'package:rakubavote/core/crypto/voting_token.dart';
 import 'package:rakubavote/core/domain/vote.dart';
 import 'package:rakubavote/features/checkin/checkin_service.dart';
 import 'package:rakubavote/features/results/results_service.dart';
@@ -212,5 +213,70 @@ void main() {
     expect((p.host, p.port, p.code, p.stationId), ('192.168.8.10', 47800, 'K7QM2H9X', 'abc123'));
     expect(Pairing.parseQr('hello'), isNull);
     expect(Pairing.normaliseCode('k7qm-2h9x'), 'K7QM2H9X');
+  });
+
+  test('Wi-Fi fails: the booth uses pre-loaded codes, reports them later, closing is clean', () async {
+    final checkIn = server.checkIn;
+    await checkIn.preparePool(official: po);
+    final keys = await DeviceKeys.generate();
+    final link = await pair(keys, DeviceRole.booth, 'Booth');
+    final repo = BallotBoxRepository(memoryBallotBox(), keys);
+    final bl = BoothLink(StationClient(link, keys), repo, retryEvery: const Duration(milliseconds: 100));
+    await bl.fetchBallot();
+    await bl.start();
+    await eventually(() async => await repo.poolSize() == 16, timeout: const Duration(seconds: 10));
+
+    await bl.stop(); // the hotspot goes off
+    final v = await (registry.select(registry.voters)..where((x) => x.voterNo.equals(3))).getSingle();
+    final token = await checkIn.checkIn(v.id, method: 'name', official: 'Desk');
+    final hash = VotingToken.tokenHash((await registry.select(registry.elections).getSingle()).id, token);
+    expect(await repo.checkToken(hash), CastFailure.codeNotActive, reason: 'not live, pool mode off');
+    await repo.setPoolMode(true, official: 'Booth officer');
+    expect(await repo.checkToken(hash), isNull);
+    await repo.castBallot(tokenHash: hash, selections: {
+      for (final p in repo.ballot!.positions) p.id: [p.candidates.first.id],
+    });
+    expect(await repo.checkToken(hash), CastFailure.codeAlreadyUsed);
+
+    await bl.start(); // back
+    await eventually(() async =>
+        (await (registry.select(registry.issuedTokens)..where((t) => t.tokenHash.equals(hash))).getSingle()).state == 'used');
+
+    final results = ResultsService(registry, laptopBox, station);
+    await results.closePolls(official: po);
+    await eventually(() async => bl.submittedBallots != null);
+    final view = ResultsView(await results.computeResults(official: po));
+    expect(view.clean, isTrue);
+    expect(view.checkInsMatchVotes, isTrue);
+    await bl.stop();
+    await repo.db.close();
+  });
+
+  test('a pool code that was never given out is flagged at closing', () async {
+    final checkIn = server.checkIn;
+    await checkIn.preparePool(official: po);
+    final keys = await DeviceKeys.generate();
+    final link = await pair(keys, DeviceRole.booth, 'Booth');
+    final repo = BallotBoxRepository(memoryBallotBox(), keys);
+    final bl = BoothLink(StationClient(link, keys), repo, retryEvery: const Duration(milliseconds: 100));
+    await bl.fetchBallot();
+    await bl.start();
+    await eventually(() async => await repo.poolSize() > 0);
+    await bl.stop();
+
+    // Someone with access to the laptop copies an unused pool code and votes with it.
+    final stolen = (await (registry.select(registry.codePool)..where((p) => p.code.isNotNull())..limit(1)).getSingle());
+    await repo.setPoolMode(true, official: 'Booth officer');
+    await repo.castBallot(tokenHash: stolen.tokenHash, selections: {
+      for (final p in repo.ballot!.positions) p.id: [p.candidates.first.id],
+    });
+
+    final results = ResultsService(registry, laptopBox, station);
+    await results.closePolls(official: po);
+    await results.importBatch((await repo.exportBatch()).encode(), official: po);
+    final view = ResultsView(await results.computeResults(official: po));
+    expect(view.integrity['codesNeverIssued'], 1);
+    expect(view.clean, isFalse);
+    await repo.db.close();
   });
 }
