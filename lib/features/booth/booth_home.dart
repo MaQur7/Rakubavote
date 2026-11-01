@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -13,6 +14,10 @@ import '../../core/widgets/common.dart';
 import '../../l10n/app_localizations.dart';
 import '../../platform/beep.dart';
 import '../../station/ballot_package.dart';
+import '../../station/booth_link.dart';
+import '../../station/enrollment.dart';
+import '../../platform/photo_capture.dart';
+import '../device_setup/pair_screen.dart';
 import 'booth_controller.dart';
 import 'booth_screen.dart';
 
@@ -50,11 +55,50 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
   String? _error;
 
   BallotBoxRepository get _repo => ref.read(boothRepositoryProvider);
+  final _pollsClosed = ValueNotifier<bool>(false);
+  StreamSubscription<void>? _closedSub;
+  StreamSubscription<BoothLinkState>? _stateSub;
 
   @override
   void initState() {
     super.initState();
-    _refresh();
+    _refresh().then((_) => _startLink());
+  }
+
+  @override
+  void dispose() {
+    _closedSub?.cancel();
+    _stateSub?.cancel();
+    _pollsClosed.dispose();
+    super.dispose();
+  }
+
+  /// Connects to the laptop if paired: fetches the ballot and keeps codes in step.
+  Future<void> _startLink() async {
+    final link = ref.read(boothLinkProvider);
+    if (link == null) return;
+    try {
+      await link.fetchBallot();
+    } catch (err) {
+      if (mounted) setState(() => _error = err is PackageException ? packageFailureText(AppLocalizations.of(context), err) : null);
+    }
+    _closedSub ??= link.pollsClosed.listen((_) => _pollsClosed.value = true);
+    _stateSub ??= link.states.listen((_) {
+      if (mounted) setState(() {});
+      _refresh();
+    });
+    await link.start();
+    await _refresh();
+  }
+
+  Future<void> _saveVotesUsb() async {
+    final t = AppLocalizations.of(context);
+    final dir = await pickFolder();
+    if (dir == null) return;
+    final batch = await _repo.exportBatch();
+    final f = File('$dir/rakubavote-votes-${_repo.boothKeys.deviceId}-${batch.fingerprint}.json');
+    await f.writeAsString(batch.encode(), flush: true);
+    if (mounted) showMessage(context, t.votesSavedIn(f.path));
   }
 
   Future<void> _refresh() async {
@@ -101,6 +145,7 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
         child: BoothScreen(
           controller: controller,
           beep: AssetBeep(),
+          pollsClosed: _pollsClosed,
           onOfficerExit: () async {
             if (await _askPin(c) && c.mounted) Navigator.of(c).pop();
           },
@@ -136,6 +181,33 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
     if (entered == null) return false;
     final store = await ref.read(deviceStoreProvider.future);
     return store.verifyPin(entered);
+  }
+
+  Widget _linkCard(AppLocalizations t) {
+    final linkInfo = ref.watch(stationLinkProvider).value;
+    if (linkInfo == null) {
+      return PairCard(role: DeviceRole.booth, onPaired: (_) => _startLink());
+    }
+    final link = ref.watch(boothLinkProvider);
+    final state = link?.state ?? BoothLinkState.disconnected;
+    final ok = state == BoothLinkState.connected;
+    return SectionCard(
+      title: t.stationLinkTitle(linkInfo.stationName),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Row(children: [
+          Icon(ok ? Icons.wifi : Icons.wifi_off, color: ok ? RakubaColors.acaciaGreen : RakubaColors.clay),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(ok ? t.connectedToLaptop : t.reconnecting,
+                key: const ValueKey('booth-link-state'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+          ),
+        ]),
+        Text(t.laptopIdLine(linkInfo.stationId)),
+        if (link?.submittedBallots != null)
+          Text(t.votesSentToLaptop('${link!.submittedBallots}'),
+              style: const TextStyle(color: RakubaColors.acaciaGreen, fontWeight: FontWeight.w700)),
+      ]),
+    );
   }
 
   @override
@@ -187,6 +259,7 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
                   ),
               ]),
             ),
+            _linkCard(t),
             if (signed != null) ...[
               NoticeBox(child: Text(t.codesNote)),
               const SizedBox(height: 16),
@@ -195,6 +268,13 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
                 style: FilledButton.styleFrom(backgroundColor: RakubaColors.acaciaGreen),
                 onPressed: _start,
                 child: Text(t.startBooth),
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                key: const ValueKey('save-votes-usb'),
+                icon: const Icon(Icons.usb),
+                label: Text(t.saveVotesUsb),
+                onPressed: _saveVotesUsb,
               ),
             ],
           ]),

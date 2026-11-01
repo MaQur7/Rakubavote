@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:rakubavote/core/crypto/bytes.dart';
 import 'package:rakubavote/core/crypto/device_keys.dart';
 import 'package:rakubavote/core/db/ballot_box_db.dart';
@@ -5,8 +6,15 @@ import 'package:rakubavote/core/db/open_encrypted.dart';
 import 'package:rakubavote/core/db/registry_db.dart';
 import 'package:rakubavote/core/domain/ballot_definition.dart';
 
-RegistryDb memoryRegistry() => RegistryDb(openEncrypted(key: randomBytes(32)));
-BallotBoxDb memoryBallotBox() => BallotBoxDb(openEncrypted(key: randomBytes(32)));
+RegistryDb memoryRegistry() {
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+  return RegistryDb(openEncrypted(key: randomBytes(32)));
+}
+
+BallotBoxDb memoryBallotBox() {
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+  return BallotBoxDb(openEncrypted(key: randomBytes(32)));
+}
 
 /// Community association ballot like mockup A: three positions, two
 /// candidates each, plus an optional 13-candidate party position.

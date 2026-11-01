@@ -82,7 +82,19 @@ class BatchExports extends Table {
   Set<Column> get primaryKey => {batchSeq};
 }
 
-@DriftDatabase(tables: [BallotDefinitions, BallotMedia, Votes, ActiveTokens, UsedTokens, BatchExports, AuditLog])
+/// On the station laptop: the latest signed vote batch from each booth.
+/// Holds the booth's id and its signed batch only.
+class ImportedBatches extends Table {
+  TextColumn get boothId => text()();
+  IntColumn get batchSeq => integer()();
+  IntColumn get ballotCount => integer()();
+  TextColumn get signedBatch => text()();
+
+  @override
+  Set<Column> get primaryKey => {boothId};
+}
+
+@DriftDatabase(tables: [BallotDefinitions, BallotMedia, ImportedBatches, Votes, ActiveTokens, UsedTokens, BatchExports, AuditLog])
 class BallotBoxDb extends _$BallotBoxDb {
   BallotBoxDb(super.e);
 

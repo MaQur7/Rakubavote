@@ -36,6 +36,18 @@ class BallotBoxRepository {
   BallotDefinition? _ballot;
   BallotDefinition? get ballot => _ballot;
 
+  /// Called with a code's hash after a ballot is saved with it, so the
+  /// station link can tell the laptop and the other booths.
+  final List<void Function(String tokenHash)> usedListeners = [];
+
+  /// Hashes of the active (not yet used) codes on this booth.
+  Future<Set<String>> activeTokenHashes() async =>
+      {for (final r in await db.select(db.activeTokens).get()) r.tokenHash};
+
+  /// Hashes of the codes used at this booth.
+  Future<List<String>> usedTokenHashes() async =>
+      [for (final r in await db.select(db.usedTokens).get()) r.tokenHash]..sort();
+
   /// The pinned station key, or null before the first ballot is loaded.
   Future<Uint8List?> pinnedStationKey() async =>
       (await (db.select(db.ballotDefinitions)..limit(1)).getSingleOrNull())?.stationPublicKey;
@@ -169,6 +181,9 @@ class BallotBoxRepository {
             ));
       }
     });
+    for (final l in usedListeners) {
+      l(tokenHash);
+    }
     return ballotId;
   }
 

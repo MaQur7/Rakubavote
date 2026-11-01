@@ -1,5 +1,7 @@
 import '../l10n/app_localizations.dart';
+import '../station/station_client.dart';
 import 'checkin/checkin_service.dart';
+import 'results/results_service.dart';
 import 'register_lock/review_service.dart';
 import 'registration/registration_service.dart';
 import 'setup/election_service.dart';
@@ -14,6 +16,28 @@ String describeError(AppLocalizations t, Object e) {
       SetupFailure.duplicateCandidateNumber => t.errDuplicateNumber,
       SetupFailure.lowContrastColour => t.errLowContrast,
       SetupFailure.invalidValue => t.errInvalidValue,
+    };
+  }
+  if (e is LinkException) {
+    return switch (e.failure) {
+      LinkFailure.cannotReach => t.errCannotReachLaptop,
+      LinkFailure.wrongLaptop => t.errWrongLaptop,
+      LinkFailure.codeRefused => t.errPairingCode,
+      LinkFailure.rejected => t.errPairingRejected,
+      LinkFailure.timedOut => t.errPairingTimedOut,
+      LinkFailure.notPaired => t.errNotPaired,
+      LinkFailure.refused => t.errInvalidValue,
+    };
+  }
+  if (e is ResultsException) {
+    return switch (e.failure) {
+      ResultsFailure.noElection => t.errNoElection,
+      ResultsFailure.pollsNotOpen => t.errPollsNotOpen,
+      ResultsFailure.pollsNotClosed => t.errPollsNotClosed,
+      ResultsFailure.unknownBooth => t.errUnknownBooth,
+      ResultsFailure.badBatch => t.errBadBatch,
+      ResultsFailure.otherElection => t.errOtherElectionBatch,
+      ResultsFailure.olderBatch => t.errOlderBatch,
     };
   }
   if (e is CheckInException) {

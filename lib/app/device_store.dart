@@ -8,6 +8,7 @@ import '../core/db/backup.dart';
 import '../core/db/ballot_box_db.dart';
 import '../core/db/open_encrypted.dart';
 import '../core/db/registry_db.dart';
+import '../station/station_client.dart';
 
 enum DeviceMode {
   admin,
@@ -70,6 +71,17 @@ class DeviceStore {
   File get _vaultFile => File('${dir.path}/vault.json');
   File get registryFile => File('${dir.path}/registry.db');
   File get ballotBoxFile => File('${dir.path}/ballotbox.db');
+  File get _linkFile => File('${dir.path}/station.json');
+
+  /// The paired laptop (tablets only). Public information only.
+  Future<StationLink?> readLink() async =>
+      await _linkFile.exists() ? StationLink.fromJson(jsonDecode(await _linkFile.readAsString()) as Map) : null;
+
+  Future<void> writeLink(StationLink link) => _linkFile.writeAsString(jsonEncode(link.toJson()), flush: true);
+
+  Future<void> forgetLink() async {
+    if (await _linkFile.exists()) await _linkFile.delete();
+  }
 
   Future<DeviceInfo?> readInfo() async {
     if (!await _infoFile.exists() || !await _vaultFile.exists()) return null;

@@ -1,82 +1,89 @@
-# Station protocol (draft)
+# Station protocol
 
-Status: design agreed before milestone 1; implemented in milestone 6. Update this file with
-the code.
-
-All traffic stays inside the polling station. The laptop runs a `shelf` HTTP and WebSocket
-server on the local Wi-Fi (travel router or laptop hotspot). There is no internet requirement
-and no outside service.
+How the station laptop and the tablets talk. Implemented in `lib/station/`. Everything stays
+inside the polling station: the laptop runs a `shelf` HTTP and WebSocket server (default port
+47800) on the station Wi-Fi (travel router or laptop hotspot). No internet, no outside service.
 
 ## Roles
 
 | Role | Device | Talks to |
 |---|---|---|
-| Station admin | Laptop | Runs the server; holds `registry.db`; receives batches |
-| Check-in | Laptop, or tablet paired to it | Laptop |
+| Station admin | Laptop | Runs the server; holds `registry.db`; receives vote batches |
+| Check-in | Laptop (built-in desk), or a paired tablet | Laptop |
 | Booth | Android tablet | Laptop |
 
-## Pairing
+## Pairing (`lib/station/pairing.dart`)
 
-1. The officer opens *Add a device* on the laptop. It shows a QR code containing the laptop
-   address and port, the station's Ed25519 and X25519 public keys, the election id and a
-   one-time pairing secret (valid 5 minutes).
-2. The tablet scans it and sends `POST /pair` with its own public keys, the role it is set up
-   for, and an HMAC of its keys under the pairing secret.
-3. The laptop shows the tablet's short device id; the officer confirms it matches the tablet
-   screen and approves. The enrolment is written to the audit log.
-4. Both sides derive a per-device AES-256-GCM key: HKDF-SHA256 over X25519(station, device).
+1. On the laptop: **Devices → Start the station network → Show pairing code**. The code is
+   8 Crockford characters (40 bits), valid 10 minutes, shown as text and as a QR code holding
+   `RKVP1|<host>|<port>|<code>|<laptop id>`.
+2. On the tablet: **Connect to the laptop**, scan the QR (Android camera) or type the address and
+   code. The tablet calls `GET /hello` (laptop public keys), checks the laptop id when it came from
+   the QR, then `POST /pair` with its role, label, Ed25519 and X25519 public keys and
+   `HMAC-SHA256(code, canonical{role,label,signing,exchange,station})`. Five wrong codes disable
+   the code.
+3. The laptop lists the request with the tablet's device id; the tablet shows the same id. The
+   officer compares and presses **Approve**. The enrolment is written to the audit log. The
+   tablet polls `GET /pair/<request>` and stores the link (`station.json`: address and the
+   laptop's public keys only).
 
-## Envelope
+## Channel (`lib/station/channel.dart`)
 
-Every message after pairing:
+Shared key per device: HKDF-SHA256 over X25519(laptop, device), salt = both device ids sorted,
+info `rakubavote-channel-v1`. Every message after pairing is an envelope:
 
 ```json
-{"type": "...", "election": "...", "device": "<device id>", "seq": 17,
- "nonce": "...", "body": "<AES-GCM ciphertext>", "sig": "<Ed25519 over everything above>"}
+{"type": "...", "election": "...", "device": "<sender id>", "seq": 1730458123456789,
+ "nonce": "...", "body": "<AES-256-GCM ciphertext + tag>", "sig": "<Ed25519 over all fields>"}
 ```
 
-`seq` increases per device and direction; replays and old sequence numbers are rejected.
+`seq` is a monotonic microsecond counter; replays and older sequence numbers are rejected. The
+AES-GCM associated data binds type, election, sender and seq.
 
-## Ballot package (USB, available now)
+## Requests (`POST /rpc`, one envelope in, one envelope out)
 
-`rakubavote-ballot-<fingerprint>.rkvballot` is canonical JSON:
-`{"type":"rakubavote-ballot-package","v":1,"station":<laptop Ed25519 public key>,
-"ballot":<signed ballot artifact>,"media":{<sha256>:<base64url image>}}`.
-The booth verifies the signature, every image hash and that every hash the ballot refers to is
-present. The first package pins the laptop's key (D19). It holds no personal data.
-
-## Endpoints
-
-| Call | Who | Purpose |
+| Type | Allowed role | Purpose |
 |---|---|---|
-| `GET /hello` | any | Station name, election id, state, public keys (no secrets) |
-| `POST /pair` | new device | Pairing (above) |
-| `GET /ballot` | booth, check-in | Signed ballot + candidate photos/symbols (verified by hash) |
-| `GET /register` | check-in only | Signed locked register + voter photos |
-| `POST /checkins` | check-in tablet | Check-ins and issued code hashes (when check-in is not on the laptop) |
-| `WS /events` | booths, check-in | Live events (below) |
-| `POST /vote-batch` | booth | Signed vote batch at closing |
+| `ballot.get` | any paired | Ballot package (signed ballot + images by hash) |
+| `checkin.search` / `checkin.card` | check-in | Find a voter (name/number, or voter card QR) |
+| `checkin.issue` / `checkin.manual` | check-in | Check in; the reply holds the one-time code |
+| `checkin.counts` | check-in | Checked in / registered |
+| `batch.submit` | booth | Signed vote batch (verified against the booth's enrolled key) |
 
-## Live events (`WS /events`)
+Errors come back as an encrypted `error` envelope with a code (for example `alreadyCheckedIn`).
+Unpaired or removed devices get HTTP 403.
+
+## Live events (`GET /events`, WebSocket)
+
+The device first sends a `hello` envelope (a booth includes the hashes of codes it used while
+disconnected). Then:
 
 | Event | Direction | Content |
 |---|---|---|
-| `polls.opened` / `polls.closed` | laptop → all | State change; booths lock on close |
-| `token.activate` | laptop → booths | One code hash. Never the code, never a voter |
+| `polls.state` | laptop → all | `polling` / `closed`; on `closed` a booth stops and sends its batch |
+| `token.sync` | laptop → booth (on connect) | All active code hashes, sorted |
+| `token.activate` | laptop → booths | One new code hash (never the code, never a voter) |
 | `token.used` | booth → laptop → other booths | One code hash |
-| `token.sync` | laptop → booth (on reconnect) | Current set of active code hashes, sorted |
-| `heartbeat` | both | Battery, paper status, connection |
 
-Votes are **not** streamed during polling; booths keep them until closing. This avoids a
-timing link between a check-in and a vote arriving at the laptop.
+The laptop watches its issued-codes table, so a code from any check-in desk reaches the booths.
+Votes are **not** streamed during polling; booths keep them until the polls close.
+
+## Ballot package (USB) — `.rkvballot`
+
+`{"type":"rakubavote-ballot-package","v":1,"station":<laptop Ed25519 key>,"ballot":<signed
+ballot>,"media":{<sha256>:<base64url image>}}`. The booth verifies the signature, every image
+hash and that every hash the ballot refers to is present. The first package pins the laptop's
+key (D19). No personal data.
+
+## Vote batch (USB fallback) — `rakubavote-votes-<booth>-<fingerprint>.json`
+
+The booth's signed batch artifact (D12), saved from the booth panel with **Save votes to USB**
+and loaded on the laptop with **Import votes from USB**. Same checks as over Wi-Fi.
 
 ## When Wi-Fi fails
 
-- Booths cannot accept new codes until Wi-Fi is back (live activation, decision D1).
-- The presiding officer may switch a booth to the **pre-loaded code pool** with the officer
-  PIN. The switch is audit-logged, and closing reports any code used at two booths or never
-  issued.
-- **USB:** the same signed envelopes are written as `.rkv` files (ballot, register, vote
-  batches, results). Import checks enrolment and signatures exactly as over Wi-Fi.
-- **QR:** pairing, results, fingerprints and small vote batches can move as a numbered
-  sequence of QR codes (`RKVQ/<part>/<total>/<data>`), reassembled and verified as a whole.
+- Booths keep the votes they already recorded. They cannot accept new codes until Wi-Fi is back
+  (live activation, D1). Used codes are reported on reconnect.
+- Votes can always be moved by USB.
+- **Not built yet:** the pre-loaded code pool that D1 allows with the officer PIN, and moving
+  results by multi-part QR codes. Until then, keep the station router powered.

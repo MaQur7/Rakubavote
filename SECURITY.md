@@ -122,11 +122,23 @@ rule; the committee announces results from the recorded data.
 
 ## Network
 
+### What the laptop learns on election day
+
+To keep codes valid at every booth, the laptop sends each new code's hash to the booths and
+booths report when a code is used. The laptop therefore briefly knows "a code issued at 10:42
+was used at booth 2". It does not store times for codes, and booths never send votes during
+polling, so this cannot be linked to how anyone voted. If only one person votes at a booth all
+day, that booth's batch reveals their choice; place booths so several voters use each one.
+
+
 - Everything works with **no internet**. The station uses its own local Wi-Fi.
 - Online upload (Supabase) is **not built** and is off by default; it will only be added
   with the project lead's approval.
-- Devices pair with the laptop by scanning a QR code; after pairing, messages are signed and
-  encrypted per device (see `docs/protocol.md`).
+- Tablets pair with the laptop using a short-lived code and the officer's approval after
+  comparing device ids. Every message after that is signed (Ed25519) and encrypted (AES-GCM, key
+  from X25519) per device, with replay protection (see `docs/protocol.md`).
+- A tablet removed from the Devices list can no longer call the laptop, and its votes are not
+  counted.
 
 ## What this does not protect against
 

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/theme.dart';
 import '../features/admin/admin_shell.dart';
 import '../features/booth/booth_home.dart';
+import '../features/checkin/checkin_tablet_home.dart';
 import '../features/device_setup/device_setup_screen.dart';
 import '../features/device_setup/unlock_screen.dart';
 import '../l10n/app_localizations.dart';
@@ -44,7 +45,7 @@ class _AppRootState extends ConsumerState<AppRoot> {
       return switch (session.info.mode) {
         DeviceMode.admin => const AdminShell(),
         DeviceMode.booth => const BoothHome(),
-        DeviceMode.checkin => const _ModeComingLater(),
+        DeviceMode.checkin => const CheckInTabletHome(),
       };
     }
     final store = ref.watch(deviceStoreProvider);
@@ -67,22 +68,3 @@ class _AppRootState extends ConsumerState<AppRoot> {
   }
 }
 
-/// The check-in tablet connects to the laptop in milestone 6.
-class _ModeComingLater extends ConsumerWidget {
-  const _ModeComingLater();
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final t = AppLocalizations.of(context);
-    return Scaffold(
-      body: Center(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Text(t.comingLater, style: const TextStyle(fontSize: 18)),
-          const SizedBox(height: 16),
-          OutlinedButton(
-              onPressed: () => ref.read(sessionProvider.notifier).lock(), child: Text(t.lockDevice)),
-        ]),
-      ),
-      backgroundColor: RakubaColors.paper,
-    );
-  }
-}

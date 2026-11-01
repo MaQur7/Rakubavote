@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -22,7 +23,11 @@ class BoothScreen extends StatefulWidget {
     this.onOfficerExit,
     this.beep,
     this.clearAfter = const Duration(seconds: 10),
+    this.pollsClosed,
   });
+
+  /// Becomes true when the laptop closes the polls; the booth then stops.
+  final ValueListenable<bool>? pollsClosed;
 
   final BoothController controller;
   /// Called after a long press on the top corner (the officer leaves).
@@ -43,6 +48,7 @@ class _BoothScreenState extends State<BoothScreen> {
   void initState() {
     super.initState();
     c.addListener(_changed);
+    widget.pollsClosed?.addListener(_changed);
     c.repo.media(c.ballot.mediaHashes).then((m) {
       if (mounted) setState(() => _media = m);
     });
@@ -51,6 +57,7 @@ class _BoothScreenState extends State<BoothScreen> {
   @override
   void dispose() {
     c.removeListener(_changed);
+    widget.pollsClosed?.removeListener(_changed);
     super.dispose();
   }
 
@@ -68,7 +75,9 @@ class _BoothScreenState extends State<BoothScreen> {
       child: Theme(
         data: buildRakubaTheme(arabic: arabic),
         child: Builder(builder: (context) {
+          final closed = widget.pollsClosed?.value ?? false;
           final page = switch (c.stage) {
+            BoothStage.welcome when closed => const _ClosedPage(),
             BoothStage.welcome => _WelcomePage(c: c, media: _media),
             BoothStage.position => c.position.candidates.length >= 13
                 ? _LongListPage(key: ValueKey('long-${c.index}'), c: c, media: _media)
@@ -856,6 +865,30 @@ class _EndPageState extends State<_EndPage> {
         const SizedBox(height: 28),
         Text(t.clearsIn('$_left'), textAlign: TextAlign.center, style: const TextStyle(fontSize: 20)),
       ]),
+    );
+  }
+}
+
+class _ClosedPage extends StatelessWidget {
+  const _ClosedPage();
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          const Icon(Icons.how_to_vote_outlined, size: 96, color: RakubaColors.ink),
+          const SizedBox(height: 16),
+          Text(t.pollsClosedTitle,
+              key: const ValueKey('polls-closed'),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 34, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 12),
+          Text(t.pollsClosedNote, textAlign: TextAlign.center, style: const TextStyle(fontSize: 20)),
+        ]),
+      ),
     );
   }
 }

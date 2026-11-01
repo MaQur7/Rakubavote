@@ -508,6 +508,336 @@ class BallotMediaCompanion extends UpdateCompanion<MediaItem> {
   }
 }
 
+class $ImportedBatchesTable extends ImportedBatches
+    with TableInfo<$ImportedBatchesTable, ImportedBatche> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ImportedBatchesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _boothIdMeta = const VerificationMeta(
+    'boothId',
+  );
+  @override
+  late final GeneratedColumn<String> boothId = GeneratedColumn<String>(
+    'booth_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _batchSeqMeta = const VerificationMeta(
+    'batchSeq',
+  );
+  @override
+  late final GeneratedColumn<int> batchSeq = GeneratedColumn<int>(
+    'batch_seq',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ballotCountMeta = const VerificationMeta(
+    'ballotCount',
+  );
+  @override
+  late final GeneratedColumn<int> ballotCount = GeneratedColumn<int>(
+    'ballot_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _signedBatchMeta = const VerificationMeta(
+    'signedBatch',
+  );
+  @override
+  late final GeneratedColumn<String> signedBatch = GeneratedColumn<String>(
+    'signed_batch',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    boothId,
+    batchSeq,
+    ballotCount,
+    signedBatch,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'imported_batches';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ImportedBatche> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('booth_id')) {
+      context.handle(
+        _boothIdMeta,
+        boothId.isAcceptableOrUnknown(data['booth_id']!, _boothIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_boothIdMeta);
+    }
+    if (data.containsKey('batch_seq')) {
+      context.handle(
+        _batchSeqMeta,
+        batchSeq.isAcceptableOrUnknown(data['batch_seq']!, _batchSeqMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_batchSeqMeta);
+    }
+    if (data.containsKey('ballot_count')) {
+      context.handle(
+        _ballotCountMeta,
+        ballotCount.isAcceptableOrUnknown(
+          data['ballot_count']!,
+          _ballotCountMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_ballotCountMeta);
+    }
+    if (data.containsKey('signed_batch')) {
+      context.handle(
+        _signedBatchMeta,
+        signedBatch.isAcceptableOrUnknown(
+          data['signed_batch']!,
+          _signedBatchMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_signedBatchMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {boothId};
+  @override
+  ImportedBatche map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ImportedBatche(
+      boothId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}booth_id'],
+      )!,
+      batchSeq: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}batch_seq'],
+      )!,
+      ballotCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}ballot_count'],
+      )!,
+      signedBatch: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}signed_batch'],
+      )!,
+    );
+  }
+
+  @override
+  $ImportedBatchesTable createAlias(String alias) {
+    return $ImportedBatchesTable(attachedDatabase, alias);
+  }
+}
+
+class ImportedBatche extends DataClass implements Insertable<ImportedBatche> {
+  final String boothId;
+  final int batchSeq;
+  final int ballotCount;
+  final String signedBatch;
+  const ImportedBatche({
+    required this.boothId,
+    required this.batchSeq,
+    required this.ballotCount,
+    required this.signedBatch,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['booth_id'] = Variable<String>(boothId);
+    map['batch_seq'] = Variable<int>(batchSeq);
+    map['ballot_count'] = Variable<int>(ballotCount);
+    map['signed_batch'] = Variable<String>(signedBatch);
+    return map;
+  }
+
+  ImportedBatchesCompanion toCompanion(bool nullToAbsent) {
+    return ImportedBatchesCompanion(
+      boothId: Value(boothId),
+      batchSeq: Value(batchSeq),
+      ballotCount: Value(ballotCount),
+      signedBatch: Value(signedBatch),
+    );
+  }
+
+  factory ImportedBatche.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ImportedBatche(
+      boothId: serializer.fromJson<String>(json['boothId']),
+      batchSeq: serializer.fromJson<int>(json['batchSeq']),
+      ballotCount: serializer.fromJson<int>(json['ballotCount']),
+      signedBatch: serializer.fromJson<String>(json['signedBatch']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'boothId': serializer.toJson<String>(boothId),
+      'batchSeq': serializer.toJson<int>(batchSeq),
+      'ballotCount': serializer.toJson<int>(ballotCount),
+      'signedBatch': serializer.toJson<String>(signedBatch),
+    };
+  }
+
+  ImportedBatche copyWith({
+    String? boothId,
+    int? batchSeq,
+    int? ballotCount,
+    String? signedBatch,
+  }) => ImportedBatche(
+    boothId: boothId ?? this.boothId,
+    batchSeq: batchSeq ?? this.batchSeq,
+    ballotCount: ballotCount ?? this.ballotCount,
+    signedBatch: signedBatch ?? this.signedBatch,
+  );
+  ImportedBatche copyWithCompanion(ImportedBatchesCompanion data) {
+    return ImportedBatche(
+      boothId: data.boothId.present ? data.boothId.value : this.boothId,
+      batchSeq: data.batchSeq.present ? data.batchSeq.value : this.batchSeq,
+      ballotCount: data.ballotCount.present
+          ? data.ballotCount.value
+          : this.ballotCount,
+      signedBatch: data.signedBatch.present
+          ? data.signedBatch.value
+          : this.signedBatch,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ImportedBatche(')
+          ..write('boothId: $boothId, ')
+          ..write('batchSeq: $batchSeq, ')
+          ..write('ballotCount: $ballotCount, ')
+          ..write('signedBatch: $signedBatch')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(boothId, batchSeq, ballotCount, signedBatch);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ImportedBatche &&
+          other.boothId == this.boothId &&
+          other.batchSeq == this.batchSeq &&
+          other.ballotCount == this.ballotCount &&
+          other.signedBatch == this.signedBatch);
+}
+
+class ImportedBatchesCompanion extends UpdateCompanion<ImportedBatche> {
+  final Value<String> boothId;
+  final Value<int> batchSeq;
+  final Value<int> ballotCount;
+  final Value<String> signedBatch;
+  final Value<int> rowid;
+  const ImportedBatchesCompanion({
+    this.boothId = const Value.absent(),
+    this.batchSeq = const Value.absent(),
+    this.ballotCount = const Value.absent(),
+    this.signedBatch = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ImportedBatchesCompanion.insert({
+    required String boothId,
+    required int batchSeq,
+    required int ballotCount,
+    required String signedBatch,
+    this.rowid = const Value.absent(),
+  }) : boothId = Value(boothId),
+       batchSeq = Value(batchSeq),
+       ballotCount = Value(ballotCount),
+       signedBatch = Value(signedBatch);
+  static Insertable<ImportedBatche> custom({
+    Expression<String>? boothId,
+    Expression<int>? batchSeq,
+    Expression<int>? ballotCount,
+    Expression<String>? signedBatch,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (boothId != null) 'booth_id': boothId,
+      if (batchSeq != null) 'batch_seq': batchSeq,
+      if (ballotCount != null) 'ballot_count': ballotCount,
+      if (signedBatch != null) 'signed_batch': signedBatch,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ImportedBatchesCompanion copyWith({
+    Value<String>? boothId,
+    Value<int>? batchSeq,
+    Value<int>? ballotCount,
+    Value<String>? signedBatch,
+    Value<int>? rowid,
+  }) {
+    return ImportedBatchesCompanion(
+      boothId: boothId ?? this.boothId,
+      batchSeq: batchSeq ?? this.batchSeq,
+      ballotCount: ballotCount ?? this.ballotCount,
+      signedBatch: signedBatch ?? this.signedBatch,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (boothId.present) {
+      map['booth_id'] = Variable<String>(boothId.value);
+    }
+    if (batchSeq.present) {
+      map['batch_seq'] = Variable<int>(batchSeq.value);
+    }
+    if (ballotCount.present) {
+      map['ballot_count'] = Variable<int>(ballotCount.value);
+    }
+    if (signedBatch.present) {
+      map['signed_batch'] = Variable<String>(signedBatch.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ImportedBatchesCompanion(')
+          ..write('boothId: $boothId, ')
+          ..write('batchSeq: $batchSeq, ')
+          ..write('ballotCount: $ballotCount, ')
+          ..write('signedBatch: $signedBatch, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $VotesTable extends Votes with TableInfo<$VotesTable, VoteRecord> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -1824,6 +2154,9 @@ abstract class _$BallotBoxDb extends GeneratedDatabase {
   late final $BallotDefinitionsTable ballotDefinitions =
       $BallotDefinitionsTable(this);
   late final $BallotMediaTable ballotMedia = $BallotMediaTable(this);
+  late final $ImportedBatchesTable importedBatches = $ImportedBatchesTable(
+    this,
+  );
   late final $VotesTable votes = $VotesTable(this);
   late final $ActiveTokensTable activeTokens = $ActiveTokensTable(this);
   late final $UsedTokensTable usedTokens = $UsedTokensTable(this);
@@ -1836,6 +2169,7 @@ abstract class _$BallotBoxDb extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     ballotDefinitions,
     ballotMedia,
+    importedBatches,
     votes,
     activeTokens,
     usedTokens,
@@ -2177,6 +2511,206 @@ typedef $$BallotMediaTableProcessedTableManager =
       $$BallotMediaTableUpdateCompanionBuilder,
       (MediaItem, BaseReferences<_$BallotBoxDb, $BallotMediaTable, MediaItem>),
       MediaItem,
+      PrefetchHooks Function()
+    >;
+typedef $$ImportedBatchesTableCreateCompanionBuilder =
+    ImportedBatchesCompanion Function({
+      required String boothId,
+      required int batchSeq,
+      required int ballotCount,
+      required String signedBatch,
+      Value<int> rowid,
+    });
+typedef $$ImportedBatchesTableUpdateCompanionBuilder =
+    ImportedBatchesCompanion Function({
+      Value<String> boothId,
+      Value<int> batchSeq,
+      Value<int> ballotCount,
+      Value<String> signedBatch,
+      Value<int> rowid,
+    });
+
+class $$ImportedBatchesTableFilterComposer
+    extends Composer<_$BallotBoxDb, $ImportedBatchesTable> {
+  $$ImportedBatchesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get boothId => $composableBuilder(
+    column: $table.boothId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get batchSeq => $composableBuilder(
+    column: $table.batchSeq,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ballotCount => $composableBuilder(
+    column: $table.ballotCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get signedBatch => $composableBuilder(
+    column: $table.signedBatch,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ImportedBatchesTableOrderingComposer
+    extends Composer<_$BallotBoxDb, $ImportedBatchesTable> {
+  $$ImportedBatchesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get boothId => $composableBuilder(
+    column: $table.boothId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get batchSeq => $composableBuilder(
+    column: $table.batchSeq,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get ballotCount => $composableBuilder(
+    column: $table.ballotCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get signedBatch => $composableBuilder(
+    column: $table.signedBatch,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ImportedBatchesTableAnnotationComposer
+    extends Composer<_$BallotBoxDb, $ImportedBatchesTable> {
+  $$ImportedBatchesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get boothId =>
+      $composableBuilder(column: $table.boothId, builder: (column) => column);
+
+  GeneratedColumn<int> get batchSeq =>
+      $composableBuilder(column: $table.batchSeq, builder: (column) => column);
+
+  GeneratedColumn<int> get ballotCount => $composableBuilder(
+    column: $table.ballotCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get signedBatch => $composableBuilder(
+    column: $table.signedBatch,
+    builder: (column) => column,
+  );
+}
+
+class $$ImportedBatchesTableTableManager
+    extends
+        RootTableManager<
+          _$BallotBoxDb,
+          $ImportedBatchesTable,
+          ImportedBatche,
+          $$ImportedBatchesTableFilterComposer,
+          $$ImportedBatchesTableOrderingComposer,
+          $$ImportedBatchesTableAnnotationComposer,
+          $$ImportedBatchesTableCreateCompanionBuilder,
+          $$ImportedBatchesTableUpdateCompanionBuilder,
+          (
+            ImportedBatche,
+            BaseReferences<
+              _$BallotBoxDb,
+              $ImportedBatchesTable,
+              ImportedBatche
+            >,
+          ),
+          ImportedBatche,
+          PrefetchHooks Function()
+        > {
+  $$ImportedBatchesTableTableManager(
+    _$BallotBoxDb db,
+    $ImportedBatchesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ImportedBatchesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ImportedBatchesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ImportedBatchesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> boothId = const Value.absent(),
+                Value<int> batchSeq = const Value.absent(),
+                Value<int> ballotCount = const Value.absent(),
+                Value<String> signedBatch = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ImportedBatchesCompanion(
+                boothId: boothId,
+                batchSeq: batchSeq,
+                ballotCount: ballotCount,
+                signedBatch: signedBatch,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String boothId,
+                required int batchSeq,
+                required int ballotCount,
+                required String signedBatch,
+                Value<int> rowid = const Value.absent(),
+              }) => ImportedBatchesCompanion.insert(
+                boothId: boothId,
+                batchSeq: batchSeq,
+                ballotCount: ballotCount,
+                signedBatch: signedBatch,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ImportedBatchesTable, ImportedBatche>(table),
+                  BaseReferences<
+                    _$BallotBoxDb,
+                    $ImportedBatchesTable,
+                    ImportedBatche
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ImportedBatchesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$BallotBoxDb,
+      $ImportedBatchesTable,
+      ImportedBatche,
+      $$ImportedBatchesTableFilterComposer,
+      $$ImportedBatchesTableOrderingComposer,
+      $$ImportedBatchesTableAnnotationComposer,
+      $$ImportedBatchesTableCreateCompanionBuilder,
+      $$ImportedBatchesTableUpdateCompanionBuilder,
+      (
+        ImportedBatche,
+        BaseReferences<_$BallotBoxDb, $ImportedBatchesTable, ImportedBatche>,
+      ),
+      ImportedBatche,
       PrefetchHooks Function()
     >;
 typedef $$VotesTableCreateCompanionBuilder = VotesCompanion Function({
@@ -2998,6 +3532,8 @@ class $BallotBoxDbManager {
       $$BallotDefinitionsTableTableManager(_db, _db.ballotDefinitions);
   $$BallotMediaTableTableManager get ballotMedia =>
       $$BallotMediaTableTableManager(_db, _db.ballotMedia);
+  $$ImportedBatchesTableTableManager get importedBatches =>
+      $$ImportedBatchesTableTableManager(_db, _db.importedBatches);
   $$VotesTableTableManager get votes =>
       $$VotesTableTableManager(_db, _db.votes);
   $$ActiveTokensTableTableManager get activeTokens =>

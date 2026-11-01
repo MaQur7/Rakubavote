@@ -134,8 +134,31 @@ What the voter does: types the code, chooses a language, picks a candidate (or *
 each screen, checks the choices, presses **Confirm my vote**, hears a long beep and sees
 **End**. The screen clears by itself after 10 seconds.
 
-Codes reach the booths from the laptop over the station Wi-Fi; this is added in milestone 6
-together with closing the polls and showing results.
+### Connect the tablets to the laptop (before polls open)
+
+1. Switch on the travel router (or the laptop hotspot) and join the laptop and all tablets to it.
+2. On the laptop, press the **Devices** icon in the top bar, then **Start the station network**
+   and **Show pairing code**.
+3. On each tablet, choose **Connect to the laptop**. Scan the laptop's QR code, or type the
+   laptop address and the pairing code shown on the laptop.
+4. The laptop shows a request with a device id. Check that the tablet shows **the same id**,
+   then press **Approve**.
+5. A booth then loads the ballot from the laptop by itself (or use the USB file). A check-in
+   tablet shows the check-in desk.
+
+Each code is valid at the booths as soon as it is issued. If the Wi-Fi drops, booths cannot
+accept new codes until it is back; votes already recorded are safe.
+
+### Closing the polls and results (tab "4 Results")
+
+1. Press **Close the polls** and confirm. Check-in stops; booths finish and send their votes.
+2. Wait until every booth shows **Votes received**. If a booth cannot reach the laptop, on that
+   booth press **Save votes to USB**, then on the laptop press **Import votes from USB**.
+3. Press **Show results**. The laptop counts, checks that check-ins match votes, and flags ties.
+   Ties are not broken: the committee decides, as the election rules say.
+4. Read out the **results fingerprint**. Agents and observers copy it, or scan **Show signed QR
+   code**. Press **Save signed file to USB** to keep the signed results.
+5. If a late batch arrives, import it and press **Count again**.
 
 ## Project status
 
@@ -147,7 +170,7 @@ together with closing the polls and showing results.
 | 3 | Public review, objections and register lock | Done |
 | 4 | Check-in and voting codes | Done |
 | 5 | Voting booth screens | Done |
-| 6 | Station network, closing and results | Planned |
+| 6 | Station network, closing and results | Done |
 | 7 | Printing voter registration cards | Planned |
 | 8 | Tablet kiosk mode and release packages | Planned |
 

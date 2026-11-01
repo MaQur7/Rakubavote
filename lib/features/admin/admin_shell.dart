@@ -9,6 +9,8 @@ import '../register_lock/review_screen.dart';
 import '../../core/db/registry_db.dart';
 import '../checkin/checkin_screen.dart';
 import '../registration/registration_screen.dart';
+import '../results/results_screen.dart';
+import '../station_admin/devices_screen.dart';
 import '../setup/setup_screen.dart';
 
 /// Station admin: black top bar with the four phases (mockups A–D).
@@ -112,6 +114,14 @@ class _AdminShellState extends ConsumerState<AdminShell> {
                         );
                       },
                     ),
+                    IconButton(
+                      key: const ValueKey('open-devices'),
+                      tooltip: t.devicesTitle,
+                      color: RakubaColors.white,
+                      icon: const Icon(Icons.devices_other),
+                      onPressed: () => Navigator.of(context)
+                          .push(MaterialPageRoute<void>(builder: (_) => const DevicesScreen())),
+                    ),
                     StatusPill(t.offlineSavedLaptop),
                     const SizedBox(width: 8),
                     IconButton(
@@ -131,6 +141,7 @@ class _AdminShellState extends ConsumerState<AdminShell> {
               0 => const SetupScreen(),
               1 => const RegistrationScreen(),
               2 => const ReviewScreen(),
+              3 => const ResultsScreen(),
               _ => Center(
                 child: Padding(
                   padding: const EdgeInsets.all(24),

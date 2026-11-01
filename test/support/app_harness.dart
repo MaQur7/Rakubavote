@@ -33,6 +33,10 @@ void useLaptopScreen(WidgetTester tester) {
   addTearDown(tester.view.reset);
 }
 
+/// The provider container of the most recent [appWithSession] (to stop the
+/// station server or read providers in tests).
+late ProviderContainer lastContainer;
+
 Widget appWithSession(DeviceSession session, {Locale locale = const Locale('en')}) {
   // Each test opens its own in-memory databases; drift's duplicate-instance
   // warning does not apply.
@@ -42,6 +46,7 @@ Widget appWithSession(DeviceSession session, {Locale locale = const Locale('en')
   ]);
   container.read(sessionProvider.notifier).unlocked(session);
   container.read(localeProvider.notifier).set(locale);
+  lastContainer = container;
   return UncontrolledProviderScope(container: container, child: const RakubavoteApp());
 }
 

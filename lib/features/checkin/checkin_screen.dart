@@ -6,12 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
 import '../../core/crypto/voter_card_code.dart';
 import '../../core/crypto/voting_token.dart';
-import '../../core/db/registry_db.dart';
 import '../../core/format.dart';
 import '../../core/theme.dart';
 import '../../core/widgets/common.dart';
 import '../../l10n/app_localizations.dart';
 import '../common_errors.dart';
+import '../../platform/qr_scan.dart';
+import 'checkin_backend.dart';
 import 'checkin_service.dart';
 
 /// Mockup 1: the check-in desk. Find the voter by card or name, compare
@@ -29,8 +30,8 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
   final _query = TextEditingController();
   final _focus = FocusNode();
   Timer? _debounce;
-  List<VoterStatus> _results = const [];
-  VoterStatus? _selected;
+  List<VoterView> _results = const [];
+  VoterView? _selected;
   String? _method;
   String? _notice;
   String? _token;
@@ -44,7 +45,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
     super.dispose();
   }
 
-  CheckInService get _svc => ref.read(checkInServiceProvider);
+  CheckInBackend get _svc => ref.read(checkInBackendProvider);
 
   void _reset() {
     _debounce?.cancel();
@@ -66,7 +67,13 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
   }
 
   Future<void> _search(String text) async {
-    final r = await _svc.search(text);
+    final List<VoterView> r;
+    try {
+      r = await _svc.search(text);
+    } catch (err) {
+      if (mounted) setState(() => _notice = describeError(AppLocalizations.of(context), err));
+      return;
+    }
     if (!mounted) return;
     setState(() {
       _token = null;
@@ -80,7 +87,13 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
   Future<void> _onSubmitted(String text) async {
     final t = AppLocalizations.of(context);
     if (!text.trim().startsWith('${VoterCardCode.prefix}.')) return _search(text);
-    final r = await _svc.lookupCard(text.trim());
+    final CardView r;
+    try {
+      r = await _svc.lookupCard(text.trim());
+    } catch (err) {
+      if (mounted) setState(() => _notice = describeError(t, err));
+      return;
+    }
     if (!mounted) return;
     setState(() {
       _token = null;
@@ -94,10 +107,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
         CardResult.notOnRegister => t.cardNotOnRegister,
       };
     });
-    if (r.result == CardResult.valid) {
-      final checked = await _svc.isCheckedIn(r.voter!.id);
-      if (mounted) setState(() => _selected = VoterStatus(r.voter!, checked));
-    }
+    if (r.result == CardResult.valid) setState(() => _selected = r.voter);
   }
 
   Future<void> _issue() async {
@@ -105,10 +115,10 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
     final v = _selected!;
     setState(() => _busy = true);
     try {
-      final token = await _svc.checkIn(v.voter.id, method: _method ?? 'name', official: ref.read(officialProvider));
+      final token = await _svc.checkIn(v.id, method: _method ?? 'name');
       setState(() {
         _token = token;
-        _selected = VoterStatus(v.voter, true);
+        _selected = v.withCheckedIn(true);
       });
       // Printing the slip comes in milestone 7.
     } catch (err) {
@@ -167,7 +177,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
               constraints: const BoxConstraints(maxWidth: 680),
               child: ListView(padding: const EdgeInsets.all(24), children: [
                 StreamBuilder<({int checkedIn, int registered})>(
-                  stream: ref.watch(checkInServiceProvider).watchCounts(),
+                  stream: ref.watch(checkInBackendProvider).counts(),
                   builder: (context, s) => Text(
                     s.data == null ? '' : t.checkedInCount('${s.data!.checkedIn}', '${s.data!.registered}'),
                     key: const ValueKey('checkin-count'),
@@ -175,6 +185,22 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                   ),
                 ),
                 FieldLabel(t.findVoter),
+                if (canScanWithCamera)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: OutlinedButton.icon(
+                      key: const ValueKey('scan-card'),
+                      icon: const Icon(Icons.qr_code_scanner),
+                      label: Text(t.scanQrCard),
+                      onPressed: () async {
+                        final text = await scanQrWithCamera(context, title: t.scanQrCard);
+                        if (text != null) {
+                          _query.text = text;
+                          await _onSubmitted(text);
+                        }
+                      },
+                    ),
+                  ),
                 TextField(
                   key: const ValueKey('checkin-query'),
                   controller: _query,
@@ -201,13 +227,13 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                         for (final r in _results)
                           ListTile(
                             minTileHeight: RakubaSizes.minTouch,
-                            leading: PhotoBox(bytes: r.voter.photo, size: 44),
-                            title: Text(r.voter.fullName, style: const TextStyle(fontWeight: FontWeight.w700)),
-                            subtitle: Text('${t.voterNoLine(voterNoLabel(r.voter.voterNo))} · ${r.voter.groupName}'),
+                            leading: PhotoBox(bytes: r.photo, size: 44),
+                            title: Text(r.fullName, style: const TextStyle(fontWeight: FontWeight.w700)),
+                            subtitle: Text('${t.voterNoLine(voterNoLabel(r.voterNo))} · ${r.groupName}'),
                             trailing: r.checkedIn
                                 ? Text(t.statusCheckedIn, style: const TextStyle(color: RakubaColors.clay))
                                 : null,
-                            selected: _selected?.voter.id == r.voter.id,
+                            selected: _selected?.id == r.id,
                             onTap: () => setState(() {
                               _selected = r;
                               _token = null;
@@ -268,7 +294,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
 
 class _VoterCard extends StatelessWidget {
   const _VoterCard({required this.status, required this.busy, required this.issued, required this.onIssue});
-  final VoterStatus status;
+  final VoterView status;
   final bool busy;
   final bool issued;
   final VoidCallback onIssue;
@@ -276,7 +302,7 @@ class _VoterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
-    final v = status.voter;
+    final v = status;
     return SectionCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -364,7 +390,7 @@ class _ManualCheckInDialogState extends ConsumerState<_ManualCheckInDialog> {
   final _details = TextEditingController();
   ManualReason? _reason;
   String? _error;
-  Voter? _found;
+  VoterView? _found;
 
   @override
   void dispose() {
@@ -383,8 +409,15 @@ class _ManualCheckInDialogState extends ConsumerState<_ManualCheckInDialog> {
 
   Future<void> _lookup(String text) async {
     final n = int.tryParse(text.trim());
-    final r = n == null ? const <VoterStatus>[] : await ref.read(checkInServiceProvider).search('$n');
-    if (mounted) setState(() => _found = r.isEmpty ? null : r.first.voter);
+    List<VoterView> r = const [];
+    if (n != null) {
+      try {
+        r = await ref.read(checkInBackendProvider).search('$n');
+      } catch (_) {
+        r = const [];
+      }
+    }
+    if (mounted) setState(() => _found = r.where((v) => v.voterNo == n).firstOrNull);
   }
 
   Future<void> _submit() async {
@@ -395,8 +428,7 @@ class _ManualCheckInDialogState extends ConsumerState<_ManualCheckInDialog> {
       return;
     }
     try {
-      final token = await ref.read(checkInServiceProvider).manualCheckIn(n,
-          reason: _reason!, details: _details.text, official: ref.read(officialProvider));
+      final token = await ref.read(checkInBackendProvider).manualCheckIn(n, reason: _reason!, details: _details.text);
       if (mounted) Navigator.pop(context, token);
     } catch (err) {
       setState(() => _error = describeError(t, err));

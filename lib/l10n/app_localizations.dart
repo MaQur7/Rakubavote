@@ -1995,6 +1995,510 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ballot saved in {path}'**
   String ballotSavedIn(Object path);
+
+  /// No description provided for @addDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a tablet'**
+  String get addDevice;
+
+  /// No description provided for @addDeviceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'On the tablet, choose Connect to the laptop, then scan this QR code or type the address and code. Compare the device id before approving.'**
+  String get addDeviceNote;
+
+  /// No description provided for @approve.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get approve;
+
+  /// No description provided for @boothVotesReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Votes received: {count}'**
+  String boothVotesReceived(Object count);
+
+  /// No description provided for @boothVotesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Votes from the booths'**
+  String get boothVotesTitle;
+
+  /// No description provided for @boothVotesWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for votes'**
+  String get boothVotesWaiting;
+
+  /// No description provided for @boothsMissingConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} booth(s) have not sent their votes yet. Show results anyway? You can count again when they arrive.'**
+  String boothsMissingConfirm(Object count);
+
+  /// No description provided for @checkDiffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-ins and votes differ'**
+  String get checkDiffer;
+
+  /// No description provided for @checkMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-ins match votes'**
+  String get checkMatch;
+
+  /// No description provided for @closePolls.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the polls'**
+  String get closePolls;
+
+  /// No description provided for @closePollsConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the polls now? No more voters can be checked in.'**
+  String get closePollsConfirm;
+
+  /// No description provided for @closePollsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in stops. The booths finish and send their votes to this laptop.'**
+  String get closePollsNote;
+
+  /// No description provided for @connect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get connect;
+
+  /// No description provided for @connectToLaptop.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to the laptop'**
+  String get connectToLaptop;
+
+  /// No description provided for @connectToLaptopNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the presiding officer to open Devices on the laptop and show the pairing code.'**
+  String get connectToLaptopNote;
+
+  /// No description provided for @connected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get connected;
+
+  /// No description provided for @connectedToLaptop.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to the laptop'**
+  String get connectedToLaptop;
+
+  /// No description provided for @countAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Count again'**
+  String get countAgain;
+
+  /// No description provided for @deviceIdLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Device id: {id}'**
+  String deviceIdLine(Object id);
+
+  /// No description provided for @devicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices'**
+  String get devicesTitle;
+
+  /// No description provided for @errBadBatch.
+  ///
+  /// In en, this message translates to:
+  /// **'These votes could not be checked. Do not use this file.'**
+  String get errBadBatch;
+
+  /// No description provided for @errCannotReachLaptop.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot reach the laptop. Check that this device is on the station Wi-Fi.'**
+  String get errCannotReachLaptop;
+
+  /// No description provided for @errNotPaired.
+  ///
+  /// In en, this message translates to:
+  /// **'This device is not paired with the laptop any more. Pair it again.'**
+  String get errNotPaired;
+
+  /// No description provided for @errOlderBatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The laptop already has newer votes from this booth.'**
+  String get errOlderBatch;
+
+  /// No description provided for @errOtherElectionBatch.
+  ///
+  /// In en, this message translates to:
+  /// **'These votes are for a different election.'**
+  String get errOtherElectionBatch;
+
+  /// No description provided for @errPairingCode.
+  ///
+  /// In en, this message translates to:
+  /// **'That pairing code was not accepted. Check the code on the laptop.'**
+  String get errPairingCode;
+
+  /// No description provided for @errPairingRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'The laptop did not approve this device.'**
+  String get errPairingRejected;
+
+  /// No description provided for @errPairingTimedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'The laptop did not answer in time. Try again.'**
+  String get errPairingTimedOut;
+
+  /// No description provided for @errPollsNotClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the polls first.'**
+  String get errPollsNotClosed;
+
+  /// No description provided for @errStartNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'The station network could not start. Check the laptop\'s Wi-Fi.'**
+  String get errStartNetwork;
+
+  /// No description provided for @errUnknownBooth.
+  ///
+  /// In en, this message translates to:
+  /// **'These votes come from a booth this laptop does not know.'**
+  String get errUnknownBooth;
+
+  /// No description provided for @errWrongLaptop.
+  ///
+  /// In en, this message translates to:
+  /// **'This is not the laptop shown in the QR code.'**
+  String get errWrongLaptop;
+
+  /// No description provided for @importVotesUsb.
+  ///
+  /// In en, this message translates to:
+  /// **'Import votes from USB'**
+  String get importVotesUsb;
+
+  /// No description provided for @invalidVotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid'**
+  String get invalidVotes;
+
+  /// No description provided for @issueBallotsVsCodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Votes ({ballots}) differ from codes used ({codes}).'**
+  String issueBallotsVsCodes(Object ballots, Object codes);
+
+  /// No description provided for @issueDamagedBallots.
+  ///
+  /// In en, this message translates to:
+  /// **'Some ballots were incomplete or damaged and were not counted. Check the audit log.'**
+  String get issueDamagedBallots;
+
+  /// No description provided for @issueManual.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} manual check-in(s): see the audit log for reasons.'**
+  String issueManual(Object count);
+
+  /// No description provided for @issueNeverIssued.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} code(s) used at a booth were never issued by the laptop.'**
+  String issueNeverIssued(Object count);
+
+  /// No description provided for @issueTwoBooths.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} code(s) were used at two booths while the Wi-Fi was down.'**
+  String issueTwoBooths(Object count);
+
+  /// No description provided for @issueUnusedCodes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} checked-in voter(s) did not vote.'**
+  String issueUnusedCodes(Object count);
+
+  /// No description provided for @laptopAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Laptop address: {address}'**
+  String laptopAddress(Object address);
+
+  /// No description provided for @laptopAddressField.
+  ///
+  /// In en, this message translates to:
+  /// **'Laptop address'**
+  String get laptopAddressField;
+
+  /// No description provided for @laptopIdLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Laptop id: {id}'**
+  String laptopIdLine(Object id);
+
+  /// No description provided for @networkRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'The station network is on.'**
+  String get networkRunning;
+
+  /// No description provided for @noPairedBooths.
+  ///
+  /// In en, this message translates to:
+  /// **'No booths are paired yet.'**
+  String get noPairedBooths;
+
+  /// No description provided for @noPairedDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'No tablets are paired yet.'**
+  String get noPairedDevices;
+
+  /// No description provided for @noWifiAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'This laptop has no Wi-Fi address. Connect it to the station router or turn on its hotspot.'**
+  String get noWifiAddress;
+
+  /// No description provided for @notConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected'**
+  String get notConnected;
+
+  /// No description provided for @pairRequestLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} ({role}) wants to connect. Device id: {id}'**
+  String pairRequestLine(Object label, Object role, Object id);
+
+  /// No description provided for @pairedDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired tablets'**
+  String get pairedDevices;
+
+  /// No description provided for @pairingCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Pairing code'**
+  String get pairingCode;
+
+  /// No description provided for @pairingCodeValid.
+  ///
+  /// In en, this message translates to:
+  /// **'The code works for 10 minutes.'**
+  String get pairingCodeValid;
+
+  /// No description provided for @pollsClosedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you. Please ask an official if you need help.'**
+  String get pollsClosedNote;
+
+  /// No description provided for @pollsClosedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The polls are closed'**
+  String get pollsClosedTitle;
+
+  /// No description provided for @reconnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected. Trying again…'**
+  String get reconnecting;
+
+  /// No description provided for @removeDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get removeDevice;
+
+  /// No description provided for @removeDeviceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {label}? Its votes will no longer be counted.'**
+  String removeDeviceConfirm(Object label);
+
+  /// No description provided for @resultsAfterClosing.
+  ///
+  /// In en, this message translates to:
+  /// **'Results are shown after the polls close.'**
+  String get resultsAfterClosing;
+
+  /// No description provided for @resultsFingerprint.
+  ///
+  /// In en, this message translates to:
+  /// **'Results fingerprint: {code}'**
+  String resultsFingerprint(Object code);
+
+  /// No description provided for @resultsSavedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Results saved in {path}'**
+  String resultsSavedIn(Object path);
+
+  /// No description provided for @saveSignedFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save signed file to USB'**
+  String get saveSignedFile;
+
+  /// No description provided for @saveVotesUsb.
+  ///
+  /// In en, this message translates to:
+  /// **'Save votes to USB'**
+  String get saveVotesUsb;
+
+  /// No description provided for @scanLaptopQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the laptop\'s QR code'**
+  String get scanLaptopQr;
+
+  /// No description provided for @scanQrCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR card'**
+  String get scanQrCard;
+
+  /// No description provided for @sendOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Send online (when internet is available)'**
+  String get sendOnline;
+
+  /// No description provided for @sendOnlineOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Online sending is switched off for this election.'**
+  String get sendOnlineOff;
+
+  /// No description provided for @shareResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Share results'**
+  String get shareResults;
+
+  /// No description provided for @shareResultsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Party agents and observers copy the fingerprint code or scan the signed QR code.'**
+  String get shareResultsNote;
+
+  /// No description provided for @showPairingCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Show pairing code'**
+  String get showPairingCode;
+
+  /// No description provided for @showResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Show results'**
+  String get showResults;
+
+  /// No description provided for @showSignedQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Show signed QR code'**
+  String get showSignedQr;
+
+  /// No description provided for @startNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the station network'**
+  String get startNetwork;
+
+  /// No description provided for @statCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check'**
+  String get statCheck;
+
+  /// No description provided for @statCheckedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in'**
+  String get statCheckedIn;
+
+  /// No description provided for @statRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered'**
+  String get statRegistered;
+
+  /// No description provided for @statVotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Votes on tablets'**
+  String get statVotes;
+
+  /// No description provided for @stationLinkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Laptop: {name}'**
+  String stationLinkTitle(Object name);
+
+  /// No description provided for @stationNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Station network'**
+  String get stationNetwork;
+
+  /// No description provided for @stationNetworkNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Tablets connect to this laptop over the station Wi-Fi. No internet is used.'**
+  String get stationNetworkNote;
+
+  /// No description provided for @tieNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Tie: {count} candidates have {votes} votes. The committee decides, as the election rules say.'**
+  String tieNotice(Object count, Object votes);
+
+  /// No description provided for @votesImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Votes received: {count}.'**
+  String votesImported(Object count);
+
+  /// No description provided for @votesSavedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Votes saved in {path}'**
+  String votesSavedIn(Object path);
+
+  /// No description provided for @votesSentToLaptop.
+  ///
+  /// In en, this message translates to:
+  /// **'Votes sent to the laptop: {count}'**
+  String votesSentToLaptop(Object count);
+
+  /// No description provided for @waitingApproval.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the laptop to approve. On the laptop, check that the device id is {id}.'**
+  String waitingApproval(Object id);
 }
 
 class _AppLocalizationsDelegate

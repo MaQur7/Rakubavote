@@ -1081,4 +1081,309 @@ class AppLocalizationsAr extends AppLocalizations {
   String ballotSavedIn(Object path) {
     return 'تم حفظ ورقة الاقتراع في $path';
   }
+
+  @override
+  String get addDevice => 'إضافة جهاز لوحي';
+
+  @override
+  String get addDeviceNote =>
+      'على الجهاز اللوحي اختر الاتصال بالحاسوب، ثم امسح رمز QR هذا أو اكتب العنوان والرمز. قارن معرّف الجهاز قبل الموافقة.';
+
+  @override
+  String get approve => 'موافقة';
+
+  @override
+  String boothVotesReceived(Object count) {
+    return 'الأصوات المستلمة: $count';
+  }
+
+  @override
+  String get boothVotesTitle => 'الأصوات من الأكشاك';
+
+  @override
+  String get boothVotesWaiting => 'في انتظار الأصوات';
+
+  @override
+  String boothsMissingConfirm(Object count) {
+    return '$count كشك لم يرسل أصواته بعد. هل تعرض النتائج على أي حال؟ يمكنك العد مرة أخرى عند وصولها.';
+  }
+
+  @override
+  String get checkDiffer => 'عدد المتحقَّق منهم يختلف عن الأصوات';
+
+  @override
+  String get checkMatch => 'عدد المتحقَّق منهم يطابق الأصوات';
+
+  @override
+  String get closePolls => 'إغلاق الاقتراع';
+
+  @override
+  String get closePollsConfirm =>
+      'إغلاق الاقتراع الآن؟ لا يمكن التحقق من ناخبين آخرين.';
+
+  @override
+  String get closePollsNote =>
+      'يتوقف التحقق. تُنهي الأكشاك عملها وترسل أصواتها إلى هذا الحاسوب.';
+
+  @override
+  String get connect => 'اتصال';
+
+  @override
+  String get connectToLaptop => 'الاتصال بالحاسوب';
+
+  @override
+  String get connectToLaptopNote =>
+      'اطلب من رئيس المركز فتح الأجهزة على الحاسوب وإظهار رمز الاقتران.';
+
+  @override
+  String get connected => 'متصل';
+
+  @override
+  String get connectedToLaptop => 'متصل بالحاسوب';
+
+  @override
+  String get countAgain => 'العد مرة أخرى';
+
+  @override
+  String deviceIdLine(Object id) {
+    return 'معرّف الجهاز: $id';
+  }
+
+  @override
+  String get devicesTitle => 'الأجهزة';
+
+  @override
+  String get errBadBatch => 'تعذر التحقق من هذه الأصوات. لا تستخدم هذا الملف.';
+
+  @override
+  String get errCannotReachLaptop =>
+      'تعذر الوصول إلى الحاسوب. تأكد أن هذا الجهاز على شبكة Wi-Fi الخاصة بالمركز.';
+
+  @override
+  String get errNotPaired =>
+      'هذا الجهاز لم يعد مقترنًا بالحاسوب. أعد الاقتران.';
+
+  @override
+  String get errOlderBatch => 'لدى الحاسوب أصوات أحدث من هذا الكشك.';
+
+  @override
+  String get errOtherElectionBatch => 'هذه الأصوات لانتخاب آخر.';
+
+  @override
+  String get errPairingCode =>
+      'لم يُقبل رمز الاقتران. تحقق من الرمز على الحاسوب.';
+
+  @override
+  String get errPairingRejected => 'لم يوافق الحاسوب على هذا الجهاز.';
+
+  @override
+  String get errPairingTimedOut =>
+      'لم يرد الحاسوب في الوقت المحدد. حاول مرة أخرى.';
+
+  @override
+  String get errPollsNotClosed => 'أغلق الاقتراع أولًا.';
+
+  @override
+  String get errStartNetwork =>
+      'تعذر تشغيل شبكة المركز. تحقق من Wi-Fi الحاسوب.';
+
+  @override
+  String get errUnknownBooth => 'هذه الأصوات من كشك لا يعرفه هذا الحاسوب.';
+
+  @override
+  String get errWrongLaptop => 'هذا ليس الحاسوب الظاهر في رمز QR.';
+
+  @override
+  String get importVotesUsb => 'استيراد الأصوات من USB';
+
+  @override
+  String get invalidVotes => 'غير صالح';
+
+  @override
+  String issueBallotsVsCodes(Object ballots, Object codes) {
+    return 'الأصوات ($ballots) تختلف عن الرموز المستخدمة ($codes).';
+  }
+
+  @override
+  String get issueDamagedBallots =>
+      'بعض أوراق الاقتراع كانت ناقصة أو تالفة ولم تُحسب. راجع سجل التدقيق.';
+
+  @override
+  String issueManual(Object count) {
+    return '$count تحقق يدوي: راجع سجل التدقيق لمعرفة الأسباب.';
+  }
+
+  @override
+  String issueNeverIssued(Object count) {
+    return '$count رمز استُخدم في كشك ولم يصدره الحاسوب.';
+  }
+
+  @override
+  String issueTwoBooths(Object count) {
+    return '$count رمز استُخدم في كشكين أثناء انقطاع Wi-Fi.';
+  }
+
+  @override
+  String issueUnusedCodes(Object count) {
+    return '$count ناخب تم التحقق منه ولم يصوت.';
+  }
+
+  @override
+  String laptopAddress(Object address) {
+    return 'عنوان الحاسوب: $address';
+  }
+
+  @override
+  String get laptopAddressField => 'عنوان الحاسوب';
+
+  @override
+  String laptopIdLine(Object id) {
+    return 'معرّف الحاسوب: $id';
+  }
+
+  @override
+  String get networkRunning => 'شبكة المركز تعمل.';
+
+  @override
+  String get noPairedBooths => 'لا توجد أكشاك مقترنة بعد.';
+
+  @override
+  String get noPairedDevices => 'لا توجد أجهزة لوحية مقترنة بعد.';
+
+  @override
+  String get noWifiAddress =>
+      'لا يوجد عنوان Wi-Fi لهذا الحاسوب. وصّله بموجّه المركز أو شغّل نقطة الاتصال.';
+
+  @override
+  String get notConnected => 'غير متصل';
+
+  @override
+  String pairRequestLine(Object label, Object role, Object id) {
+    return '$label ($role) يريد الاتصال. معرّف الجهاز: $id';
+  }
+
+  @override
+  String get pairedDevices => 'الأجهزة اللوحية المقترنة';
+
+  @override
+  String get pairingCode => 'رمز الاقتران';
+
+  @override
+  String get pairingCodeValid => 'يعمل الرمز لمدة 10 دقائق.';
+
+  @override
+  String get pollsClosedNote => 'شكرًا لك. اطلب مساعدة مسؤول إذا احتجت.';
+
+  @override
+  String get pollsClosedTitle => 'تم إغلاق الاقتراع';
+
+  @override
+  String get reconnecting => 'غير متصل. جارٍ المحاولة مرة أخرى…';
+
+  @override
+  String get removeDevice => 'إزالة';
+
+  @override
+  String removeDeviceConfirm(Object label) {
+    return 'إزالة $label؟ لن تُحسب أصواته بعد ذلك.';
+  }
+
+  @override
+  String get resultsAfterClosing => 'تظهر النتائج بعد إغلاق الاقتراع.';
+
+  @override
+  String resultsFingerprint(Object code) {
+    return 'بصمة النتائج: $code';
+  }
+
+  @override
+  String resultsSavedIn(Object path) {
+    return 'تم حفظ النتائج في $path';
+  }
+
+  @override
+  String get saveSignedFile => 'حفظ الملف الموقع على USB';
+
+  @override
+  String get saveVotesUsb => 'حفظ الأصوات على USB';
+
+  @override
+  String get scanLaptopQr => 'امسح رمز QR الخاص بالحاسوب';
+
+  @override
+  String get scanQrCard => 'مسح بطاقة QR';
+
+  @override
+  String get sendOnline => 'إرسال عبر الإنترنت (عند توفره)';
+
+  @override
+  String get sendOnlineOff => 'الإرسال عبر الإنترنت متوقف في هذا الانتخاب.';
+
+  @override
+  String get shareResults => 'مشاركة النتائج';
+
+  @override
+  String get shareResultsNote =>
+      'ينسخ وكلاء الأحزاب والمراقبون رمز البصمة أو يمسحون رمز QR الموقع.';
+
+  @override
+  String get showPairingCode => 'إظهار رمز الاقتران';
+
+  @override
+  String get showResults => 'عرض النتائج';
+
+  @override
+  String get showSignedQr => 'إظهار رمز QR الموقع';
+
+  @override
+  String get startNetwork => 'تشغيل شبكة المركز';
+
+  @override
+  String get statCheck => 'التحقق';
+
+  @override
+  String get statCheckedIn => 'تم التحقق منهم';
+
+  @override
+  String get statRegistered => 'المسجلون';
+
+  @override
+  String get statVotes => 'الأصوات في الأجهزة';
+
+  @override
+  String stationLinkTitle(Object name) {
+    return 'الحاسوب: $name';
+  }
+
+  @override
+  String get stationNetwork => 'شبكة المركز';
+
+  @override
+  String get stationNetworkNote =>
+      'تتصل الأجهزة اللوحية بهذا الحاسوب عبر شبكة Wi-Fi الخاصة بالمركز. لا يُستخدم الإنترنت.';
+
+  @override
+  String tieNotice(Object count, Object votes) {
+    return 'تعادل: $count مرشحين لديهم $votes أصوات. تقرر اللجنة وفق قواعد الانتخاب.';
+  }
+
+  @override
+  String votesImported(Object count) {
+    return 'الأصوات المستلمة: $count.';
+  }
+
+  @override
+  String votesSavedIn(Object path) {
+    return 'تم حفظ الأصوات في $path';
+  }
+
+  @override
+  String votesSentToLaptop(Object count) {
+    return 'الأصوات المرسلة إلى الحاسوب: $count';
+  }
+
+  @override
+  String waitingApproval(Object id) {
+    return 'في انتظار موافقة الحاسوب. تحقق على الحاسوب أن معرّف الجهاز هو $id.';
+  }
 }

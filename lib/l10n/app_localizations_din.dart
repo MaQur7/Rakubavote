@@ -1094,4 +1094,315 @@ class AppLocalizationsDin extends AppLocalizations {
   String ballotSavedIn(Object path) {
     return 'Ballot saved in $path';
   }
+
+  @override
+  String get addDevice => 'Add a tablet';
+
+  @override
+  String get addDeviceNote =>
+      'On the tablet, choose Connect to the laptop, then scan this QR code or type the address and code. Compare the device id before approving.';
+
+  @override
+  String get approve => 'Approve';
+
+  @override
+  String boothVotesReceived(Object count) {
+    return 'Votes received: $count';
+  }
+
+  @override
+  String get boothVotesTitle => 'Votes from the booths';
+
+  @override
+  String get boothVotesWaiting => 'Waiting for votes';
+
+  @override
+  String boothsMissingConfirm(Object count) {
+    return '$count booth(s) have not sent their votes yet. Show results anyway? You can count again when they arrive.';
+  }
+
+  @override
+  String get checkDiffer => 'Check-ins and votes differ';
+
+  @override
+  String get checkMatch => 'Check-ins match votes';
+
+  @override
+  String get closePolls => 'Close the polls';
+
+  @override
+  String get closePollsConfirm =>
+      'Close the polls now? No more voters can be checked in.';
+
+  @override
+  String get closePollsNote =>
+      'Check-in stops. The booths finish and send their votes to this laptop.';
+
+  @override
+  String get connect => 'Connect';
+
+  @override
+  String get connectToLaptop => 'Connect to the laptop';
+
+  @override
+  String get connectToLaptopNote =>
+      'Ask the presiding officer to open Devices on the laptop and show the pairing code.';
+
+  @override
+  String get connected => 'Connected';
+
+  @override
+  String get connectedToLaptop => 'Connected to the laptop';
+
+  @override
+  String get countAgain => 'Count again';
+
+  @override
+  String deviceIdLine(Object id) {
+    return 'Device id: $id';
+  }
+
+  @override
+  String get devicesTitle => 'Devices';
+
+  @override
+  String get errBadBatch =>
+      'These votes could not be checked. Do not use this file.';
+
+  @override
+  String get errCannotReachLaptop =>
+      'Cannot reach the laptop. Check that this device is on the station Wi-Fi.';
+
+  @override
+  String get errNotPaired =>
+      'This device is not paired with the laptop any more. Pair it again.';
+
+  @override
+  String get errOlderBatch =>
+      'The laptop already has newer votes from this booth.';
+
+  @override
+  String get errOtherElectionBatch =>
+      'These votes are for a different election.';
+
+  @override
+  String get errPairingCode =>
+      'That pairing code was not accepted. Check the code on the laptop.';
+
+  @override
+  String get errPairingRejected => 'The laptop did not approve this device.';
+
+  @override
+  String get errPairingTimedOut =>
+      'The laptop did not answer in time. Try again.';
+
+  @override
+  String get errPollsNotClosed => 'Close the polls first.';
+
+  @override
+  String get errStartNetwork =>
+      'The station network could not start. Check the laptop\'s Wi-Fi.';
+
+  @override
+  String get errUnknownBooth =>
+      'These votes come from a booth this laptop does not know.';
+
+  @override
+  String get errWrongLaptop => 'This is not the laptop shown in the QR code.';
+
+  @override
+  String get importVotesUsb => 'Import votes from USB';
+
+  @override
+  String get invalidVotes => 'Invalid';
+
+  @override
+  String issueBallotsVsCodes(Object ballots, Object codes) {
+    return 'Votes ($ballots) differ from codes used ($codes).';
+  }
+
+  @override
+  String get issueDamagedBallots =>
+      'Some ballots were incomplete or damaged and were not counted. Check the audit log.';
+
+  @override
+  String issueManual(Object count) {
+    return '$count manual check-in(s): see the audit log for reasons.';
+  }
+
+  @override
+  String issueNeverIssued(Object count) {
+    return '$count code(s) used at a booth were never issued by the laptop.';
+  }
+
+  @override
+  String issueTwoBooths(Object count) {
+    return '$count code(s) were used at two booths while the Wi-Fi was down.';
+  }
+
+  @override
+  String issueUnusedCodes(Object count) {
+    return '$count checked-in voter(s) did not vote.';
+  }
+
+  @override
+  String laptopAddress(Object address) {
+    return 'Laptop address: $address';
+  }
+
+  @override
+  String get laptopAddressField => 'Laptop address';
+
+  @override
+  String laptopIdLine(Object id) {
+    return 'Laptop id: $id';
+  }
+
+  @override
+  String get networkRunning => 'The station network is on.';
+
+  @override
+  String get noPairedBooths => 'No booths are paired yet.';
+
+  @override
+  String get noPairedDevices => 'No tablets are paired yet.';
+
+  @override
+  String get noWifiAddress =>
+      'This laptop has no Wi-Fi address. Connect it to the station router or turn on its hotspot.';
+
+  @override
+  String get notConnected => 'Not connected';
+
+  @override
+  String pairRequestLine(Object label, Object role, Object id) {
+    return '$label ($role) wants to connect. Device id: $id';
+  }
+
+  @override
+  String get pairedDevices => 'Paired tablets';
+
+  @override
+  String get pairingCode => 'Pairing code';
+
+  @override
+  String get pairingCodeValid => 'The code works for 10 minutes.';
+
+  @override
+  String get pollsClosedNote =>
+      'Thank you. Please ask an official if you need help.';
+
+  @override
+  String get pollsClosedTitle => 'The polls are closed';
+
+  @override
+  String get reconnecting => 'Not connected. Trying again…';
+
+  @override
+  String get removeDevice => 'Remove';
+
+  @override
+  String removeDeviceConfirm(Object label) {
+    return 'Remove $label? Its votes will no longer be counted.';
+  }
+
+  @override
+  String get resultsAfterClosing => 'Results are shown after the polls close.';
+
+  @override
+  String resultsFingerprint(Object code) {
+    return 'Results fingerprint: $code';
+  }
+
+  @override
+  String resultsSavedIn(Object path) {
+    return 'Results saved in $path';
+  }
+
+  @override
+  String get saveSignedFile => 'Save signed file to USB';
+
+  @override
+  String get saveVotesUsb => 'Save votes to USB';
+
+  @override
+  String get scanLaptopQr => 'Scan the laptop\'s QR code';
+
+  @override
+  String get scanQrCard => 'Scan QR card';
+
+  @override
+  String get sendOnline => 'Send online (when internet is available)';
+
+  @override
+  String get sendOnlineOff =>
+      'Online sending is switched off for this election.';
+
+  @override
+  String get shareResults => 'Share results';
+
+  @override
+  String get shareResultsNote =>
+      'Party agents and observers copy the fingerprint code or scan the signed QR code.';
+
+  @override
+  String get showPairingCode => 'Show pairing code';
+
+  @override
+  String get showResults => 'Show results';
+
+  @override
+  String get showSignedQr => 'Show signed QR code';
+
+  @override
+  String get startNetwork => 'Start the station network';
+
+  @override
+  String get statCheck => 'Check';
+
+  @override
+  String get statCheckedIn => 'Checked in';
+
+  @override
+  String get statRegistered => 'Registered';
+
+  @override
+  String get statVotes => 'Votes on tablets';
+
+  @override
+  String stationLinkTitle(Object name) {
+    return 'Laptop: $name';
+  }
+
+  @override
+  String get stationNetwork => 'Station network';
+
+  @override
+  String get stationNetworkNote =>
+      'Tablets connect to this laptop over the station Wi-Fi. No internet is used.';
+
+  @override
+  String tieNotice(Object count, Object votes) {
+    return 'Tie: $count candidates have $votes votes. The committee decides, as the election rules say.';
+  }
+
+  @override
+  String votesImported(Object count) {
+    return 'Votes received: $count.';
+  }
+
+  @override
+  String votesSavedIn(Object path) {
+    return 'Votes saved in $path';
+  }
+
+  @override
+  String votesSentToLaptop(Object count) {
+    return 'Votes sent to the laptop: $count';
+  }
+
+  @override
+  String waitingApproval(Object id) {
+    return 'Waiting for the laptop to approve. On the laptop, check that the device id is $id.';
+  }
 }

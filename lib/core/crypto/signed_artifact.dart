@@ -14,6 +14,7 @@ enum ArtifactKind {
   register('register'),
   voteBatch('vote-batch'),
   results('results'),
+  resultsSummary('results-summary'),
   auditCheckpoint('audit-checkpoint');
 
   const ArtifactKind(this.wire);
