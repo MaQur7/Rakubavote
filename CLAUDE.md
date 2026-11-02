@@ -4,7 +4,8 @@ Rakubavote: offline-first voting platform for schools, associations and party
 bodies in South Sudan.
 Full brief: @docs/concept-note.md · Brand: @docs/brand-guidelines.md ·
 Decisions since the brief: @docs/decisions.md · Screens: docs/mockups/ · Logo files: brand/
-Station protocol: docs/protocol.md · Secrecy design: SECURITY.md
+Station protocol: docs/protocol.md · Secrecy design: SECURITY.md ·
+Design system (exact values, bans, states): docs/design-system.md
 
 ## Stack
 - Flutter (Dart), one codebase: Android tablets + Windows/Linux laptops
@@ -63,7 +64,9 @@ Station protocol: docs/protocol.md · Secrecy design: SECURITY.md
 - Personal data fields are fixed by D2; school elections need the consent checkbox before registration.
 
 ## UI rules
-- Follow docs/mockups/ and docs/brand-guidelines.md. Touch targets >= 64 px,
+- Follow docs/design-system.md (D25), docs/mockups/ and docs/brand-guidelines.md. Only values
+  on its scales; if a case is missing, add it to the design system first.
+- Logo is on hold (D25): do not change logo files or the wordmark until the project lead approves a new one. Touch targets >= 64 px,
   sentence case, Atkinson Hyperlegible (Latin) + Noto Sans Arabic, fonts
   bundled offline (assets/fonts).
 - Button text styles must carry the font family and fallbacks: use the theme, or

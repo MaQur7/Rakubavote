@@ -1,6 +1,6 @@
 # Rakubavote design system
 
-DRAFT for approval · 2026-11-01. The source of truth for how every screen looks. It turns
+Approved by the project lead · 2026-11-02 (D25). The source of truth for how every screen looks. It turns
 [brand-guidelines.md](brand-guidelines.md) into exact values, so no screen falls back on Flutter or
 Material defaults. If a case is not covered here, add it here first, then build it.
 Code: `lib/core/theme.dart` (tokens) and `lib/core/widgets/` (shared components).
@@ -142,18 +142,9 @@ mouse, a keyboard and a USB scanner that types.
 
 ## 9. Logo
 
-- Files in `brand/`: mark (full colour), mark one colour, app icon, **plus** (to add) the full
-  lockup (mark + wordmark) on light, on dark and one colour, as SVG and PNG, as the brand
-  guidelines' governance section requires.
-- In the app the mark is drawn by a small painter from the same paths as `brand/rakubavote-mark.svg`
-  (no new dependency). Used on device setup, PIN unlock and the admin bar (on-dark version: posts
-  in Paper, roof Thatch Gold, box Nile Blue). Minimum 24 px; clear space = roof height.
-- The wordmark is always "Rakuba" + "vote" alone; role words ("Station admin", "Check-in desk")
-  sit next to it in plain `body` text, never styled as part of it.
-- The booth shows the organisation's logo and name; Rakubavote appears only as "Powered by
-  Rakubavote" on the welcome screen.
-- The mark itself stays the draft from board F until a local designer refines it; only its tick
-  colour moves from pure white to Paper to match the token set.
+**On hold (D25).** The project lead will choose and approve a reworked logo first, then define the
+brand visual language around it. Until then the app keeps the current wordmark text and the board F
+draft files in `brand/` unchanged, and no screen work in this document touches the logo.
 
 ## 10. Checks that keep this true
 
@@ -166,3 +157,4 @@ mouse, a keyboard and a USB scanner that types.
 ## Changelog
 
 - 2026-11-01: First draft from the screen audit against the MindStudio design-system guide.
+- 2026-11-02: Approved (D25); logo section on hold until the project lead reworks the logo.
