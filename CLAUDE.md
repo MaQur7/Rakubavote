@@ -23,6 +23,8 @@ Design system (exact values, bans, states): docs/design-system.md
   app_din.arb, lists missing Arabic keys). Without declared order gen-l10n sorts arguments
   alphabetically and silently swaps them.
 - Run tests: `flutter test`
+- Render every screen and the component sheet for design review: `tool/screens.sh`
+  (images in build/screens/; `test/design_system_test.dart` fails on off-scale values)
 - Static checks: `flutter analyze`
 - Run app: `flutter run -d <device>`
 - Build tablet APK: `flutter build apk --release`
