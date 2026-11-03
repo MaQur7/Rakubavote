@@ -9,6 +9,7 @@ import '../../core/domain/ballot_definition.dart';
 import '../../core/domain/vote.dart';
 import '../../core/format.dart';
 import '../../core/theme.dart';
+import '../../core/widgets/common.dart';
 import '../../l10n/app_localizations.dart';
 import '../../platform/beep.dart';
 import 'booth_controller.dart';
@@ -86,7 +87,7 @@ class _BoothScreenState extends State<BoothScreen> {
             BoothStage.end => _EndPage(c: c, beep: widget.beep, clearAfter: widget.clearAfter),
           };
           return Scaffold(
-            backgroundColor: RakubaColors.white,
+            backgroundColor: RakubaColors.card,
             body: Stack(children: [
               SafeArea(child: page),
               // Officer exit: long press on the top start corner.
@@ -154,59 +155,39 @@ class _WelcomePageState extends State<_WelcomePage> {
     final logo = b.orgLogoSha256 == null ? null : widget.media[b.orgLogoSha256];
     return LayoutBuilder(builder: (context, box) {
       return SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(32, 16, 32, 32),
+        padding: const EdgeInsets.fromLTRB(RakubaSpace.l, RakubaSpace.s, RakubaSpace.l, RakubaSpace.l),
         child: ConstrainedBox(
-          constraints: BoxConstraints(minHeight: box.maxHeight - 48),
+          constraints: BoxConstraints(minHeight: box.maxHeight - RakubaSpace.xl),
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             const Align(alignment: AlignmentDirectional.centerEnd, child: HelpButton()),
-            const SizedBox(height: 8),
-            Center(
-              child: Container(
-                width: 132,
-                height: 132,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: RakubaColors.thatchGold, width: 3),
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: logo == null ? null : Image.memory(logo, fit: BoxFit.cover),
+            const SizedBox(height: RakubaSpace.xs),
+            // The organisation's logo only when it has one; never an empty shape.
+            if (logo != null) ...[
+              Center(
+                child: ClipOval(child: Image.memory(logo, width: 128, height: 128, fit: BoxFit.cover)),
               ),
-            ),
-            const SizedBox(height: 20),
-            Text(b.orgName,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w700, color: RakubaColors.ink)),
+              const SizedBox(height: RakubaSpace.m),
+            ] else
+              const SizedBox(height: RakubaSpace.l),
+            Text(b.orgName, textAlign: TextAlign.center, style: rakubaText(context, RakubaType.title, bold: true)),
             Text('${b.electionName} ${b.year}',
-                textAlign: TextAlign.center, style: const TextStyle(fontSize: 20)),
-            const SizedBox(height: 10),
+                textAlign: TextAlign.center, style: rakubaText(context, RakubaType.bodyLarge)),
+            const SizedBox(height: RakubaSpace.s),
             Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: RakubaSpace.s, vertical: RakubaSpace.xs),
                 color: RakubaColors.ink,
                 child: Text(t.officialBallot,
-                    style: const TextStyle(color: RakubaColors.white, fontSize: 18, fontWeight: FontWeight.w700)),
+                    style: rakubaText(context, RakubaType.bodyLarge, bold: true, colour: RakubaColors.white)),
               ),
             ),
-            const SizedBox(height: 24),
-            Wrap(alignment: WrapAlignment.center, spacing: 12, runSpacing: 12, children: [
-              for (final code in b.languages)
-                OutlinedButton(
-                  key: ValueKey('lang-$code'),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(110, RakubaSizes.minTouch),
-                    backgroundColor: code == widget.c.locale ? tintOf(RakubaColors.nileBlue, 0.12) : null,
-                    side: BorderSide(
-                        color: code == widget.c.locale ? RakubaColors.nileBlue : RakubaColors.border,
-                        width: code == widget.c.locale ? 3 : 2),
-                  ),
-                  onPressed: () => widget.c.setLanguage(code),
-                  child: Text(languageDisplayName(code), style: const TextStyle(fontSize: 20)),
-                ),
+            const SizedBox(height: RakubaSpace.l),
+            Wrap(alignment: WrapAlignment.center, spacing: RakubaSpace.s, runSpacing: RakubaSpace.s, children: [
+              for (final code in b.languages) _LanguageButton(c: widget.c, code: code),
             ]),
-            const SizedBox(height: 28),
-            Text(t.typeCode, textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
-            const SizedBox(height: 12),
+            const SizedBox(height: RakubaSpace.l),
+            Text(t.typeCode, textAlign: TextAlign.center, style: rakubaText(context, RakubaType.name, bold: true)),
+            const SizedBox(height: RakubaSpace.s),
             TextField(
               key: const ValueKey('booth-code'),
               controller: _code,
@@ -217,39 +198,75 @@ class _WelcomePageState extends State<_WelcomePage> {
               enableSuggestions: false,
               maxLength: 7,
               inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9\- ]'))],
-              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.w700, letterSpacing: 10),
-              decoration: const InputDecoration(counterText: '', hintText: '___-___'),
+              style: rakubaText(context, RakubaType.display, bold: true).copyWith(letterSpacing: RakubaSpace.xs),
+              decoration: InputDecoration(
+                counterText: '',
+                hintText: '___-___',
+                hintStyle: rakubaText(context, RakubaType.display, colour: RakubaColors.inkMuted)
+                    .copyWith(letterSpacing: RakubaSpace.xs),
+              ),
               onSubmitted: (_) => _start(),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: RakubaSpace.xs),
             if (_problem != null)
-              Text(_problem!,
-                  key: const ValueKey('booth-code-problem'),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 20, color: RakubaColors.clay, fontWeight: FontWeight.w700))
+              NoticeBox(
+                child: Text(_problem!,
+                    key: const ValueKey('booth-code-problem'),
+                    style: rakubaText(context, RakubaType.bodyLarge, bold: true)),
+              )
             else
-              Text(t.askAnOfficial, textAlign: TextAlign.center, style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 20),
+              Text(t.askAnOfficial, textAlign: TextAlign.center, style: rakubaText(context, RakubaType.bodyLarge)),
+            const SizedBox(height: RakubaSpace.m),
             FilledButton(
               key: const ValueKey('start-voting'),
               style: FilledButton.styleFrom(
-                  minimumSize: const Size.fromHeight(80),
-                  textStyle: buttonTextStyle(context, 26)),
+                  minimumSize: const Size.fromHeight(RakubaSpace.xxl + RakubaSpace.s),
+                  textStyle: buttonTextStyle(context, RakubaType.name)),
               onPressed: _busy ? null : _start,
               child: Text(t.startVoting),
             ),
-            const SizedBox(height: 32),
-            Text(t.secrecyFooter, textAlign: TextAlign.center, style: const TextStyle(fontSize: 18)),
-            Text(t.numbersHelp, textAlign: TextAlign.center, style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 4),
+            const SizedBox(height: RakubaSpace.l),
+            Text(t.secrecyFooter, textAlign: TextAlign.center, style: rakubaText(context, RakubaType.bodyLarge, bold: true)),
+            Text(t.numbersHelp, textAlign: TextAlign.center, style: rakubaText(context, RakubaType.bodyLarge)),
+            const SizedBox(height: RakubaSpace.m),
             Text(t.poweredBy,
                 textAlign: TextAlign.center,
                 textDirection: TextDirection.ltr,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                style: rakubaText(context, RakubaType.label, bold: true, colour: RakubaColors.inkMuted)),
           ]),
         ),
       );
     });
+  }
+}
+
+/// Ballot language choice: the chosen one has a 3 px Nile Blue border and a tick.
+class _LanguageButton extends StatelessWidget {
+  const _LanguageButton({required this.c, required this.code});
+  final BoothController c;
+  final String code;
+
+  @override
+  Widget build(BuildContext context) {
+    final chosen = code == c.locale;
+    final label = Text(languageDisplayName(code), style: rakubaText(context, RakubaType.bodyLarge, bold: true));
+    final style = boothOutlinedStyle().copyWith(
+      minimumSize: const WidgetStatePropertyAll(Size(RakubaSpace.xxl + RakubaSpace.xl, RakubaSizes.minTouch)),
+      side: chosen
+          ? const WidgetStatePropertyAll(BorderSide(color: RakubaColors.nileBlue, width: RakubaLine.selected))
+          : null,
+    );
+    return Semantics(
+      selected: chosen,
+      child: chosen
+          ? OutlinedButton.icon(
+              key: ValueKey('lang-$code'),
+              style: style,
+              onPressed: () => c.setLanguage(code),
+              icon: const Icon(Icons.check),
+              label: label)
+          : OutlinedButton(key: ValueKey('lang-$code'), style: style, onPressed: () => c.setLanguage(code), child: label),
+    );
   }
 }
 
@@ -268,25 +285,25 @@ class _TopBar extends StatelessWidget {
     final t = AppLocalizations.of(context);
     final colour = Color(c.position.colour);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(32, 12, 24, 12),
+      padding: const EdgeInsets.fromLTRB(RakubaSpace.l, RakubaSpace.s, RakubaSpace.m, RakubaSpace.s),
       child: Column(children: [
         Row(children: [
           Expanded(
             child: Text(t.positionOf('${c.index + 1}', '${c.positionCount}'),
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                style: rakubaText(context, RakubaType.bodyLarge, bold: true)),
           ),
           const HelpButton(),
         ]),
-        const SizedBox(height: 12),
+        const SizedBox(height: RakubaSpace.s),
         Row(children: [
           for (var i = 0; i < c.positionCount; i++) ...[
-            if (i > 0) const SizedBox(width: 8),
+            if (i > 0) const SizedBox(width: RakubaSpace.xs),
             Expanded(
               child: Container(
-                height: 10,
+                height: RakubaSpace.xs,
                 decoration: BoxDecoration(
-                  color: i <= c.index ? colour : RakubaColors.placeholder,
-                  borderRadius: BorderRadius.circular(999),
+                  color: i <= c.index ? colour : RakubaColors.rule,
+                  borderRadius: BorderRadius.circular(RakubaRadius.pill),
                 ),
               ),
             ),
@@ -309,12 +326,13 @@ class _Band extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: Color(p.colour),
-      padding: const EdgeInsets.fromLTRB(32, 18, 32, 18),
+      padding: const EdgeInsets.symmetric(horizontal: RakubaSpace.l, vertical: RakubaSpace.s),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(p.title(c.locale),
             key: const ValueKey('position-title'),
-            style: const TextStyle(color: RakubaColors.white, fontSize: 34, fontWeight: FontWeight.w700)),
-        Text(subtitle ?? _instruction(t, p), style: const TextStyle(color: RakubaColors.white, fontSize: 18)),
+            style: rakubaText(context, RakubaType.title, bold: true, colour: RakubaColors.white)),
+        Text(subtitle ?? _instruction(t, p),
+            style: rakubaText(context, RakubaType.bodyLarge, colour: RakubaColors.white)),
       ]),
     );
   }
@@ -331,26 +349,26 @@ class _BottomBar extends StatelessWidget {
     final colour = Color(c.position.colour);
     final next = c.nextPosition;
     return Container(
-      decoration: const BoxDecoration(border: Border(top: BorderSide(color: RakubaColors.placeholder))),
-      padding: const EdgeInsets.fromLTRB(32, 14, 32, 14),
+      decoration: const BoxDecoration(border: Border(top: BorderSide(color: RakubaColors.rule))),
+      padding: const EdgeInsets.symmetric(horizontal: RakubaSpace.l, vertical: RakubaSpace.s),
       child: Row(children: [
         if (leading != null) Expanded(child: leading!) else ...[
           OutlinedButton(
             key: const ValueKey('booth-back'),
-            style: OutlinedButton.styleFrom(minimumSize: const Size(120, 72)),
+            style: boothOutlinedStyle().copyWith(
+                minimumSize: const WidgetStatePropertyAll(Size(RakubaSpace.xxl * 2, RakubaSpace.xxl + RakubaSpace.xs))),
             onPressed: c.back,
             child: Text(t.back),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: RakubaSpace.s),
         ],
         Expanded(
           flex: leading == null ? 1 : 0,
           child: FilledButton(
             key: const ValueKey('booth-next'),
-            style: FilledButton.styleFrom(
-              minimumSize: const Size(160, 72),
-              backgroundColor: colour,
-              textStyle: buttonTextStyle(context, 22),
+            style: filledColourStyle(colour).copyWith(
+              minimumSize: const WidgetStatePropertyAll(Size(RakubaSpace.xxl * 2, RakubaSpace.xxl + RakubaSpace.xs)),
+              textStyle: WidgetStatePropertyAll(buttonTextStyle(context, RakubaType.heading)),
             ),
             onPressed: c.canContinue ? c.next : null,
             child: Text(next == null ? t.reviewButton : t.nextPosition(next.title(c.locale)),
@@ -380,30 +398,29 @@ class _NoChoiceRow extends StatelessWidget {
       child: InkWell(
         key: const ValueKey('no-choice'),
         onTap: c.tapNoChoice,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(RakubaRadius.control),
         child: CustomPaint(
-          foregroundPainter:
-              DashedBorderPainter(color: selected ? colour : RakubaColors.border, width: selected ? 3 : 2),
+          foregroundPainter: DashedBorderPainter(
+              color: selected ? colour : RakubaColors.border,
+              width: selected ? RakubaLine.selected : RakubaLine.strong),
           child: Container(
-            constraints: BoxConstraints(minHeight: compact ? 72 : 100),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            constraints: BoxConstraints(minHeight: compact ? RakubaSpace.xxl : RakubaSpace.xxl + RakubaSpace.l),
+            padding: EdgeInsets.symmetric(
+                horizontal: compact ? RakubaSpace.xs : RakubaSpace.s, vertical: RakubaSpace.xs),
             decoration: BoxDecoration(
-              color: selected ? tintOf(colour, 0.15) : RakubaColors.paper,
-              borderRadius: BorderRadius.circular(12),
+              color: RakubaColors.paper,
+              borderRadius: BorderRadius.circular(RakubaRadius.control),
             ),
             child: Row(children: [
               if (!compact) ...[
-                const Icon(Icons.block, size: 40, color: RakubaColors.ink),
-                const SizedBox(width: 16),
+                const Icon(Icons.block, size: RakubaSpace.xl, color: RakubaColors.ink),
+                const SizedBox(width: RakubaSpace.s),
               ],
               Expanded(
                 child: Text(t.noChoiceForPosition,
-                    style: TextStyle(fontSize: compact ? 18 : 24, fontWeight: FontWeight.w700)),
+                    style: rakubaText(context, compact ? RakubaType.bodyLarge : RakubaType.name, bold: true)),
               ),
-              if (compact)
-                (selected ? Icon(Icons.check, color: colour, size: 32) : const SizedBox.shrink())
-              else
-                TickBox(checked: selected, colour: colour),
+              TickBox(checked: selected, colour: colour, size: compact ? RakubaSpace.xl : RakubaSpace.xxl + RakubaSpace.xs),
             ]),
           ),
         ),
@@ -430,19 +447,19 @@ class _PositionPage extends StatelessWidget {
       Expanded(
         child: Container(
           color: tintOf(colour),
-          child: ListView(padding: const EdgeInsets.fromLTRB(32, 20, 32, 20), children: [
+          child: ListView(padding: const EdgeInsets.symmetric(horizontal: RakubaSpace.l, vertical: RakubaSpace.m), children: [
             for (final cand in p.candidates) ...[
               _CandidateRow(c: c, cand: cand, media: media),
-              const SizedBox(height: 14),
+              const SizedBox(height: RakubaSpace.s),
             ],
             if (p.allowNoChoice) _NoChoiceRow(c: c),
-            const SizedBox(height: 16),
-            Text(t.changeNote, style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: RakubaSpace.s),
+            Text(t.changeNote, style: rakubaText(context, RakubaType.bodyLarge)),
             if (p.chooseN > 1)
               Padding(
-                padding: const EdgeInsets.only(top: 8),
+                padding: const EdgeInsets.only(top: RakubaSpace.xs),
                 child: Text(t.chosenCount('${c.selectionFor(p.id).where((x) => x != noChoice).length}', '${p.chooseN}'),
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                    style: rakubaText(context, RakubaType.bodyLarge, bold: true)),
               ),
           ]),
         ),
@@ -467,39 +484,59 @@ class _CandidateRow extends StatelessWidget {
       button: true,
       selected: selected,
       label: '${cand.number} ${cand.name}',
-      child: Material(
-        color: RakubaColors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: selected ? colour : RakubaColors.border, width: selected ? 4 : 2),
-        ),
+      child: _BallotRowShape(
+        selected: selected,
+        colour: colour,
         child: InkWell(
           key: ValueKey('cand-${cand.number}'),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(RakubaRadius.control),
           onTap: () => c.tapCandidate(cand.id),
           child: Padding(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(RakubaSpace.s),
             child: Row(children: [
-              CircleImage(media[cand.photoSha256], size: 96),
-              const SizedBox(width: 18),
+              CircleImage(media[cand.photoSha256], size: RakubaSpace.xxl + RakubaSpace.l),
+              const SizedBox(width: RakubaSpace.s),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Row(children: [
                     NumberBox(candidateNoLabel(cand.number, candidateCount: p.candidates.length)),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: RakubaSpace.xs),
                     SymbolImage(media[cand.symbolSha256]),
                   ]),
-                  const SizedBox(height: 8),
-                  Text(cand.name, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w700)),
+                  const SizedBox(height: RakubaSpace.xs),
+                  Text(cand.name, style: rakubaText(context, RakubaType.name, bold: true)),
                 ]),
               ),
-              TickBox(checked: selected, colour: colour, size: 72),
+              TickBox(checked: selected, colour: colour, size: RakubaSpace.xxl + RakubaSpace.xs),
             ]),
           ),
         ),
       ),
     );
   }
+}
+
+/// White row with a 2 px border; when chosen, a 3 px border in the position
+/// colour (same on the two-candidate list and the 13-candidate grid).
+class _BallotRowShape extends StatelessWidget {
+  const _BallotRowShape({required this.selected, required this.colour, required this.child});
+  final bool selected;
+  final Color colour;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Material(
+        color: RakubaColors.card,
+        // The chosen border appears at once, never fading in.
+        animationDuration: Duration.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(RakubaRadius.control),
+          side: selected
+              ? BorderSide(color: colour, width: RakubaLine.selected)
+              : const BorderSide(color: RakubaColors.border, width: RakubaLine.strong),
+        ),
+        child: child,
+      );
 }
 
 // -------------------------------------------------- position, 13 or more (3b)
@@ -551,12 +588,12 @@ class _LongListPageState extends State<_LongListPage> {
       _Band(c: c, subtitle: t.bigListHeader('${p.candidates.length}')),
       Container(
         color: tintOf(colour, 0.12),
-        padding: const EdgeInsets.fromLTRB(32, 12, 32, 12),
+        padding: const EdgeInsets.symmetric(horizontal: RakubaSpace.l, vertical: RakubaSpace.s),
         child: Row(children: [
-          Text(t.candidateNumberLabel, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-          const SizedBox(width: 16),
+          Text(t.candidateNumberLabel, style: rakubaText(context, RakubaType.bodyLarge, bold: true)),
+          const SizedBox(width: RakubaSpace.s),
           SizedBox(
-            width: 130,
+            width: RakubaSpace.xxl * 2,
             child: TextField(
               key: const ValueKey('candidate-number'),
               controller: _number,
@@ -564,14 +601,15 @@ class _LongListPageState extends State<_LongListPage> {
               textAlign: TextAlign.center,
               textDirection: TextDirection.ltr,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(3)],
-              style: const TextStyle(fontSize: 34, fontWeight: FontWeight.w700),
+              style: rakubaText(context, RakubaType.title, bold: true),
               onChanged: _typed,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: RakubaSpace.s),
           Expanded(
             child: Text(_unknown ? t.noCandidateWithNumber : t.showsMatching,
-                style: TextStyle(fontSize: 16, color: _unknown ? RakubaColors.clay : RakubaColors.ink)),
+                style: rakubaText(context, RakubaType.body,
+                    bold: _unknown, colour: _unknown ? RakubaColors.clay : RakubaColors.inkMuted)),
           ),
         ]),
       ),
@@ -579,11 +617,12 @@ class _LongListPageState extends State<_LongListPage> {
         child: LayoutBuilder(builder: (context, box) {
           final columns = box.maxWidth >= 560 ? 2 : 1;
           return GridView.count(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+            padding: const EdgeInsets.symmetric(horizontal: RakubaSpace.m, vertical: RakubaSpace.s),
             crossAxisCount: columns,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            childAspectRatio: (box.maxWidth - 48 - (columns - 1) * 12) / columns / 84,
+            mainAxisSpacing: RakubaSpace.s,
+            crossAxisSpacing: RakubaSpace.s,
+            childAspectRatio:
+                (box.maxWidth - RakubaSpace.xl - (columns - 1) * RakubaSpace.s) / columns / (RakubaSpace.xxl + RakubaSpace.s),
             children: cells,
           );
         }),
@@ -591,12 +630,12 @@ class _LongListPageState extends State<_LongListPage> {
       _BottomBar(
         c: c,
         leading: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(t.yourChoice, style: const TextStyle(fontSize: 16)),
+          Text(t.yourChoice, style: rakubaText(context, RakubaType.body, colour: RakubaColors.inkMuted)),
           Text(choiceText.isEmpty ? '—' : choiceText,
               key: const ValueKey('your-choice'),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+              style: rakubaText(context, RakubaType.heading, bold: true)),
         ]),
       ),
     ]);
@@ -618,30 +657,27 @@ class _CompactRow extends StatelessWidget {
       button: true,
       selected: selected,
       label: '${cand.number} ${cand.name}',
-      child: Material(
-        color: selected ? tintOf(colour, 0.15) : RakubaColors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: selected ? colour : RakubaColors.border, width: selected ? 4 : 2),
-        ),
+      child: _BallotRowShape(
+        selected: selected,
+        colour: colour,
         child: InkWell(
           key: ValueKey('cand-${cand.number}'),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(RakubaRadius.control),
           onTap: () => c.tapCandidate(cand.id),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            padding: const EdgeInsets.all(RakubaSpace.xs),
             child: Row(children: [
-              NumberBox(candidateNoLabel(cand.number, candidateCount: p.candidates.length), size: 48),
-              const SizedBox(width: 10),
-              CircleImage(media[cand.photoSha256], size: 52),
-              const SizedBox(width: 10),
+              NumberBox(candidateNoLabel(cand.number, candidateCount: p.candidates.length), size: RakubaSpace.xl),
+              const SizedBox(width: RakubaSpace.xs),
+              CircleImage(media[cand.photoSha256], size: RakubaSpace.xl),
+              const SizedBox(width: RakubaSpace.xs),
               Expanded(
                 child: Text(cand.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                    style: rakubaText(context, RakubaType.heading, bold: true)),
               ),
-              if (selected) Icon(Icons.check, color: colour, size: 32),
+              TickBox(checked: selected, colour: colour, size: RakubaSpace.xl),
             ]),
           ),
         ),
@@ -683,43 +719,41 @@ class _ReviewPageState extends State<_ReviewPage> {
     final c = widget.c;
     return Column(children: [
       Expanded(
-        child: ListView(padding: const EdgeInsets.fromLTRB(32, 24, 32, 16), children: [
+        child: ListView(padding: const EdgeInsets.fromLTRB(RakubaSpace.l, RakubaSpace.m, RakubaSpace.l, RakubaSpace.s), children: [
           Row(children: [
-            Expanded(
-                child: Text(t.checkChoices, style: const TextStyle(fontSize: 36, fontWeight: FontWeight.w700))),
+            Expanded(child: Text(t.checkChoices, style: rakubaText(context, RakubaType.title, bold: true))),
             const HelpButton(),
           ]),
-          const SizedBox(height: 6),
-          Text(t.notSavedUntil, style: const TextStyle(fontSize: 18)),
-          const SizedBox(height: 20),
+          const SizedBox(height: RakubaSpace.xs),
+          Text(t.notSavedUntil, style: rakubaText(context, RakubaType.bodyLarge)),
+          const SizedBox(height: RakubaSpace.m),
           for (var i = 0; i < c.positionCount; i++) ...[
             _ReviewCard(c: c, index: i, media: widget.media),
-            const SizedBox(height: 16),
+            const SizedBox(height: RakubaSpace.s),
           ],
         ]),
       ),
       Padding(
-        padding: const EdgeInsets.fromLTRB(32, 8, 32, 20),
+        padding: const EdgeInsets.fromLTRB(RakubaSpace.l, RakubaSpace.xs, RakubaSpace.l, RakubaSpace.m),
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           if (_problem != null)
             Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Text(_problem!,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 20, color: RakubaColors.clay, fontWeight: FontWeight.w700)),
+              padding: const EdgeInsets.only(bottom: RakubaSpace.s),
+              child: NoticeBox(
+                  child: Text(_problem!, style: rakubaText(context, RakubaType.bodyLarge, bold: true))),
             ),
           FilledButton(
             key: const ValueKey('confirm-vote'),
-            style: FilledButton.styleFrom(
-              backgroundColor: RakubaColors.acaciaGreen,
-              minimumSize: const Size.fromHeight(84),
-              textStyle: buttonTextStyle(context, 28),
+            style: filledColourStyle(RakubaColors.acaciaGreen).copyWith(
+              minimumSize: const WidgetStatePropertyAll(Size.fromHeight(RakubaSpace.xxl + RakubaSpace.s)),
+              textStyle: WidgetStatePropertyAll(buttonTextStyle(context, RakubaType.name)),
             ),
             onPressed: _busy || _problem != null ? null : _confirm,
             child: Text(t.confirmMyVote),
           ),
-          const SizedBox(height: 10),
-          Text(t.cannotChangeAfter, textAlign: TextAlign.center, style: const TextStyle(fontSize: 16)),
+          const SizedBox(height: RakubaSpace.xs),
+          Text(t.cannotChangeAfter,
+              textAlign: TextAlign.center, style: rakubaText(context, RakubaType.body, colour: RakubaColors.inkMuted)),
         ]),
       ),
     ]);
@@ -743,38 +777,37 @@ class _ReviewCard extends StatelessWidget {
     return Container(
       key: ValueKey('review-${p.id}'),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: colour, width: 2),
+        borderRadius: BorderRadius.circular(RakubaRadius.panel),
+        border: Border.all(color: colour, width: RakubaLine.strong),
         color: tintOf(colour),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Container(
           color: colour,
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+          padding: const EdgeInsets.symmetric(horizontal: RakubaSpace.m, vertical: RakubaSpace.s),
           child: Text(p.title(c.locale),
-              style: const TextStyle(color: RakubaColors.white, fontSize: 22, fontWeight: FontWeight.w700)),
+              style: rakubaText(context, RakubaType.heading, bold: true, colour: RakubaColors.white)),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
+          padding: const EdgeInsets.symmetric(horizontal: RakubaSpace.m, vertical: RakubaSpace.s),
           child: Row(children: [
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 for (final cand in rows)
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    padding: const EdgeInsets.symmetric(vertical: RakubaSpace.xxs),
                     child: Row(children: [
-                      CircleImage(cand == null ? null : media[cand.photoSha256], size: 64, dashed: cand == null),
-                      const SizedBox(width: 16),
+                      CircleImage(cand == null ? null : media[cand.photoSha256],
+                          size: RakubaSpace.xxl, dashed: cand == null),
+                      const SizedBox(width: RakubaSpace.s),
                       Expanded(
                         child: Text(
                           cand == null
                               ? t.noChoiceForPosition
                               : '${candidateNoLabel(cand.number, candidateCount: p.candidates.length)} · ${cand.name}',
-                          style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700,
-                              color: cand == null ? colour : RakubaColors.ink),
+                          style: rakubaText(context, RakubaType.name,
+                              bold: true, colour: cand == null ? colour : RakubaColors.ink),
                         ),
                       ),
                     ]),
@@ -783,12 +816,7 @@ class _ReviewCard extends StatelessWidget {
             ),
             OutlinedButton(
               key: ValueKey('change-$index'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: colour,
-                side: BorderSide(color: colour, width: 2),
-                backgroundColor: RakubaColors.white,
-                minimumSize: const Size(110, RakubaSizes.minTouch),
-              ),
+              style: colourOutlinedStyle(colour),
               onPressed: () => c.change(index),
               child: Text(t.change),
             ),
@@ -841,29 +869,30 @@ class _EndPageState extends State<_EndPage> {
     return Container(
       color: RakubaColors.successTint,
       width: double.infinity,
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.all(RakubaSpace.l),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Container(
-          width: 168,
-          height: 168,
+          width: RakubaSpace.xxl * 2,
+          height: RakubaSpace.xxl * 2,
           decoration: const BoxDecoration(color: RakubaColors.acaciaGreen, shape: BoxShape.circle),
-          child: const Icon(Icons.check, color: RakubaColors.white, size: 120),
+          child: const Icon(Icons.check, color: RakubaColors.white, size: RakubaSpace.xxl + RakubaSpace.m),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: RakubaSpace.m),
         Text(t.endTitle,
             key: const ValueKey('end-title'),
-            style: const TextStyle(fontSize: 72, fontWeight: FontWeight.w700, color: RakubaColors.acaciaGreen)),
-        const SizedBox(height: 16),
+            style: rakubaText(context, RakubaType.display, bold: true, colour: RakubaColors.acaciaGreen)),
+        const SizedBox(height: RakubaSpace.s),
         Text(t.thankYou,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w700, color: RakubaColors.acaciaGreen)),
-        const SizedBox(height: 16),
-        Text(t.beepNote, textAlign: TextAlign.center, style: const TextStyle(fontSize: 18)),
-        const SizedBox(height: 28),
+            style: rakubaText(context, RakubaType.title, bold: true, colour: RakubaColors.acaciaGreen)),
+        const SizedBox(height: RakubaSpace.s),
+        Text(t.beepNote, textAlign: TextAlign.center, style: rakubaText(context, RakubaType.bodyLarge)),
+        const SizedBox(height: RakubaSpace.l),
         Text(t.secrecyFooter,
-            textAlign: TextAlign.center, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
-        const SizedBox(height: 28),
-        Text(t.clearsIn('$_left'), textAlign: TextAlign.center, style: const TextStyle(fontSize: 20)),
+            textAlign: TextAlign.center, style: rakubaText(context, RakubaType.heading, bold: true)),
+        const SizedBox(height: RakubaSpace.l),
+        Text(t.clearsIn('$_left'),
+            textAlign: TextAlign.center, style: rakubaText(context, RakubaType.bodyLarge, colour: RakubaColors.inkMuted)),
       ]),
     );
   }
@@ -877,16 +906,16 @@ class _ClosedPage extends StatelessWidget {
     final t = AppLocalizations.of(context);
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(RakubaSpace.l),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const Icon(Icons.how_to_vote_outlined, size: 96, color: RakubaColors.ink),
-          const SizedBox(height: 16),
+          const Icon(Icons.how_to_vote_outlined, size: RakubaSpace.xxl + RakubaSpace.l, color: RakubaColors.ink),
+          const SizedBox(height: RakubaSpace.s),
           Text(t.pollsClosedTitle,
               key: const ValueKey('polls-closed'),
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 34, fontWeight: FontWeight.w700)),
-          const SizedBox(height: 12),
-          Text(t.pollsClosedNote, textAlign: TextAlign.center, style: const TextStyle(fontSize: 20)),
+              style: rakubaText(context, RakubaType.title, bold: true)),
+          const SizedBox(height: RakubaSpace.s),
+          Text(t.pollsClosedNote, textAlign: TextAlign.center, style: rakubaText(context, RakubaType.bodyLarge)),
         ]),
       ),
     );

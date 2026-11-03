@@ -212,6 +212,14 @@ ButtonStyle destructiveOutlinedStyle() => ButtonStyle(
       }),
     );
 
+/// Outlined button in a ballot position colour (Change on the review screen).
+ButtonStyle colourOutlinedStyle(Color colour) => ButtonStyle(
+      backgroundColor: const WidgetStatePropertyAll(RakubaColors.card),
+      foregroundColor: WidgetStatePropertyAll(colour),
+      side: WidgetStateProperty.resolveWith((s) =>
+          s.contains(WidgetState.focused) ? _focusRing : BorderSide(color: colour, width: RakubaLine.strong)),
+    );
+
 /// Filled button in a colour other than Nile Blue (Acacia Green for confirm and
 /// save, or a ballot position colour).
 ButtonStyle filledColourStyle(Color colour) => ButtonStyle(

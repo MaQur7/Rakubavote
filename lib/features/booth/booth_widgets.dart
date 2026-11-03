@@ -17,17 +17,18 @@ class HelpButton extends StatelessWidget {
     final t = AppLocalizations.of(context);
     return OutlinedButton.icon(
       key: const ValueKey('booth-help'),
-      style: OutlinedButton.styleFrom(
-        minimumSize: const Size(96, RakubaSizes.minTouch),
-        shape: const StadiumBorder(),
+      style: boothOutlinedStyle().copyWith(
+        minimumSize: const WidgetStatePropertyAll(Size(RakubaSpace.xxl + RakubaSpace.l, RakubaSizes.minTouch)),
+        shape: const WidgetStatePropertyAll(StadiumBorder()),
       ),
       icon: const Icon(Icons.help_outline),
       label: Text(t.help),
       onPressed: () => showDialog<void>(
         context: context,
         builder: (c) => AlertDialog(
-          title: Text(t.helpTitle, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
-          content: Text(t.helpText, style: const TextStyle(fontSize: 20, height: 1.4)),
+          // Voters read this: larger than admin dialogs.
+          title: Text(t.helpTitle, style: rakubaText(context, RakubaType.name, bold: true)),
+          content: Text(t.helpText, style: rakubaText(context, RakubaType.heading)),
           actions: [
             FilledButton(onPressed: () => Navigator.pop(c), child: Text(t.ok)),
           ],
@@ -46,12 +47,13 @@ class NumberBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         constraints: BoxConstraints(minWidth: size, minHeight: size),
-        padding: const EdgeInsets.symmetric(horizontal: 6),
+        padding: const EdgeInsets.symmetric(horizontal: RakubaSpace.xs),
         alignment: Alignment.center,
-        decoration: BoxDecoration(color: RakubaColors.ink, borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(color: RakubaColors.ink, borderRadius: BorderRadius.circular(RakubaRadius.input)),
         child: Text(label,
             textDirection: TextDirection.ltr,
-            style: TextStyle(color: RakubaColors.white, fontWeight: FontWeight.w700, fontSize: size * 0.5)),
+            style: rakubaText(context, RakubaType.heading, bold: true, colour: RakubaColors.white)
+                .copyWith(fontFeatures: const [FontFeature.tabularFigures()])),
       );
 }
 
@@ -73,7 +75,7 @@ class CircleImage extends StatelessWidget {
       child: Container(
         width: size,
         height: size,
-        color: RakubaColors.placeholder,
+        color: RakubaColors.rule,
         child: bytes == null ? null : Image.memory(bytes!, fit: BoxFit.cover, gaplessPlayback: true),
       ),
     );
@@ -89,15 +91,16 @@ class SymbolImage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (bytes == null) return SizedBox(width: size, height: size);
     return ClipRRect(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(RakubaRadius.input),
       child: Image.memory(bytes!, width: size, height: size, fit: BoxFit.contain, gaplessPlayback: true),
     );
   }
 }
 
-/// The square tick box on the right of each row.
+/// The square tick box on the right of each row: the one "chosen" signal on
+/// every ballot row (with the row's 3 px border in the position colour).
 class TickBox extends StatelessWidget {
-  const TickBox({super.key, required this.checked, required this.colour, this.size = 64});
+  const TickBox({super.key, required this.checked, required this.colour, this.size = RakubaSpace.xxl});
   final bool checked;
   final Color colour;
   final double size;
@@ -108,8 +111,8 @@ class TickBox extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           color: checked ? colour : RakubaColors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: checked ? colour : RakubaColors.border, width: 3),
+          borderRadius: BorderRadius.circular(RakubaRadius.input),
+          border: Border.all(color: checked ? colour : RakubaColors.border, width: RakubaLine.strong),
         ),
         child: checked ? Icon(Icons.check, color: RakubaColors.white, size: size * 0.7) : null,
       );
@@ -117,7 +120,8 @@ class TickBox extends StatelessWidget {
 
 /// Dashed rounded border, used for "No choice" (mockups 3 and 4).
 class DashedBorderPainter extends CustomPainter {
-  DashedBorderPainter({required this.color, this.radius = 12, this.width = 2, this.dash = 8, this.gap = 6});
+  DashedBorderPainter(
+      {required this.color, this.radius = RakubaRadius.control, this.width = RakubaLine.strong, this.dash = 8, this.gap = 6});
   final Color color;
   final double radius;
   final double width;
@@ -142,5 +146,5 @@ class DashedBorderPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(DashedBorderPainter old) => old.color != color;
+  bool shouldRepaint(DashedBorderPainter old) => old.color != color || old.width != width;
 }

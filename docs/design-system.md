@@ -78,7 +78,7 @@ tabular figures. Lines stay under about 60 characters (max width 640 px for runn
 - **Touch targets:** 64 px minimum on every touch screen; 48 px only for admin table actions on the
   laptop (mouse and keyboard).
 - **Radius:** 4 only for the small admin tick box · 8 inputs, booth tick boxes and photos · 12 buttons and ballot rows · 16 panels and dialogs ·
-  999 only for status pills and the Help button. Nothing else.
+  999 only for status pills, the Help button and the booth progress segments. Nothing else.
 - **Lines:** 1 px `rule` for dividers and panel edges; 1 px `border` for inputs; 2 px for the
   booth's outlined buttons and focus/selected borders (3 px). No other widths.
 
@@ -105,11 +105,11 @@ mouse, a keyboard and a USB scanner that types.
 - **Input:** white, 1 px `border`, radius 8, label above in `label` 700, help text below in
   `inkMuted`; focus = 2 px `nileBlue`; error = 2 px `clay` + clay sentence below.
 - **Tick box:** 40 px (booth) / 24 px (admin), radius 8, 2 px `border`; ticked = filled, white tick.
-- **Ballot row:** white, 1 px `border`, radius 12; photo left, number box, symbol, name, tick box
+- **Ballot row:** white, 2 px `border`, radius 12, the chosen border appears instantly (no animation); photo left, number box, symbol, name, tick box
   right (mockup 3). Same selected treatment in the two-candidate list and the 13-candidate grid.
 - **Notice (inline):** no box. 4 px left bar in `clay` / `acaciaGreen` / `nileBlue`, then a bold
   first sentence and what to do next. Replaces the yellow outlined boxes.
-- **Dialog:** white, radius 16, 32 px padding, `heading` title, actions right-aligned
+- **Dialog:** white, radius 16, 32 px padding, `heading` title (voter Help dialog: `name` title, `heading`-size text), actions right-aligned
   (left in Arabic), primary last.
 - **Saved message (snackbar):** Ink bar, paper text, `body`, radius 0, full width at the bottom.
 - **Status pill:** radius 999, `acaciaGreen` or `clay` fill with white text, or Ink outline.
@@ -157,5 +157,6 @@ draft files in `brand/` unchanged, and no screen work in this document touches t
 ## Changelog
 
 - 2026-11-01: First draft from the screen audit against the MindStudio design-system guide.
+- 2026-11-03: Ballot rows 2 px border; booth progress segments may be pills; voter Help dialog uses 26 / 22.
 - 2026-11-03: Focus ring is Ink, not Nile Blue; radius 4 allowed for the small admin tick box.
 - 2026-11-02: Approved (D25); logo section on hold until the project lead reworks the logo.

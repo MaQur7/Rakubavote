@@ -162,11 +162,11 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
     return SectionCard(
       title: t.poolTitle,
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Text(t.poolBoothReady('$_poolSize'), style: const TextStyle(fontSize: 16)),
-        const SizedBox(height: 8),
+        Text(t.poolBoothReady('$_poolSize'), style: rakubaText(context, RakubaType.body)),
+        const SizedBox(height: RakubaSpace.xs),
         if (_poolMode) ...[
           NoticeBox(child: Text(t.poolModeOn, key: const ValueKey('pool-mode-on'), style: const TextStyle(fontWeight: FontWeight.w700))),
-          const SizedBox(height: 8),
+          const SizedBox(height: RakubaSpace.xs),
           OutlinedButton(
             key: const ValueKey('pool-off'),
             onPressed: () async {
@@ -176,8 +176,8 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
             child: Text(t.poolStop),
           ),
         ] else ...[
-          Text(t.poolBoothNote, style: const TextStyle(fontSize: 15)),
-          const SizedBox(height: 8),
+          Text(t.poolBoothNote, style: rakubaText(context, RakubaType.label)),
+          const SizedBox(height: RakubaSpace.xs),
           OutlinedButton(
             key: const ValueKey('pool-on'),
             style: OutlinedButton.styleFrom(
@@ -207,10 +207,10 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Row(children: [
           Icon(ok ? Icons.wifi : Icons.wifi_off, color: ok ? RakubaColors.acaciaGreen : RakubaColors.clay),
-          const SizedBox(width: 8),
+          const SizedBox(width: RakubaSpace.xs),
           Expanded(
             child: Text(ok ? t.connectedToLaptop : t.reconnecting,
-                key: const ValueKey('booth-link-state'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                key: const ValueKey('booth-link-state'), style: rakubaText(context, RakubaType.body, bold: true)),
           ),
         ]),
         Text(t.laptopIdLine(linkInfo.stationId)),
@@ -241,27 +241,27 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 640),
-          child: ListView(padding: const EdgeInsets.all(24), children: [
+          child: ListView(padding: const EdgeInsets.all(RakubaSpace.m), children: [
             SectionCard(
               title: signed == null ? t.noBallotYet : t.ballotLoadedTitle,
               child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                 if (signed != null) ...[
-                  Text(t.ballotFingerprintCheck, style: const TextStyle(fontSize: 16)),
+                  Text(t.ballotFingerprintCheck, style: rakubaText(context, RakubaType.body)),
                   Text(signed.fingerprint,
                       key: const ValueKey('booth-ballot-fingerprint'),
-                      style: const TextStyle(fontSize: 36, fontWeight: FontWeight.w700, letterSpacing: 2)),
+                      style: rakubaText(context, RakubaType.title, bold: true).copyWith(letterSpacing: 2)),
                   if (_stationId != null) Text(t.stationIdLine(_stationId!)),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: RakubaSpace.xs),
                   Text(t.votesOnBooth('$_votes'), key: const ValueKey('booth-votes')),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: RakubaSpace.s),
                 ],
-                if (signed == null) Text(t.ballotComesFromLaptop, style: const TextStyle(fontSize: 16)),
+                if (signed == null) Text(t.ballotComesFromLaptop, style: rakubaText(context, RakubaType.body)),
                 if (_error != null)
                   Padding(
-                    padding: const EdgeInsets.only(top: 12),
+                    padding: const EdgeInsets.only(top: RakubaSpace.s),
                     child: Text(_error!,
                         key: const ValueKey('booth-load-error'),
-                        style: const TextStyle(color: RakubaColors.clay, fontSize: 16)),
+                        style: rakubaText(context, RakubaType.body, colour: RakubaColors.clay)),
                   ),
               ]),
             ),
@@ -271,15 +271,14 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
               FutureBuilder<bool>(
                 future: Kiosk.fullLockAvailable(),
                 builder: (context, s) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.only(bottom: RakubaSpace.s),
                   child: Text(s.data == true ? t.kioskFull : t.kioskPinningOnly,
-                      style: TextStyle(
-                          fontSize: 15, color: s.data == true ? RakubaColors.acaciaGreen : RakubaColors.clay)),
+                      style: rakubaText(context, RakubaType.label, colour: s.data == true ? RakubaColors.acaciaGreen : RakubaColors.clay)),
                 ),
               ),
             if (signed != null) ...[
-              NoticeBox(child: Text(t.codesNote)),
-              const SizedBox(height: 16),
+              NoticeBox(kind: NoticeKind.info, child: Text(t.codesNote)),
+              const SizedBox(height: RakubaSpace.s),
               FilledButton(
                 key: const ValueKey('start-booth'),
                 style: FilledButton.styleFrom(backgroundColor: RakubaColors.acaciaGreen),
