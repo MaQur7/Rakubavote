@@ -20,6 +20,7 @@ import 'package:rakubavote/l10n/app_localizations.dart';
 import 'package:rakubavote/platform/beep.dart';
 
 import '../support/app_harness.dart';
+import '../support/screens.dart';
 import '../support/fixtures.dart';
 
 void useTablet(WidgetTester tester) {
@@ -46,6 +47,7 @@ void main() {
     booth = BoothController(repo);
     beep = SilentBeep();
     await tester.pumpWidget(MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: buildRakubaTheme(arabic: false),
       localizationsDelegates: rakubaLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -65,11 +67,13 @@ void main() {
     await setUpBooth(tester);
     expect(find.text('CIEC Community Independent Electoral Committee'), findsOneWidget);
     expect(find.text('Powered by Rakubavote'), findsOneWidget);
+    await screen(tester, 'booth-welcome');
 
     await tester.enterText(find.byKey(const ValueKey('booth-code')), 'ABCDEF');
     await tester.tap(find.byKey(const ValueKey('start-voting')));
     await settle(tester);
     expect(find.text('That code was not found. Check your slip or ask an official.'), findsOneWidget);
+    await screen(tester, 'booth-bad-code');
 
     await tester.enterText(find.byKey(const ValueKey('booth-code')), '7k4-q9m');
     await tester.tap(find.byKey(const ValueKey('start-voting')));
@@ -79,6 +83,7 @@ void main() {
     expect(find.text('Position 1 of 4'), findsOneWidget);
     expect(find.text('Chairman'), findsOneWidget);
     expect(find.text('Next: Secretary General'), findsOneWidget);
+    await screen(tester, 'booth-position-empty');
     final next = find.byKey(const ValueKey('booth-next'));
     expect(tester.widget<FilledButton>(next).onPressed, isNull, reason: 'a choice is needed first');
     await tester.tap(find.byKey(const ValueKey('cand-1')));
@@ -86,6 +91,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('cand-2')));
     await tester.pump();
     expect(booth.selectionFor('chair'), ['chair-c2']);
+    await screen(tester, 'booth-position-chosen');
     await tester.tap(next);
     await tester.pump();
 
@@ -108,12 +114,14 @@ void main() {
     await tester.pump();
     expect(find.text('07 · Candidate 7'), findsOneWidget, reason: 'current choice pinned at the bottom');
     expect(find.text('Review'), findsOneWidget);
+    await screen(tester, 'booth-long-list');
     await tester.tap(next);
     await tester.pump();
 
     // Review (mockup 4): change Chairman back to candidate 1.
     expect(find.text('Check your choices'), findsOneWidget);
     expect(find.text('No choice for this position'), findsOneWidget);
+    await screen(tester, 'booth-review');
     await tester.tap(find.byKey(const ValueKey('change-0')));
     await tester.pump();
     expect(find.text('Review'), findsOneWidget, reason: 'after Change the button returns to review');
@@ -129,6 +137,7 @@ void main() {
     // End (mockup 5).
     expect(find.byKey(const ValueKey('end-title')), findsOneWidget);
     expect(find.text('Thank you. Your vote has been recorded.'), findsOneWidget);
+    await screen(tester, 'booth-end');
     expect(find.textContaining('receipt'), findsNothing, reason: 'no receipts (D18)');
     expect(beep.plays, 1);
     await tester.pump(const Duration(seconds: 10));
@@ -160,6 +169,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('start-voting')));
     await settle(tester);
     expect(find.text('المنصب 1 من 4'), findsOneWidget);
+    await screen(tester, 'booth-arabic');
     expect(Directionality.of(tester.element(find.byKey(const ValueKey('cand-1')))), TextDirection.rtl);
     await close(tester);
   });
@@ -185,6 +195,7 @@ void main() {
     await tester.pumpWidget(UncontrolledProviderScope(
       container: c,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: buildRakubaTheme(arabic: false),
         localizationsDelegates: rakubaLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
@@ -210,6 +221,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('leave-confirm')));
     await pumpUntilFound(tester, find.byKey(const ValueKey('pool-mode-on')));
     expect(find.text('Pre-loaded codes are in use on this booth.'), findsOneWidget);
+    await screen(tester, 'booth-panel');
     expect(await tester.runAsync(() => repo.checkToken(poolHash)), isNull);
     final log = (await tester.runAsync(() => repo.audit.entries()))!;
     expect(log.last.action, 'token.pool_fallback');

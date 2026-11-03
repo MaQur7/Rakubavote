@@ -77,7 +77,7 @@ tabular figures. Lines stay under about 60 characters (max width 640 px for runn
   page margins 24 (tablet) and 32 (laptop).
 - **Touch targets:** 64 px minimum on every touch screen; 48 px only for admin table actions on the
   laptop (mouse and keyboard).
-- **Radius:** 8 inputs and tick boxes · 12 buttons and ballot rows · 16 panels and dialogs ·
+- **Radius:** 4 only for the small admin tick box · 8 inputs, booth tick boxes and photos · 12 buttons and ballot rows · 16 panels and dialogs ·
   999 only for status pills and the Help button. Nothing else.
 - **Lines:** 1 px `rule` for dividers and panel edges; 1 px `border` for inputs; 2 px for the
   booth's outlined buttons and focus/selected borders (3 px). No other widths.
@@ -91,7 +91,7 @@ mouse, a keyboard and a USB scanner that types.
 |---|---|
 | Default | As below |
 | Hover (mouse) | 8 % Ink overlay on the surface; cursor becomes a hand |
-| Focus (keyboard) | 3 px `nileBlue` outline, 2 px outside the shape; never removed |
+| Focus (keyboard) | 3 px Ink outline just outside the shape (a blue ring would vanish around blue buttons); never removed |
 | Pressed | 16 % Ink overlay; no ripple spreading across the screen |
 | Selected | 3 px border in the position colour (booth) or `nileBlue` (admin), plus a filled tick box with a white tick |
 | Disabled | `disabled` text and border, no overlay, with a sentence saying why when the reason is not obvious |
@@ -157,4 +157,5 @@ draft files in `brand/` unchanged, and no screen work in this document touches t
 ## Changelog
 
 - 2026-11-01: First draft from the screen audit against the MindStudio design-system guide.
+- 2026-11-03: Focus ring is Ink, not Nile Blue; radius 4 allowed for the small admin tick box.
 - 2026-11-02: Approved (D25); logo section on hold until the project lead reworks the logo.

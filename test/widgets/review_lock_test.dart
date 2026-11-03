@@ -7,6 +7,7 @@ import 'package:rakubavote/features/registration/registration_service.dart';
 import 'package:rakubavote/features/setup/election_service.dart';
 
 import '../support/app_harness.dart';
+import '../support/screens.dart';
 
 void main() {
   late DeviceSession session;
@@ -46,6 +47,7 @@ void main() {
     expect(find.text('Voter No. 0003 · possible duplicate of 0001'), findsOneWidget);
     expect(find.textContaining('Raised by Agent of candidate 2 on '), findsOneWidget);
     expect(find.text('Lock register (resolve 1 objections first)'), findsOneWidget);
+    await screen(tester, 'admin-review-objections');
 
     // Record a "missing name" objection through the dialog, then reject it.
     await tester.tap(find.byKey(const ValueKey('raise-objection')));
@@ -76,6 +78,7 @@ void main() {
     final code = tester.widget<SelectableText>(find.byKey(const ValueKey('register-fingerprint'))).data!;
     expect(code, matches(RegExp(r'^[0-9A-Z]{4}-[0-9A-Z]{4}$')));
     expect(find.text('Checked: the signed register matches the data on this laptop.'), findsOneWidget);
+    await screen(tester, 'admin-review-locked');
     expect(find.byKey(const ValueKey('raise-objection')), findsNothing);
     await finish(tester, session);
   });
@@ -97,6 +100,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('lock-confirm')));
     await settle(tester);
     expect(find.text('Sign the ballot in Setup before locking the register.'), findsOneWidget);
+    await screen(tester, 'admin-review-error');
     expect(await tester.runAsync(() => review.lockRecord(id)), isNull);
     await finish(tester, session);
   });

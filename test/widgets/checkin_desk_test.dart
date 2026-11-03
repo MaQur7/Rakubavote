@@ -7,6 +7,7 @@ import 'package:rakubavote/features/checkin/checkin_screen.dart';
 import 'package:rakubavote/features/registration/registration_service.dart';
 
 import '../support/app_harness.dart';
+import '../support/screens.dart';
 import '../support/election_builder.dart';
 
 void main() {
@@ -34,11 +35,13 @@ void main() {
     await tester.runAsync(() => buildLockedElection(session.registry!, session.keys, openPolls: false));
     await openDesk(tester);
     expect(find.text('Checked in: 0 of 5'), findsOneWidget);
+    await screen(tester, 'checkin-empty');
 
     await tester.enterText(find.byKey(const ValueKey('checkin-query')), 'Voter 3');
     await tester.pump(const Duration(milliseconds: 300));
     await settle(tester);
     expect(find.text('Registered · Has not voted'), findsOneWidget);
+    await screen(tester, 'checkin-found');
     await tester.tap(find.byKey(const ValueKey('issue-token')));
     await settle(tester);
 
@@ -46,6 +49,7 @@ void main() {
     expect(VotingToken.normalise(shown), isNotNull);
     expect(find.textContaining('It is not linked to the vote, so the ballot stays secret.'), findsOneWidget);
     expect(find.text('Checked in: 1 of 5'), findsOneWidget);
+    await screen(tester, 'checkin-code');
 
     await tester.tap(find.byKey(const ValueKey('next-voter')));
     await settle(tester);
@@ -56,6 +60,7 @@ void main() {
     await settle(tester);
     expect(find.text('Already checked in'), findsOneWidget);
     expect(find.text('This voter has already received a token.'), findsOneWidget);
+    await screen(tester, 'checkin-already');
     expect(find.byKey(const ValueKey('issue-token')), findsNothing);
     await finish(tester, session);
   });
@@ -102,6 +107,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('manual-submit')));
     await settle(tester);
     expect(find.text('Choose a reason and add details.'), findsOneWidget);
+    await screen(tester, 'checkin-manual-error');
     await tester.tap(find.byKey(const ValueKey('reason-cardLost')));
     await tester.pump();
     await tester.tap(find.byKey(const ValueKey('manual-submit')));

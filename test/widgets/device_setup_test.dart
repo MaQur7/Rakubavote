@@ -12,6 +12,7 @@ import 'package:rakubavote/features/device_setup/device_setup_screen.dart';
 import 'package:rakubavote/features/device_setup/unlock_screen.dart';
 
 import '../support/app_harness.dart';
+import '../support/screens.dart';
 
 void main() {
   late Directory dir;
@@ -54,6 +55,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('setup-submit')));
     await tester.pump();
     expect(find.text('The PIN must be 6 to 12 digits.'), findsOneWidget);
+    await screen(tester, 'device-setup-error');
 
     await tester.enterText(find.byKey(const ValueKey('setup-pin')), '482913');
     await tester.enterText(find.byKey(const ValueKey('setup-pin2')), '482913');
@@ -65,6 +67,7 @@ void main() {
     await tester.runAsync(() => c.read(sessionProvider.notifier).lock());
     await pumpUntilFound(tester, find.byType(UnlockScreen));
     expect(find.byType(UnlockScreen), findsOneWidget);
+    await screen(tester, 'unlock');
 
     await tester.enterText(find.byKey(const ValueKey('unlock-name')), 'Mary Achol');
     await tester.enterText(find.byKey(const ValueKey('unlock-pin')), '000000');

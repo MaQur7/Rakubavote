@@ -6,6 +6,7 @@ import 'package:rakubavote/features/registration/registration_service.dart';
 import 'package:rakubavote/features/setup/election_service.dart';
 
 import '../support/app_harness.dart';
+import '../support/screens.dart';
 
 void main() {
   late DeviceSession session;
@@ -26,6 +27,7 @@ void main() {
     expect(find.text('2 · Secretary General'), findsOneWidget);
     expect(find.text('3 · Finance Secretary'), findsOneWidget);
     expect(find.text('Save and sign ballot'), findsOneWidget);
+    await screen(tester, 'admin-setup-new');
     await finish(tester, session);
   });
 
@@ -52,6 +54,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('sign-ballot')));
     await settle(tester);
     expect(find.text('Ballot signed'), findsOneWidget);
+    await screen(tester, 'admin-setup-signed');
     expect(find.textContaining(RegExp(r'Fingerprint: [0-9A-Z]{4}-[0-9A-Z]{4}')), findsOneWidget);
     await finish(tester, session);
   });
@@ -76,13 +79,17 @@ void main() {
 
     await tester.enterText(find.byKey(const ValueKey('reg-name')), 'Mary Achol Deng');
     await tester.enterText(find.byKey(const ValueKey('reg-group')), 'Juba');
+    await tester.ensureVisible(find.byKey(const ValueKey('reg-save')));
     await tester.tap(find.byKey(const ValueKey('reg-save')));
     await settle(tester);
     expect(find.byKey(const ValueKey('reg-error')), findsOneWidget, reason: 'unpaid is blocked');
+    await screen(tester, 'admin-registration-error');
 
+    await tester.ensureVisible(find.byKey(const ValueKey('reg-paid')));
     await tester.tap(find.byKey(const ValueKey('reg-paid')));
     await tester.pump();
     await tester.enterText(find.byKey(const ValueKey('reg-receipt')), 'R-0001');
+    await tester.ensureVisible(find.byKey(const ValueKey('reg-save')));
     await tester.tap(find.byKey(const ValueKey('reg-save')));
     await settle(tester);
     expect(find.text('Saved. Voter No. 0001.'), findsOneWidget);
@@ -101,11 +108,13 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
     await settle(tester);
     expect(find.byKey(const ValueKey('reg-duplicate')), findsOneWidget);
+    await screen(tester, 'admin-registration-duplicate');
     expect(find.descendant(of: find.byKey(const ValueKey('reg-duplicate')), matching: find.textContaining('Voter No. 0001')), findsOneWidget);
 
     await tester.tap(find.byKey(const ValueKey('admin-tab-0')));
     await settle(tester);
     expect(find.text('Locked: voters are already registered.'), findsOneWidget);
+    await screen(tester, 'admin-setup-fee-locked');
 
     final voters = await tester.runAsync(() => RegistrationService(session.registry!).voterCount(id!));
     expect(voters, 1);
@@ -123,6 +132,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('admin-tab-1')));
     await settle(tester);
     await tester.enterText(find.byKey(const ValueKey('reg-name')), 'Student One');
+    await tester.ensureVisible(find.byKey(const ValueKey('reg-save')));
     await tester.tap(find.byKey(const ValueKey('reg-save')));
     await settle(tester);
     expect(find.text("Record the school's consent in Setup before registering students."), findsOneWidget);

@@ -827,10 +827,7 @@ class _LockCard extends ConsumerWidget {
                     if (r == null) return const SizedBox.shrink();
                     final ok = r == RegisterCheck.valid;
                     return NoticeBox(
-                      border: ok ? RakubaColors.acaciaGreen : RakubaColors.clay,
-                      background: ok
-                          ? RakubaColors.successTint
-                          : RakubaColors.warningTint,
+                      kind: ok ? NoticeKind.success : NoticeKind.warning,
                       child: Text(switch (r) {
                         RegisterCheck.valid => t.registerCheckValid,
                         RegisterCheck.badSignature => t.registerCheckBad,

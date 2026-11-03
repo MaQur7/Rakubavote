@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rakubavote/app/device_store.dart';
 
 import '../support/app_harness.dart';
+import '../support/screens.dart';
 import '../support/election_builder.dart';
 
 void main() {
@@ -29,11 +30,13 @@ void main() {
     await settle(tester);
     expect(lastPdfOutput.printed.single, 'rakubavote-cards-0001-0004');
     expect(find.text('Printed'), findsNWidgets(4));
+    await screen(tester, 'admin-registration-list');
 
     // Lost card: a new issue is needed, then printed again.
     await tester.tap(find.byKey(const ValueKey('voter-row-2')));
     await settle(tester);
     expect(find.text('Card issue: 1'), findsOneWidget);
+    await screen(tester, 'admin-voter-details');
     await tester.tap(find.byKey(const ValueKey('replace-card')));
     await settle(tester);
     await tester.tap(find.byKey(const ValueKey('reason-lost')));

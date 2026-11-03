@@ -36,40 +36,42 @@ class StatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-        decoration: BoxDecoration(color: colour, borderRadius: BorderRadius.circular(999)),
-        child: Text(text, style: const TextStyle(color: RakubaColors.white, fontSize: RakubaSizes.label)),
+        padding: const EdgeInsets.symmetric(horizontal: RakubaSpace.s, vertical: RakubaSpace.xxs),
+        decoration: BoxDecoration(color: colour, borderRadius: BorderRadius.circular(RakubaRadius.pill)),
+        child: Text(text, style: rakubaText(context, RakubaType.label, bold: true, colour: RakubaColors.white)),
       );
 }
 
-/// White card with a bold heading, as used across the admin mockups.
+/// A white panel with a heading: the one surface level on admin screens.
+/// Groups inside a panel are separated by space and rules, never by boxes.
 class SectionCard extends StatelessWidget {
-  const SectionCard({super.key, this.title, this.trailing, required this.child, this.padding = 18});
+  const SectionCard({super.key, this.title, this.trailing, required this.child, this.padding = RakubaSpace.m});
   final String? title;
   final Widget? trailing;
   final Widget child;
   final double padding;
 
   @override
-  Widget build(BuildContext context) => Card(
-        margin: const EdgeInsets.only(bottom: 16),
-        child: Padding(
-          padding: EdgeInsets.all(padding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (title != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Row(children: [
-                    Expanded(
-                        child: Text(title!, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700))),
-                    ?trailing,
-                  ]),
-                ),
-              child,
-            ],
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: RakubaSpace.m),
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(padding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (title != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: RakubaSpace.s),
+                    child: Row(children: [
+                      Expanded(child: Text(title!, style: rakubaText(context, RakubaType.heading, bold: true))),
+                      ?trailing,
+                    ]),
+                  ),
+                child,
+              ],
+            ),
           ),
         ),
       );
@@ -85,60 +87,146 @@ class PhotoBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final radius = circle ? BorderRadius.circular(size) : BorderRadius.circular(8);
+    final radius = circle ? BorderRadius.circular(RakubaRadius.pill) : BorderRadius.circular(RakubaRadius.input);
     return ClipRRect(
       borderRadius: radius,
       child: Container(
         width: size,
         height: size,
-        color: RakubaColors.placeholder,
+        color: RakubaColors.rule,
         alignment: Alignment.center,
         child: bytes != null
             ? Image.memory(bytes!, width: size, height: size, fit: BoxFit.cover, gaplessPlayback: true)
             : (label == null
                 ? null
                 : Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: Text(label!, textAlign: TextAlign.center, style: const TextStyle(fontSize: 13)),
+                    padding: const EdgeInsets.all(RakubaSpace.xs),
+                    child: Text(label!,
+                        textAlign: TextAlign.center,
+                        style: rakubaText(context, RakubaType.label, colour: RakubaColors.inkMuted)),
                   )),
       ),
     );
   }
 }
 
-/// Small text label above a field.
+/// Small bold label above a field.
 class FieldLabel extends StatelessWidget {
   const FieldLabel(this.text, {super.key});
   final String text;
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(bottom: 6, top: 10),
-        child: Text(text, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+        padding: const EdgeInsets.only(bottom: RakubaSpace.xs, top: RakubaSpace.s),
+        child: Text(text, style: rakubaText(context, RakubaType.label, bold: true)),
       );
 }
 
-/// Warning box in the mockup style (thatch border, warm tint).
+/// Secondary text: hints and small print, in [RakubaColors.inkMuted].
+class MutedText extends StatelessWidget {
+  const MutedText(this.text, {super.key, this.size = RakubaType.label, this.textAlign});
+  final String text;
+  final double size;
+  final TextAlign? textAlign;
+  @override
+  Widget build(BuildContext context) =>
+      Text(text, textAlign: textAlign, style: rakubaText(context, size, colour: RakubaColors.inkMuted));
+}
+
+enum NoticeKind { warning, success, info }
+
+Color _noticeBar(NoticeKind k) => switch (k) {
+      NoticeKind.warning => RakubaColors.clay,
+      NoticeKind.success => RakubaColors.acaciaGreen,
+      NoticeKind.info => RakubaColors.nileBlue,
+    };
+
+/// Inline notice: a 4 px coloured bar at the start, then text. No box, no border.
+/// Warnings sit on the warning wash so they stand out in a list.
 class NoticeBox extends StatelessWidget {
-  const NoticeBox({super.key, required this.child, this.border = RakubaColors.thatchGold,
-      this.background = RakubaColors.warningTint});
+  const NoticeBox({super.key, required this.child, this.kind = NoticeKind.warning});
   final Widget child;
-  final Color border;
-  final Color background;
+  final NoticeKind kind;
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: background,
-          border: Border.all(color: border, width: 1.5),
-          borderRadius: BorderRadius.circular(10),
+          color: kind == NoticeKind.warning ? RakubaColors.warningTint : null,
+          border: BorderDirectional(start: BorderSide(color: _noticeBar(kind), width: RakubaSpace.xxs)),
         ),
-        child: child,
+        padding: const EdgeInsetsDirectional.fromSTEB(RakubaSpace.s, RakubaSpace.xs, RakubaSpace.s, RakubaSpace.xs),
+        child: DefaultTextStyle.merge(style: rakubaText(context, RakubaType.body), child: child),
+      );
+}
+
+/// Loading state: a sentence of what is happening and a 2 px progress line.
+class LoadingLine extends StatelessWidget {
+  const LoadingLine(this.text, {super.key});
+  final String text;
+  @override
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const LinearProgressIndicator(),
+          const SizedBox(height: RakubaSpace.s),
+          MutedText(text, size: RakubaType.body),
+        ],
+      );
+}
+
+/// Empty state: what will appear here, and the action that fills it.
+class EmptyState extends StatelessWidget {
+  const EmptyState(this.text, {super.key, this.action});
+  final String text;
+  final Widget? action;
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: RakubaSpace.l),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            MutedText(text, size: RakubaType.body),
+            if (action != null) ...[const SizedBox(height: RakubaSpace.s), action!],
+          ],
+        ),
+      );
+}
+
+/// One row of a ledger: label at the start, value at the end, a rule below.
+/// Replaces stat tiles. A row that needs attention gets a clay bar.
+class LedgerRow extends StatelessWidget {
+  const LedgerRow({super.key, required this.label, required this.value, this.attention = false, this.note});
+  final String label;
+  final String value;
+  final bool attention;
+  final String? note;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        decoration: BoxDecoration(
+          border: BorderDirectional(
+            bottom: const BorderSide(color: RakubaColors.rule),
+            start: BorderSide(
+                color: attention ? RakubaColors.clay : RakubaColors.transparent, width: RakubaSpace.xxs),
+          ),
+        ),
+        padding: const EdgeInsetsDirectional.fromSTEB(RakubaSpace.s, RakubaSpace.xs, 0, RakubaSpace.xs),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Row(children: [
+            Expanded(child: Text(label, style: rakubaText(context, RakubaType.body))),
+            Text(value,
+                style: rakubaText(context, RakubaType.bodyLarge, bold: true,
+                        colour: attention ? RakubaColors.clay : RakubaColors.ink)
+                    .copyWith(fontFeatures: const [FontFeature.tabularFigures()])),
+          ]),
+          if (note != null) MutedText(note!),
+        ]),
       );
 }
 
 void showMessage(BuildContext context, String text) {
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
-    ..showSnackBar(SnackBar(content: Text(text, style: const TextStyle(fontSize: 16))));
+    ..showSnackBar(SnackBar(content: Text(text)));
 }

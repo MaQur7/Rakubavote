@@ -16,6 +16,7 @@ import 'package:rakubavote/l10n/app_localizations.dart';
 import 'package:rakubavote/station/enrollment.dart';
 
 import '../support/app_harness.dart';
+import '../support/screens.dart';
 import '../support/election_builder.dart';
 import '../support/fixtures.dart';
 
@@ -61,6 +62,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('confirm-dialog')));
     await settle(tester);
     expect(find.text('Waiting for votes'), findsOneWidget);
+    await screen(tester, 'admin-results-waiting');
 
     // The booth's batch arrives (over Wi-Fi in real use).
     await tester.runAsync(() async {
@@ -81,6 +83,7 @@ void main() {
     expect(find.text('Check-ins and votes differ'), findsOneWidget);
     expect(find.text('• 1 checked-in voter(s) did not vote.'), findsOneWidget);
     expect(find.textContaining('Tie: 2 candidates have 1 votes.'), findsWidgets);
+    await screen(tester, 'admin-results');
     expect(find.textContaining('receipt'), findsNothing);
     await tester.runAsync(booth!.db.close);
     await finish(tester, session);
@@ -99,6 +102,7 @@ void main() {
     }))!;
     final closed = ValueNotifier(false);
     await tester.pumpWidget(MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: buildRakubaTheme(arabic: false),
       localizationsDelegates: rakubaLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -109,6 +113,7 @@ void main() {
     closed.value = true;
     await tester.pump();
     expect(find.text('The polls are closed'), findsOneWidget);
+    await screen(tester, 'booth-closed');
     expect(find.byKey(const ValueKey('start-voting')), findsNothing);
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 1));
@@ -132,6 +137,7 @@ void main() {
     await tester.pump();
     final code = tester.widget<SelectableText>(find.byKey(const ValueKey('pairing-code'))).data!;
     expect(code, matches(RegExp(r'^[0-9A-Z]{4}-[0-9A-Z]{4}$')));
+    await screen(tester, 'admin-devices');
     await tester.runAsync(() => lastContainer.read(stationServerProvider).stop());
     await finish(tester, session);
   });
