@@ -71,12 +71,12 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 900),
-          child: ListView(padding: const EdgeInsets.all(24), children: [
+          child: ListView(padding: const EdgeInsets.all(RakubaSpace.m), children: [
             SectionCard(
               title: t.stationNetwork,
               child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                Text(t.stationNetworkNote, style: const TextStyle(fontSize: 16)),
-                const SizedBox(height: 12),
+                Text(t.stationNetworkNote, style: rakubaText(context, RakubaType.body)),
+                const SizedBox(height: RakubaSpace.s),
                 if (!server.running)
                   FilledButton.icon(
                     key: const ValueKey('start-network'),
@@ -85,15 +85,15 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                     onPressed: _start,
                   )
                 else ...[
-                  Text(t.networkRunning, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: RakubaColors.acaciaGreen)),
-                  const SizedBox(height: 6),
+                  Text(t.networkRunning, style: rakubaText(context, RakubaType.bodyLarge, bold: true, colour: RakubaColors.acaciaGreen)),
+                  const SizedBox(height: RakubaSpace.xs),
                   for (final a in _addresses)
-                    SelectableText(t.laptopAddress('$a:${server.port}'), style: const TextStyle(fontSize: 18)),
+                    SelectableText(t.laptopAddress('$a:${server.port}'), style: rakubaText(context, RakubaType.bodyLarge)),
                   if (_addresses.isEmpty) Text(t.noWifiAddress, style: const TextStyle(color: RakubaColors.clay)),
                 ],
                 if (_error != null)
                   Padding(
-                    padding: const EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: RakubaSpace.xs),
                     child: Text(_error!, style: const TextStyle(color: RakubaColors.clay)),
                   ),
               ]),
@@ -102,8 +102,8 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
               SectionCard(
                 title: t.addDevice,
                 child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                  Text(t.addDeviceNote, style: const TextStyle(fontSize: 16)),
-                  const SizedBox(height: 12),
+                  Text(t.addDeviceNote, style: rakubaText(context, RakubaType.body)),
+                  const SizedBox(height: RakubaSpace.s),
                   if (code == null)
                     OutlinedButton(
                       key: const ValueKey('new-pairing-code'),
@@ -111,36 +111,36 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                       child: Text(t.showPairingCode),
                     )
                   else
-                    Wrap(spacing: 24, runSpacing: 16, crossAxisAlignment: WrapCrossAlignment.center, children: [
+                    Wrap(spacing: RakubaSpace.m, runSpacing: RakubaSpace.s, crossAxisAlignment: WrapCrossAlignment.center, children: [
                       Container(
                         color: RakubaColors.white,
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(RakubaSpace.xs),
                         child: QrImageView(
                           data: Pairing.qrText(host: host, port: server.port!, code: code, stationId: server.keys.deviceId),
                           size: 200,
                         ),
                       ),
                       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(t.pairingCode, style: const TextStyle(fontSize: 16)),
+                        Text(t.pairingCode, style: rakubaText(context, RakubaType.body)),
                         SelectableText(Pairing.formatCode(code),
                             key: const ValueKey('pairing-code'),
-                            style: const TextStyle(fontSize: 36, fontWeight: FontWeight.w700, letterSpacing: 2)),
+                            style: rakubaText(context, RakubaType.title, bold: true).copyWith(letterSpacing: 2)),
                         Text(t.laptopIdLine(server.keys.deviceId)),
                         Text(t.pairingCodeValid),
                       ]),
                     ]),
                   for (final r in server.pendingRequests) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: RakubaSpace.s),
                     NoticeBox(
                       child: Wrap(
                         alignment: WrapAlignment.spaceBetween,
                         crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 12,
-                        runSpacing: 8,
+                        spacing: RakubaSpace.s,
+                        runSpacing: RakubaSpace.xs,
                         children: [
                           Text(t.pairRequestLine(r.label, roleName(t, r.role.name), r.deviceId),
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-                          Wrap(spacing: 8, children: [
+                              style: rakubaText(context, RakubaType.body, bold: true)),
+                          Wrap(spacing: RakubaSpace.xs, children: [
                             OutlinedButton(onPressed: () => server.reject(r.id), child: Text(t.reject)),
                             FilledButton(
                               key: ValueKey('approve-${r.deviceId}'),
@@ -164,12 +164,12 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                 builder: (context, snap) {
                   final p = snap.data;
                   return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                    Text(t.poolLaptopNote, style: const TextStyle(fontSize: 16)),
-                    const SizedBox(height: 8),
+                    Text(t.poolLaptopNote, style: rakubaText(context, RakubaType.body)),
+                    const SizedBox(height: RakubaSpace.xs),
                     if (p != null && p.total > 0)
                       Text(t.poolLaptopStatus('${p.remaining}', '${p.total - p.remaining}'),
-                          key: const ValueKey('pool-status'), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 8),
+                          key: const ValueKey('pool-status'), style: rakubaText(context, RakubaType.bodyLarge, bold: true)),
+                    const SizedBox(height: RakubaSpace.xs),
                     OutlinedButton(
                       key: const ValueKey('prepare-pool'),
                       onPressed: () async {

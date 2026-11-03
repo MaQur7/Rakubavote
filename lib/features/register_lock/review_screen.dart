@@ -30,7 +30,7 @@ class ReviewScreen extends ConsumerWidget {
         final e = snap.data;
         if (e == null) {
           return Center(
-            child: Text(t.errNoElection, style: const TextStyle(fontSize: 18)),
+            child: Text(t.errNoElection, style: rakubaText(context, RakubaType.bodyLarge)),
           );
         }
         final stats = _StatsRow(election: e);
@@ -40,15 +40,15 @@ class ReviewScreen extends ConsumerWidget {
           builder: (context, c) {
             if (c.maxWidth >= 900) {
               return ListView(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(RakubaSpace.m),
                 children: [
                   stats,
-                  const SizedBox(height: 16),
+                  const SizedBox(height: RakubaSpace.s),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(flex: 2, child: objections),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: RakubaSpace.s),
                       Expanded(child: lock),
                     ],
                   ),
@@ -56,7 +56,7 @@ class ReviewScreen extends ConsumerWidget {
               );
             }
             return ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(RakubaSpace.s),
               children: [stats, objections, lock],
             );
           },
@@ -64,44 +64,6 @@ class ReviewScreen extends ConsumerWidget {
       },
     );
   }
-}
-
-class _StatCard extends StatelessWidget {
-  const _StatCard({
-    required this.label,
-    required this.value,
-    this.highlight = false,
-    this.action,
-  });
-  final String label;
-  final String value;
-  final bool highlight;
-  final Widget? action;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(18),
-    decoration: BoxDecoration(
-      color: highlight ? RakubaColors.warningTint : RakubaColors.card,
-      borderRadius: BorderRadius.circular(RakubaSizes.cardRadius),
-      border: Border.all(
-        color: highlight ? RakubaColors.thatchGold : RakubaColors.placeholder,
-        width: highlight ? 2 : 1,
-      ),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: const TextStyle(fontSize: 16)),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w700),
-        ),
-        ?action,
-      ],
-    ),
-  );
 }
 
 class _StatsRow extends ConsumerWidget {
@@ -144,66 +106,37 @@ class _StatsRow extends ConsumerWidget {
     final locked =
         ElectionState.fromWire(election.state).index >=
         ElectionState.locked.index;
-    final cards = [
-      StreamBuilder<List<Voter>>(
-        stream: ref.watch(registrationServiceProvider).watchVoters(election.id),
-        builder: (context, s) => _StatCard(
-          label: t.registeredVotersStat,
-          value: '${s.data?.length ?? ''}',
+    // A ledger, not stat tiles (design system, section 7).
+    return SectionCard(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        StreamBuilder<List<Voter>>(
+          stream: ref.watch(registrationServiceProvider).watchVoters(election.id),
+          builder: (context, s) =>
+              LedgerRow(label: t.registeredVotersStat, value: '${s.data?.length ?? ''}'),
         ),
-      ),
-      _StatCard(
-        label: t.displayPeriod,
-        value: election.reviewStart == null
-            ? t.displayPeriodNotSet
-            : t.displayPeriodRange(
-                _date(election.reviewStart),
-                _date(election.reviewEnd),
-              ),
-        action: locked
-            ? null
-            : Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: OutlinedButton(
-                  key: const ValueKey('set-dates'),
-                  onPressed: () => _setDates(context, ref),
-                  child: Text(t.setDates),
-                ),
-              ),
-      ),
-      StreamBuilder<int>(
-        stream: ref
-            .watch(reviewServiceProvider)
-            .watchOpenObjectionCount(election.id),
-        builder: (context, s) => _StatCard(
-          label: t.openObjections,
-          value: '${s.data ?? 0}',
-          highlight: (s.data ?? 0) > 0,
+        LedgerRow(
+          label: t.displayPeriod,
+          value: election.reviewStart == null
+              ? t.displayPeriodNotSet
+              : t.displayPeriodRange(_date(election.reviewStart), _date(election.reviewEnd)),
         ),
-      ),
-    ];
-    return LayoutBuilder(
-      builder: (context, c) {
-        if (c.maxWidth < 700) {
-          return Column(
-            children: [
-              for (final w in cards)
-                Padding(padding: const EdgeInsets.only(bottom: 12), child: w),
-            ],
-          );
-        }
-        return IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              for (var i = 0; i < cards.length; i++) ...[
-                if (i > 0) const SizedBox(width: 16),
-                Expanded(child: cards[i]),
-              ],
-            ],
+        StreamBuilder<int>(
+          stream: ref.watch(reviewServiceProvider).watchOpenObjectionCount(election.id),
+          builder: (context, s) =>
+              LedgerRow(label: t.openObjections, value: '${s.data ?? 0}', attention: (s.data ?? 0) > 0),
+        ),
+        if (!locked) ...[
+          const SizedBox(height: RakubaSpace.s),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: OutlinedButton(
+              key: const ValueKey('set-dates'),
+              onPressed: () => _setDates(context, ref),
+              child: Text(t.setDates),
+            ),
           ),
-        );
-      },
+        ],
+      ]),
     );
   }
 }
@@ -230,8 +163,8 @@ class _ObjectionsCard extends ConsumerWidget {
             children: [
               if (!locked)
                 Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
+                  spacing: RakubaSpace.s,
+                  runSpacing: RakubaSpace.s,
                   children: [
                     OutlinedButton.icon(
                       key: const ValueKey('raise-objection'),
@@ -255,9 +188,9 @@ class _ObjectionsCard extends ConsumerWidget {
                     ),
                   ],
                 ),
-              const SizedBox(height: 12),
+              const SizedBox(height: RakubaSpace.s),
               if (list.isEmpty)
-                Text(t.noObjections, style: const TextStyle(fontSize: 16)),
+                Text(t.noObjections, style: rakubaText(context, RakubaType.body)),
               for (final o in list)
                 _ObjectionTile(
                   key: ValueKey(o.objection.id),
@@ -265,8 +198,8 @@ class _ObjectionsCard extends ConsumerWidget {
                   election: election,
                   locked: locked,
                 ),
-              const SizedBox(height: 8),
-              Text(t.objectionsNote, style: const TextStyle(fontSize: 15)),
+              const SizedBox(height: RakubaSpace.xs),
+              Text(t.objectionsNote, style: rakubaText(context, RakubaType.label)),
             ],
           );
         },
@@ -394,18 +327,18 @@ class _ObjectionTile extends ConsumerWidget {
         },
     ];
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
+      margin: const EdgeInsets.only(bottom: RakubaSpace.s),
+      padding: const EdgeInsets.all(RakubaSpace.s),
       decoration: BoxDecoration(
         color: open ? RakubaColors.card : RakubaColors.paper,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: RakubaColors.placeholder),
+        borderRadius: BorderRadius.circular(RakubaRadius.control),
+        border: Border.all(color: RakubaColors.rule),
       ),
       child: Wrap(
         alignment: WrapAlignment.spaceBetween,
         crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 12,
-        runSpacing: 8,
+        spacing: RakubaSpace.s,
+        runSpacing: RakubaSpace.xs,
         children: [
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 520),
@@ -414,16 +347,13 @@ class _ObjectionTile extends ConsumerWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: rakubaText(context, RakubaType.bodyLarge, bold: true),
                 ),
                 if (kind == ObjectionKind.missing && o.detail.isNotEmpty)
-                  Text(o.detail, style: const TextStyle(fontSize: 16)),
+                  Text(o.detail, style: rakubaText(context, RakubaType.body)),
                 Text(
                   t.raisedByLine(o.raisedByName, o.raisedOn),
-                  style: const TextStyle(fontSize: 16),
+                  style: rakubaText(context, RakubaType.body),
                 ),
                 if (!open)
                   Text(
@@ -432,15 +362,12 @@ class _ObjectionTile extends ConsumerWidget {
                       o.decidedOn ?? '',
                       _decisionText(t, o.decision!),
                     ),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: RakubaColors.acaciaGreen,
-                    ),
+                    style: rakubaText(context, RakubaType.body, colour: RakubaColors.acaciaGreen),
                   ),
               ],
             ),
           ),
-          if (actions.isNotEmpty) Wrap(spacing: 8, children: actions),
+          if (actions.isNotEmpty) Wrap(spacing: RakubaSpace.xs, children: actions),
         ],
       ),
     );
@@ -566,13 +493,10 @@ class _RaiseObjectionDialogState extends ConsumerState<_RaiseObjectionDialog> {
               TextField(controller: _detail, maxLines: 2),
               if (_error != null)
                 Padding(
-                  padding: const EdgeInsets.only(top: 12),
+                  padding: const EdgeInsets.only(top: RakubaSpace.s),
                   child: Text(
                     _error!,
-                    style: const TextStyle(
-                      color: RakubaColors.clay,
-                      fontSize: 16,
-                    ),
+                    style: rakubaText(context, RakubaType.body, colour: RakubaColors.clay),
                   ),
                 ),
             ],
@@ -752,7 +676,7 @@ class _LockCard extends ConsumerWidget {
     final ok = await showDialog<bool>(
       context: context,
       builder: (c) => AlertDialog(
-        content: Text(t.lockConfirm, style: const TextStyle(fontSize: 18)),
+        content: Text(t.lockConfirm, style: rakubaText(context, RakubaType.bodyLarge)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(c, false),
@@ -781,7 +705,7 @@ class _LockCard extends ConsumerWidget {
     final t = AppLocalizations.of(context);
     final svc = ref.watch(reviewServiceProvider);
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(RakubaSpace.s),
       decoration: BoxDecoration(
         color: RakubaColors.card,
         borderRadius: BorderRadius.circular(RakubaSizes.cardRadius),
@@ -794,9 +718,9 @@ class _LockCard extends ConsumerWidget {
           final common = <Widget>[
             Text(
               lock == null ? t.lockTitle : t.registerLocked,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+              style: rakubaText(context, RakubaType.heading, bold: true),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: RakubaSpace.xs),
           ];
           if (lock != null) {
             return Column(
@@ -805,21 +729,17 @@ class _LockCard extends ConsumerWidget {
                 ...common,
                 Text(
                   t.registerFingerprint,
-                  style: const TextStyle(fontSize: 16),
+                  style: rakubaText(context, RakubaType.body),
                 ),
                 SelectableText(
                   lock.fingerprint,
                   key: const ValueKey('register-fingerprint'),
-                  style: const TextStyle(
-                    fontSize: 34,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 2,
-                  ),
+                  style: rakubaText(context, RakubaType.title, bold: true).copyWith(letterSpacing: 2),
                 ),
                 Text(
                   t.lockedByLine(lock.lockedBy, _date(lock.lockedAt.toLocal())),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: RakubaSpace.s),
                 FutureBuilder<RegisterCheck>(
                   future: svc.checkLockedRegister(election.id),
                   builder: (context, s) {
@@ -836,7 +756,7 @@ class _LockCard extends ConsumerWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: RakubaSpace.s),
                 if (election.state == ElectionState.locked.name)
                   FilledButton(
                     key: const ValueKey('open-polls'),
@@ -850,19 +770,15 @@ class _LockCard extends ConsumerWidget {
                   Text(
                     t.pollsOpen,
                     key: const ValueKey('polls-open'),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: RakubaColors.acaciaGreen,
-                    ),
+                    style: rakubaText(context, RakubaType.bodyLarge, bold: true, colour: RakubaColors.acaciaGreen),
                   ),
-                const SizedBox(height: 12),
+                const SizedBox(height: RakubaSpace.s),
                 OutlinedButton(
                   key: const ValueKey('print-register'),
                   onPressed: () => printRegister(context, ref),
                   child: Text(t.printRegister),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: RakubaSpace.s),
                 _afterLocking(t),
               ],
             );
@@ -875,14 +791,14 @@ class _LockCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ...common,
-                  Text(t.lockText, style: const TextStyle(fontSize: 16)),
-                  const SizedBox(height: 16),
+                  Text(t.lockText, style: rakubaText(context, RakubaType.body)),
+                  const SizedBox(height: RakubaSpace.s),
                   OutlinedButton(
                     key: const ValueKey('print-register'),
                     onPressed: () => printRegister(context, ref),
                     child: Text(t.printRegister),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: RakubaSpace.s),
                   FilledButton(
                     key: const ValueKey('lock-register'),
                     onPressed: open > 0 ? null : () => _lock(context, ref),
@@ -891,7 +807,7 @@ class _LockCard extends ConsumerWidget {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: RakubaSpace.s),
                   _afterLocking(t),
                 ],
               );
@@ -907,7 +823,7 @@ class _LockCard extends ConsumerWidget {
     final ok = await showDialog<bool>(
       context: context,
       builder: (c) => AlertDialog(
-        content: Text(t.openPollsConfirm, style: const TextStyle(fontSize: 18)),
+        content: Text(t.openPollsConfirm, style: rakubaText(context, RakubaType.bodyLarge)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(c, false),
@@ -931,12 +847,8 @@ class _LockCard extends ConsumerWidget {
     }
   }
 
-  Widget _afterLocking(AppLocalizations t) => Container(
-    padding: const EdgeInsets.all(12),
-    decoration: BoxDecoration(
-      color: RakubaColors.paper,
-      borderRadius: BorderRadius.circular(10),
-    ),
+  Widget _afterLocking(AppLocalizations t) => NoticeBox(
+    kind: NoticeKind.info,
     child: Text.rich(
       TextSpan(
         children: [

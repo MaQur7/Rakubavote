@@ -212,6 +212,19 @@ ButtonStyle destructiveOutlinedStyle() => ButtonStyle(
       }),
     );
 
+/// Controls on the Ink top bar: white text, light hover and pressed layers,
+/// and a Light Thatch focus ring (an Ink ring would vanish on the bar).
+ButtonStyle onDarkStyle({bool active = false}) => ButtonStyle(
+      backgroundColor: WidgetStatePropertyAll(active ? RakubaColors.lightThatch : RakubaColors.transparent),
+      foregroundColor: WidgetStatePropertyAll(active ? RakubaColors.ink : RakubaColors.white),
+      iconColor: WidgetStatePropertyAll(active ? RakubaColors.ink : RakubaColors.white),
+      overlayColor: _layers(onDark: !active),
+      side: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.focused)
+          ? const BorderSide(
+              color: RakubaColors.lightThatch, width: RakubaLine.selected, strokeAlign: BorderSide.strokeAlignOutside)
+          : null),
+    );
+
 /// Outlined button in a ballot position colour (Change on the review screen).
 ButtonStyle colourOutlinedStyle(Color colour) => ButtonStyle(
       backgroundColor: const WidgetStatePropertyAll(RakubaColors.card),

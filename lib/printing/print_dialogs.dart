@@ -128,7 +128,7 @@ Future<void> printRegister(BuildContext context, WidgetRef ref) async {
     context: context,
     builder: (c) => AlertDialog(
       title: Text(t.printRegisterTitle),
-      content: SizedBox(width: 420, child: Text(t.printRegisterNote, style: const TextStyle(fontSize: 16))),
+      content: SizedBox(width: 420, child: Text(t.printRegisterNote, style: rakubaText(context, RakubaType.body))),
       actions: [
         TextButton(onPressed: () => Navigator.pop(c), child: Text(t.cancel)),
         OutlinedButton(key: const ValueKey('register-save-pdf'), onPressed: () => Navigator.pop(c, true), child: Text(t.savePdf)),

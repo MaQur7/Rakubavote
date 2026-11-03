@@ -1351,7 +1351,7 @@ abstract class AppLocalizations {
   /// No description provided for @afterLockingText.
   ///
   /// In en, this message translates to:
-  /// **'copy to the check-in device by USB or local Wi-Fi, and print the fingerprint code for party agents and observers.'**
+  /// **'open the polls when the day comes; the check-in desk and tablets use the locked register over the station Wi-Fi. Give the fingerprint code to party agents and observers.'**
   String get afterLockingText;
 
   /// No description provided for @registerLocked.

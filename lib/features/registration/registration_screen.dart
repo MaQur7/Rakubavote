@@ -30,7 +30,7 @@ class RegistrationScreen extends ConsumerWidget {
         final e = snap.data;
         if (e == null) {
           return Center(
-            child: Text(t.errNoElection, style: const TextStyle(fontSize: 18)),
+            child: Text(t.errNoElection, style: rakubaText(context, RakubaType.bodyLarge)),
           );
         }
         return LayoutBuilder(
@@ -44,13 +44,13 @@ class RegistrationScreen extends ConsumerWidget {
                   SizedBox(
                     width: 380,
                     child: ListView(
-                      padding: const EdgeInsets.fromLTRB(24, 16, 8, 24),
+                      padding: const EdgeInsets.fromLTRB(RakubaSpace.m, RakubaSpace.s, RakubaSpace.xs, RakubaSpace.m),
                       children: [form],
                     ),
                   ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 16, 24, 24),
+                      padding: const EdgeInsets.fromLTRB(RakubaSpace.xs, RakubaSpace.s, RakubaSpace.m, RakubaSpace.m),
                       child: list,
                     ),
                   ),
@@ -58,7 +58,7 @@ class RegistrationScreen extends ConsumerWidget {
               );
             }
             return ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(RakubaSpace.s),
               children: [
                 form,
                 SizedBox(height: 600, child: list),
@@ -189,7 +189,7 @@ class _RegisterVoterFormState extends ConsumerState<RegisterVoterForm> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   PhotoBox(bytes: _photo, size: 110, label: t.photo),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: RakubaSpace.s),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -208,10 +208,10 @@ class _RegisterVoterFormState extends ConsumerState<RegisterVoterForm> {
                           },
                           child: Text(t.takePhoto),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: RakubaSpace.xs),
                         Text(
                           t.photoUse,
-                          style: const TextStyle(fontSize: RakubaSizes.label),
+                          style: rakubaText(context, RakubaType.label),
                         ),
                       ],
                     ),
@@ -229,12 +229,12 @@ class _RegisterVoterFormState extends ConsumerState<RegisterVoterForm> {
               FieldLabel(e.groupLabel),
               TextField(key: const ValueKey('reg-group'), controller: _group),
               if (fee != null && fee.enabled) ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: RakubaSpace.s),
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(RakubaSpace.s),
                   decoration: BoxDecoration(
                     color: RakubaColors.paper,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(RakubaRadius.control),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -285,7 +285,7 @@ class _RegisterVoterFormState extends ConsumerState<RegisterVoterForm> {
                 ),
               ],
               if (_dups.isNotEmpty) ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: RakubaSpace.s),
                 NoticeBox(
                   key: const ValueKey('reg-duplicate'),
                   child: Text.rich(
@@ -312,22 +312,19 @@ class _RegisterVoterFormState extends ConsumerState<RegisterVoterForm> {
               ],
               if (_error != null)
                 Padding(
-                  padding: const EdgeInsets.only(top: 12),
+                  padding: const EdgeInsets.only(top: RakubaSpace.s),
                   child: Text(
                     _error!,
                     key: const ValueKey('reg-error'),
-                    style: const TextStyle(
-                      color: RakubaColors.clay,
-                      fontSize: 16,
-                    ),
+                    style: rakubaText(context, RakubaType.body, colour: RakubaColors.clay),
                   ),
                 ),
-              const SizedBox(height: 16),
+              const SizedBox(height: RakubaSpace.s),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   OutlinedButton(onPressed: _clear, child: Text(t.clear)),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: RakubaSpace.s),
                   Flexible(
                     child: FilledButton(
                       key: const ValueKey('reg-save'),
@@ -451,7 +448,7 @@ class _VoterListState extends ConsumerState<VoterList> {
                   ),
                   for (final e in s.byCurrency.entries)
                     Text('${e.key}: ${e.value}'),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: RakubaSpace.s),
                   Text(
                     t.totalsByOfficial,
                     style: const TextStyle(fontWeight: FontWeight.w700),
@@ -460,7 +457,7 @@ class _VoterListState extends ConsumerState<VoterList> {
                     Text(
                       '${o.key}: ${o.value.entries.map((e) => '${e.value} ${e.key}').join(', ')}',
                     ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: RakubaSpace.s),
                   Text(t.paidCount('${s.paidCount}')),
                   Text(t.unpaidCount('${s.unpaidCount}')),
                   Text(t.flaggedCount('${s.flaggedCount}')),
@@ -480,7 +477,7 @@ class _VoterListState extends ConsumerState<VoterList> {
     final e = widget.election;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(RakubaSpace.s),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -489,10 +486,7 @@ class _VoterListState extends ConsumerState<VoterList> {
                 Expanded(
                   child: Text(
                     t.registeredVoters,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: rakubaText(context, RakubaType.heading, bold: true),
                   ),
                 ),
                 SizedBox(
@@ -508,7 +502,7 @@ class _VoterListState extends ConsumerState<VoterList> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: RakubaSpace.s),
             Expanded(
               child: StreamBuilder<List<Voter>>(
                 stream: reg.watchVoters(e.id, query: _query),
@@ -525,7 +519,7 @@ class _VoterListState extends ConsumerState<VoterList> {
                               _VoterRow(voter: voters[i]),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: RakubaSpace.xs),
                       FutureBuilder<int>(
                         future: reg.voterCount(e.id),
                         builder: (context, c) => Text(
@@ -543,8 +537,8 @@ class _VoterListState extends ConsumerState<VoterList> {
             const Divider(height: 24),
             Wrap(
               alignment: WrapAlignment.end,
-              spacing: 12,
-              runSpacing: 12,
+              spacing: RakubaSpace.s,
+              runSpacing: RakubaSpace.s,
               children: [
                 FutureBuilder<int>(
                   // Rebuilt with the voter list, so the count stays current.
@@ -588,7 +582,7 @@ class _VoterListState extends ConsumerState<VoterList> {
   }
 
   Widget _header(AppLocalizations t) => Container(
-    padding: const EdgeInsets.symmetric(vertical: 8),
+    padding: const EdgeInsets.symmetric(vertical: RakubaSpace.xs),
     decoration: const BoxDecoration(
       border: Border(bottom: BorderSide(color: RakubaColors.ink, width: 2)),
     ),
@@ -657,7 +651,7 @@ class _VoterRow extends ConsumerWidget {
       child: Container(
         constraints: const BoxConstraints(minHeight: 56),
         decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(color: RakubaColors.placeholder)),
+          border: Border(bottom: BorderSide(color: RakubaColors.rule)),
         ),
         child: Row(
           children: [
@@ -771,21 +765,19 @@ class _VoterDetailsDialogState extends ConsumerState<VoterDetailsDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PhotoBox(bytes: _v.photo, size: 110, label: t.photo),
-            const SizedBox(width: 16),
+            const SizedBox(width: RakubaSpace.s),
             Expanded(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     _v.fullName,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: rakubaText(context, RakubaType.heading, bold: true),
                   ),
                   if (_v.memberId.isNotEmpty) Text(_v.memberId),
                   if (_v.groupName.isNotEmpty) Text(_v.groupName),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: RakubaSpace.xs),
                   Text(t.cardIssueLine('${_v.cardIssue}')),
                   cardStatus(
                     t,
@@ -801,7 +793,7 @@ class _VoterDetailsDialogState extends ConsumerState<VoterDetailsDialog> {
       actions: [
         TextButton(
           key: const ValueKey('replace-card'),
-          style: TextButton.styleFrom(foregroundColor: RakubaColors.clay),
+          style: const ButtonStyle(foregroundColor: WidgetStatePropertyAll(RakubaColors.clay)),
           onPressed: _replace,
           child: Text(t.replaceCard),
         ),

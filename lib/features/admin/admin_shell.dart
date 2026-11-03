@@ -37,13 +37,13 @@ class _AdminShellState extends ConsumerState<AdminShell> {
               bottom: false,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+                  horizontal: RakubaSpace.s,
+                  vertical: RakubaSpace.xs,
                 ),
                 child: Row(
                   children: [
                     Wordmark(onDark: true, size: 20, suffix: t.adminSuffix),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: RakubaSpace.s),
                     Expanded(
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -52,27 +52,16 @@ class _AdminShellState extends ConsumerState<AdminShell> {
                             for (var i = 0; i < tabs.length; i++)
                               Padding(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 4,
+                                  horizontal: RakubaSpace.xxs,
                                 ),
                                 child: TextButton(
                                   key: ValueKey('admin-tab-$i'),
-                                  style: TextButton.styleFrom(
-                                    minimumSize: const Size(64, 48),
-                                    backgroundColor: i == _tab
-                                        ? RakubaColors.lightThatch
-                                        : null,
-                                    foregroundColor: i == _tab
-                                        ? RakubaColors.ink
-                                        : RakubaColors.white,
-                                    textStyle: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(
-                                          fontSize: 16,
-                                          fontWeight: i == _tab
-                                              ? FontWeight.w700
-                                              : FontWeight.w400,
-                                        ),
+                                  // Active step: Light Thatch with Ink text.
+                                  style: onDarkStyle(active: i == _tab).copyWith(
+                                    minimumSize: const WidgetStatePropertyAll(
+                                        Size(RakubaSpace.xxl, RakubaSpace.xl)),
+                                    textStyle: WidgetStatePropertyAll(
+                                        rakubaText(context, RakubaType.body, bold: i == _tab)),
                                   ),
                                   onPressed: () => setState(() => _tab = i),
                                   child: Text(tabs[i]),
@@ -92,13 +81,11 @@ class _AdminShellState extends ConsumerState<AdminShell> {
                           return const SizedBox.shrink();
                         }
                         return Padding(
-                          padding: const EdgeInsetsDirectional.only(end: 12),
+                          padding: const EdgeInsetsDirectional.only(end: RakubaSpace.s),
                           child: FilledButton.icon(
                             key: const ValueKey('open-checkin-desk'),
-                            style: FilledButton.styleFrom(
-                              backgroundColor: RakubaColors.lightThatch,
-                              foregroundColor: RakubaColors.ink,
-                              minimumSize: const Size(64, 48),
+                            style: onDarkStyle(active: true).copyWith(
+                              minimumSize: const WidgetStatePropertyAll(Size(RakubaSpace.xxl, RakubaSpace.xl)),
                             ),
                             icon: const Icon(Icons.how_to_reg_outlined),
                             label: Text(t.openCheckinDesk),
@@ -117,16 +104,16 @@ class _AdminShellState extends ConsumerState<AdminShell> {
                     IconButton(
                       key: const ValueKey('open-devices'),
                       tooltip: t.devicesTitle,
-                      color: RakubaColors.white,
+                      style: onDarkStyle(),
                       icon: const Icon(Icons.devices_other),
                       onPressed: () => Navigator.of(context)
                           .push(MaterialPageRoute<void>(builder: (_) => const DevicesScreen())),
                     ),
                     StatusPill(t.offlineSavedLaptop),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: RakubaSpace.xs),
                     IconButton(
                       tooltip: t.lockDevice,
-                      color: RakubaColors.white,
+                      style: onDarkStyle(),
                       icon: const Icon(Icons.lock_outline),
                       onPressed: () =>
                           ref.read(sessionProvider.notifier).lock(),
@@ -144,10 +131,10 @@ class _AdminShellState extends ConsumerState<AdminShell> {
               3 => const ResultsScreen(),
               _ => Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(RakubaSpace.m),
                   child: Text(
                     t.comingLater,
-                    style: const TextStyle(fontSize: 18),
+                    style: rakubaText(context, RakubaType.bodyLarge),
                   ),
                 ),
               ),

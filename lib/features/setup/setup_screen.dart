@@ -99,7 +99,7 @@ class _CreateElectionFormState extends ConsumerState<CreateElectionForm> {
         child: Form(
           key: _form,
           child: ListView(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(RakubaSpace.m),
             children: [
               SectionCard(
                 title: t.newElection,
@@ -144,7 +144,7 @@ class _CreateElectionFormState extends ConsumerState<CreateElectionForm> {
                     TextFormField(controller: _station, validator: required),
                     FieldLabel(t.ballotLanguages),
                     Wrap(
-                      spacing: 8,
+                      spacing: RakubaSpace.xs,
                       children: [
                         for (final c in ballotLanguageCodes)
                           FilterChip(
@@ -160,7 +160,7 @@ class _CreateElectionFormState extends ConsumerState<CreateElectionForm> {
                           ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: RakubaSpace.m),
                     FilledButton(
                       key: const ValueKey('create-submit'),
                       onPressed: _create,
@@ -217,7 +217,7 @@ class _ElectionSetupState extends ConsumerState<ElectionSetup> {
                       selected: p.id == selected?.id,
                       onTap: () => setState(() => _selectedPositionId = p.id),
                     ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: RakubaSpace.xs),
                   OutlinedButton.icon(
                     key: const ValueKey('add-position'),
                     icon: const Icon(Icons.add),
@@ -245,7 +245,7 @@ class _ElectionSetupState extends ConsumerState<ElectionSetup> {
         final right = selected == null
             ? SectionCard(
                 child: Padding(
-                  padding: const EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(RakubaSpace.m),
                   child: Text(t.noPositionSelected),
                 ),
               )
@@ -263,13 +263,13 @@ class _ElectionSetupState extends ConsumerState<ElectionSetup> {
                   SizedBox(
                     width: 320,
                     child: ListView(
-                      padding: const EdgeInsets.fromLTRB(24, 16, 8, 24),
+                      padding: const EdgeInsets.fromLTRB(RakubaSpace.m, RakubaSpace.s, RakubaSpace.xs, RakubaSpace.m),
                       children: [left],
                     ),
                   ),
                   Expanded(
                     child: ListView(
-                      padding: const EdgeInsets.fromLTRB(8, 16, 24, 24),
+                      padding: const EdgeInsets.fromLTRB(RakubaSpace.xs, RakubaSpace.s, RakubaSpace.m, RakubaSpace.m),
                       children: [
                         right,
                         _SignBar(election: e),
@@ -280,7 +280,7 @@ class _ElectionSetupState extends ConsumerState<ElectionSetup> {
               );
             }
             return ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(RakubaSpace.s),
               children: [
                 left,
                 right,
@@ -309,25 +309,23 @@ class _PositionTile extends ConsumerWidget {
     final t = AppLocalizations.of(context);
     final titles = (jsonDecode(position.titles) as Map).cast<String, String>();
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: RakubaSpace.xs),
       child: Material(
-        color: selected
-            ? RakubaColors.nileBlue.withValues(alpha: 0.08)
-            : RakubaColors.card,
+        color: RakubaColors.card,
+        animationDuration: Duration.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: BorderSide(
-            color: selected ? RakubaColors.nileBlue : RakubaColors.placeholder,
-            width: selected ? 2 : 1,
-          ),
+          borderRadius: BorderRadius.circular(RakubaRadius.control),
+          side: selected
+              ? const BorderSide(color: RakubaColors.nileBlue, width: RakubaLine.selected)
+              : const BorderSide(color: RakubaColors.rule),
         ),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(RakubaRadius.control),
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: RakubaSizes.minTouch),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: RakubaSpace.s, vertical: RakubaSpace.xs),
               child: Row(
                 children: [
                   Container(
@@ -335,17 +333,14 @@ class _PositionTile extends ConsumerWidget {
                     height: 18,
                     decoration: BoxDecoration(
                       color: Color(position.colour),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(RakubaRadius.input),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: RakubaSpace.xs),
                   Expanded(
                     child: Text(
                       '${position.sortOrder} · ${titles['en'] ?? titles.values.firstOrNull ?? ''}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                      ),
+                      style: rakubaText(context, RakubaType.body, bold: true),
                     ),
                   ),
                   StreamBuilder<List<Candidate>>(
@@ -354,7 +349,7 @@ class _PositionTile extends ConsumerWidget {
                         .watchCandidates(position.id),
                     builder: (context, s) => Text(
                       t.candidatesCount(s.data?.length ?? 0),
-                      style: const TextStyle(fontSize: 14),
+                      style: rakubaText(context, RakubaType.label),
                     ),
                   ),
                 ],
@@ -442,12 +437,12 @@ class _DetailsCardState extends ConsumerState<_DetailsCard> {
           FieldLabel(t.template),
           Text(
             templateName(t, ElectionTemplate.fromWire(e.template)),
-            style: const TextStyle(fontSize: 16),
+            style: rakubaText(context, RakubaType.body),
           ),
           FieldLabel(t.ballotLanguages),
           Text(
             langs.map(languageDisplayName).join(', '),
-            style: const TextStyle(fontSize: 16),
+            style: rakubaText(context, RakubaType.body),
           ),
           field(t.stationName, _station),
           field(t.idLabelField, _idLabel),
@@ -536,22 +531,23 @@ class _FeeCardState extends ConsumerState<_FeeCard> {
             final locked = lockedSnap.data ?? true;
             return SectionCard(
               title: t.registrationFee,
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Checkbox(
-                    key: const ValueKey('fee-enabled'),
-                    value: _enabled,
-                    onChanged: locked
-                        ? null
-                        : (v) => setState(() => _enabled = v),
-                  ),
-                  Text(t.chargeFee),
-                ],
-              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // Under the heading, so the heading never breaks mid-word
+                  // in the narrow column.
+                  Row(
+                    children: [
+                      Checkbox(
+                        key: const ValueKey('fee-enabled'),
+                        value: _enabled,
+                        onChanged: locked
+                            ? null
+                            : (v) => setState(() => _enabled = v),
+                      ),
+                      Expanded(child: Text(t.chargeFee)),
+                    ],
+                  ),
                   if (_enabled!) ...[
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -570,7 +566,7 @@ class _FeeCardState extends ConsumerState<_FeeCard> {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: RakubaSpace.xs),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -628,10 +624,10 @@ class _FeeCardState extends ConsumerState<_FeeCard> {
                   ],
                   Text(
                     locked ? t.feeLockedNote : t.feeNote,
-                    style: const TextStyle(fontSize: RakubaSizes.label),
+                    style: rakubaText(context, RakubaType.label),
                   ),
                   if (!locked) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: RakubaSpace.xs),
                     OutlinedButton(
                       key: const ValueKey('fee-save'),
                       onPressed: () async {
@@ -740,7 +736,7 @@ class _PositionEditorState extends ConsumerState<PositionEditor> {
       title: enTitle,
       trailing: Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 4,
+        spacing: RakubaSpace.xxs,
         children: [
           Checkbox(
             key: const ValueKey('allow-no-choice'),
@@ -748,7 +744,7 @@ class _PositionEditorState extends ConsumerState<PositionEditor> {
             onChanged: (v) => _update(allowNoChoice: v),
           ),
           Text(t.allowNoChoice),
-          const SizedBox(width: 12),
+          const SizedBox(width: RakubaSpace.s),
           Text(t.chooseLabel),
           SizedBox(
             width: 64,
@@ -772,8 +768,8 @@ class _PositionEditorState extends ConsumerState<PositionEditor> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Wrap(
-            spacing: 16,
-            runSpacing: 8,
+            spacing: RakubaSpace.s,
+            runSpacing: RakubaSpace.xs,
             children: [
               for (final e in _titles.entries)
                 SizedBox(
@@ -802,7 +798,7 @@ class _PositionEditorState extends ConsumerState<PositionEditor> {
           ),
           FieldLabel(t.colour),
           Wrap(
-            spacing: 8,
+            spacing: RakubaSpace.xs,
             children: [
               for (final c in defaultPositionColours)
                 InkWell(
@@ -828,9 +824,9 @@ class _PositionEditorState extends ConsumerState<PositionEditor> {
                 ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: RakubaSpace.xs),
           Wrap(
-            spacing: 8,
+            spacing: RakubaSpace.xs,
             children: [
               TextButton.icon(
                 onPressed: () => svc.movePosition(p.id, -1, official: official),
@@ -912,7 +908,7 @@ class _PositionEditorState extends ConsumerState<PositionEditor> {
                             '',
                           ])
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              padding: const EdgeInsets.symmetric(vertical: RakubaSpace.xs),
                               child: Text(
                                 h,
                                 style: const TextStyle(
@@ -927,7 +923,7 @@ class _PositionEditorState extends ConsumerState<PositionEditor> {
                           decoration: const BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
-                                color: RakubaColors.placeholder,
+                                color: RakubaColors.rule,
                               ),
                             ),
                           ),
@@ -937,13 +933,10 @@ class _PositionEditorState extends ConsumerState<PositionEditor> {
                                 c.number,
                                 candidateCount: list.length,
                               ),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
-                              ),
+                              style: rakubaText(context, RakubaType.body, bold: true),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 6),
+                              padding: const EdgeInsets.symmetric(vertical: RakubaSpace.xs),
                               child: Align(
                                 alignment: AlignmentDirectional.centerStart,
                                 child: PhotoBox(
@@ -953,7 +946,7 @@ class _PositionEditorState extends ConsumerState<PositionEditor> {
                                 ),
                               ),
                             ),
-                            Text(c.name, style: const TextStyle(fontSize: 16)),
+                            Text(c.name, style: rakubaText(context, RakubaType.body)),
                             Align(
                               alignment: AlignmentDirectional.centerStart,
                               child: PhotoBox(bytes: c.symbol, size: 36),
@@ -974,7 +967,7 @@ class _PositionEditorState extends ConsumerState<PositionEditor> {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: RakubaSpace.s),
                   Align(
                     alignment: AlignmentDirectional.centerStart,
                     child: OutlinedButton.icon(
@@ -1007,15 +1000,12 @@ class _SignBar extends ConsumerWidget {
       child: Wrap(
         alignment: WrapAlignment.end,
         crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 12,
-        runSpacing: 12,
+        spacing: RakubaSpace.s,
+        runSpacing: RakubaSpace.s,
         children: [
           Text(
             signed ? t.ballotSignedNote : t.ballotNotSigned,
-            style: TextStyle(
-              color: signed ? RakubaColors.acaciaGreen : RakubaColors.clay,
-              fontSize: 16,
-            ),
+            style: rakubaText(context, RakubaType.body, colour: signed ? RakubaColors.acaciaGreen : RakubaColors.clay),
           ),
           FilledButton(
             key: const ValueKey('sign-ballot'),
@@ -1034,10 +1024,7 @@ class _SignBar extends ConsumerWidget {
                     title: Text(t.ballotSigned),
                     content: Text(
                       t.ballotFingerprint(a.fingerprint),
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: rakubaText(context, RakubaType.name, bold: true),
                     ),
                     actions: [
                       FilledButton(

@@ -155,7 +155,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                 if (widget.onBack != null)
                   IconButton(
                     tooltip: t.backToAdmin,
-                    color: RakubaColors.white,
+                    style: onDarkStyle(),
                     icon: const BackButtonIcon(),
                     onPressed: widget.onBack,
                   ),

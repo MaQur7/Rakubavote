@@ -358,7 +358,7 @@
   },
   "lockConfirm": "Lock the register now? This cannot be undone.",
   "afterLockingTitle": "After locking:",
-  "afterLockingText": "copy to the check-in device by USB or local Wi-Fi, and print the fingerprint code for party agents and observers.",
+  "afterLockingText": "open the polls when the day comes; the check-in desk and tablets use the locked register over the station Wi-Fi. Give the fingerprint code to party agents and observers.",
   "registerLocked": "The register is locked",
   "registerFingerprint": "Fingerprint code",
   "lockedByLine": "Locked by {name} on {date}",

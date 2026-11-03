@@ -709,7 +709,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get afterLockingText =>
-      'انسخه إلى جهاز التحقق عبر USB أو شبكة Wi-Fi المحلية، واطبع رمز البصمة لوكلاء الأحزاب والمراقبين.';
+      'افتح الاقتراع في يوم الانتخاب؛ يستخدم مكتب التحقق والأجهزة اللوحية السجل المقفل عبر شبكة Wi-Fi الخاصة بالمحطة. أعطِ رمز البصمة لوكلاء الأحزاب والمراقبين.';
 
   @override
   String get registerLocked => 'السجل مقفل';

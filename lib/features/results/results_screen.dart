@@ -57,7 +57,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
       await showDialog<bool>(
         context: context,
         builder: (c) => AlertDialog(
-          content: Text(text, style: const TextStyle(fontSize: 18)),
+          content: Text(text, style: rakubaText(context, RakubaType.bodyLarge)),
           actions: [
             TextButton(onPressed: () => Navigator.pop(c, false), child: Text(AppLocalizations.of(c).cancel)),
             FilledButton(key: const ValueKey('confirm-dialog'), onPressed: () => Navigator.pop(c, true), child: Text(button)),
@@ -93,18 +93,18 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
       stream: ref.watch(electionServiceProvider).watchElection(),
       builder: (context, snap) {
         final e = snap.data;
-        if (e == null) return Center(child: Text(t.errNoElection, style: const TextStyle(fontSize: 18)));
+        if (e == null) return Center(child: Text(t.errNoElection, style: rakubaText(context, RakubaType.bodyLarge)));
         final state = ElectionState.fromWire(e.state);
         final r = _results;
-        return ListView(padding: const EdgeInsets.all(24), children: [
+        return ListView(padding: const EdgeInsets.all(RakubaSpace.m), children: [
           if (state.index < ElectionState.polling.index)
-            SectionCard(child: Text(t.resultsAfterClosing, style: const TextStyle(fontSize: 18))),
+            SectionCard(child: Text(t.resultsAfterClosing, style: rakubaText(context, RakubaType.bodyLarge))),
           if (state == ElectionState.polling)
             SectionCard(
               title: t.closePolls,
               child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                Text(t.closePollsNote, style: const TextStyle(fontSize: 16)),
-                const SizedBox(height: 12),
+                Text(t.closePollsNote, style: rakubaText(context, RakubaType.body)),
+                const SizedBox(height: RakubaSpace.s),
                 FilledButton(
                   key: const ValueKey('close-polls'),
                   style: FilledButton.styleFrom(backgroundColor: RakubaColors.clay),
@@ -122,14 +122,14 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
           if (state.index >= ElectionState.polling.index) _boothCard(t, state),
           if (r != null) ...[
             _StatsRow(view: r),
-            const SizedBox(height: 16),
+            const SizedBox(height: RakubaSpace.s),
             LayoutBuilder(builder: (context, c) {
               final positions = Column(children: [for (final p in r.positions) _PositionResult(p: p)]);
               final share = _ShareCard(view: r, onSave: () => _save(r.signed));
               if (c.maxWidth < 900) return Column(children: [positions, share]);
               return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Expanded(flex: 2, child: positions),
-                const SizedBox(width: 16),
+                const SizedBox(width: RakubaSpace.s),
                 Expanded(child: share),
               ]);
             }),
@@ -158,11 +158,11 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
               minTileHeight: RakubaSizes.minTouch,
               leading: Icon(b.received ? Icons.check_circle : Icons.hourglass_empty,
                   color: b.received ? RakubaColors.acaciaGreen : RakubaColors.clay),
-              title: Text(b.booth.label, style: const TextStyle(fontWeight: FontWeight.w700)),
+              title: Text(b.booth.label),
               subtitle: Text(b.received ? t.boothVotesReceived('${b.ballots}') : t.boothVotesWaiting),
             ),
-          const SizedBox(height: 8),
-          Wrap(spacing: 12, runSpacing: 12, children: [
+          const SizedBox(height: RakubaSpace.xs),
+          Wrap(spacing: RakubaSpace.s, runSpacing: RakubaSpace.s, children: [
             if (state == ElectionState.closed)
               FilledButton(
                 key: const ValueKey('show-results'),
@@ -183,43 +183,32 @@ class _StatsRow extends StatelessWidget {
     final t = AppLocalizations.of(context);
     final r = view.reconciliation;
     final ok = view.checkInsMatchVotes && view.clean;
-    Widget stat(String label, String value, {Color? border, Color? fill, Color? text}) => Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: fill ?? RakubaColors.card,
-            borderRadius: BorderRadius.circular(RakubaSizes.cardRadius),
-            border: Border.all(color: border ?? RakubaColors.placeholder, width: border == null ? 1 : 2),
-          ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(label, style: const TextStyle(fontSize: 15)),
-            Text(value, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: text ?? RakubaColors.ink)),
-          ]),
-        );
-    final cards = [
-      stat(t.statRegistered, '${r['registered']}'),
-      stat(t.statCheckedIn, '${r['checkedIn']}'),
-      stat(t.statVotes, '${r['ballots']}'),
-      stat(t.statCheck, ok ? t.checkMatch : t.checkDiffer,
-          border: ok ? RakubaColors.acaciaGreen : RakubaColors.clay,
-          fill: ok ? RakubaColors.successTint : RakubaColors.warningTint,
-          text: ok ? RakubaColors.acaciaGreen : RakubaColors.clay),
-    ];
     final issues = _issues(t, view);
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Wrap(spacing: 12, runSpacing: 12, children: [for (final c in cards) SizedBox(width: 220, child: c)]),
-      if (issues.isNotEmpty) ...[
-        const SizedBox(height: 12),
-        NoticeBox(
-          key: const ValueKey('results-issues'),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            for (final i in issues) Text('• $i', style: const TextStyle(fontSize: 16)),
-          ]),
-        ),
-      ],
-      const SizedBox(height: 12),
-      Text(t.resultsFingerprint(view.signed.fingerprint),
-          key: const ValueKey('results-fingerprint'), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
-    ]);
+    // A ledger, like the tally sheet: no stat tiles (design system, section 7).
+    return SectionCard(
+      title: ok ? t.checkMatch : t.checkDiffer,
+      trailing: Icon(ok ? Icons.check_circle : Icons.error_outline,
+          color: ok ? RakubaColors.acaciaGreen : RakubaColors.clay),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        LedgerRow(label: t.statRegistered, value: '${r['registered']}'),
+        LedgerRow(label: t.statCheckedIn, value: '${r['checkedIn']}'),
+        LedgerRow(label: t.statVotes, value: '${r['ballots']}', attention: !ok),
+        if (issues.isNotEmpty) ...[
+          const SizedBox(height: RakubaSpace.s),
+          NoticeBox(
+            key: const ValueKey('results-issues'),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              for (final i in issues) Text('• $i'),
+            ]),
+          ),
+        ],
+        const SizedBox(height: RakubaSpace.m),
+        Text(t.resultsFingerprint(view.signed.fingerprint),
+            key: const ValueKey('results-fingerprint'),
+            style: rakubaText(context, RakubaType.title, bold: true)
+                .copyWith(fontFeatures: const [FontFeature.tabularFigures()])),
+      ]),
+    );
   }
 
   static List<String> _issues(AppLocalizations t, ResultsView v) {
@@ -252,7 +241,7 @@ class _PositionResult extends StatelessWidget {
     final tie = (p['tie'] as List).cast<String>();
     final tied = cands.where((c) => tie.contains(c['id'])).toList();
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: RakubaSpace.s),
       decoration: BoxDecoration(
         color: RakubaColors.card,
         borderRadius: BorderRadius.circular(RakubaSizes.cardRadius),
@@ -262,19 +251,19 @@ class _PositionResult extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Container(
           color: colour,
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.symmetric(horizontal: RakubaSpace.m, vertical: RakubaSpace.s),
           child: Text(titles[locale] ?? titles['en'] ?? titles.values.first,
-              style: const TextStyle(color: RakubaColors.white, fontSize: 22, fontWeight: FontWeight.w700)),
+              style: rakubaText(context, RakubaType.heading, bold: true, colour: RakubaColors.white)),
         ),
         Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(RakubaSpace.m),
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             if (tied.isNotEmpty)
               Padding(
-                padding: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.only(bottom: RakubaSpace.s),
                 child: NoticeBox(
                   child: Text(t.tieNotice('${tied.length}', '${tied.first['votes']}'),
-                      key: ValueKey('tie-${p['id']}'), style: const TextStyle(fontWeight: FontWeight.w700)),
+                      key: ValueKey('tie-${p['id']}'), style: rakubaText(context, RakubaType.body, bold: true)),
                 ),
               ),
             for (final c in cands) ...[
@@ -282,30 +271,32 @@ class _PositionResult extends StatelessWidget {
                 Expanded(
                   child: Text(
                       '${candidateNoLabel(c['number'] as int, candidateCount: cands.length)} · ${c['name']}',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                      style: rakubaText(context, RakubaType.body, bold: true)),
                 ),
-                Text('${c['votes']}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                Text('${c['votes']}', style: rakubaText(context, RakubaType.bodyLarge, bold: true)),
               ]),
-              const SizedBox(height: 4),
+              const SizedBox(height: RakubaSpace.xxs),
               ClipRRect(
-                borderRadius: BorderRadius.circular(999),
+                borderRadius: BorderRadius.circular(RakubaRadius.pill),
                 child: LinearProgressIndicator(
                   value: (c['votes'] as int) / max,
-                  minHeight: 10,
+                  minHeight: RakubaSpace.xs,
                   color: colour,
                   backgroundColor: tintOf(colour),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: RakubaSpace.xs),
             ],
             Row(children: [
-              Expanded(child: Text(t.noChoiceForPosition)),
-              Text('${p['noChoice']}'),
+              Expanded(child: MutedText(t.noChoiceForPosition, size: RakubaType.body)),
+              Text('${p['noChoice']}', style: rakubaText(context, RakubaType.bodyLarge, bold: true)),
             ]),
             if ((p['invalid'] as int) > 0)
               Row(children: [
-                Expanded(child: Text(t.invalidVotes, style: const TextStyle(color: RakubaColors.clay))),
-                Text('${p['invalid']}', style: const TextStyle(color: RakubaColors.clay)),
+                Expanded(
+                    child: Text(t.invalidVotes,
+                        style: rakubaText(context, RakubaType.body, bold: true, colour: RakubaColors.clay))),
+                Text('${p['invalid']}', style: rakubaText(context, RakubaType.body, bold: true, colour: RakubaColors.clay)),
               ]),
           ]),
         ),
@@ -327,8 +318,8 @@ class _ShareCard extends ConsumerWidget {
     return SectionCard(
       title: t.shareResults,
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Text(t.shareResultsNote, style: const TextStyle(fontSize: 15)),
-        const SizedBox(height: 12),
+        MutedText(t.shareResultsNote, size: RakubaType.body),
+        const SizedBox(height: RakubaSpace.s),
         OutlinedButton.icon(
           key: const ValueKey('results-qr'),
           icon: const Icon(Icons.qr_code_2),
@@ -350,14 +341,14 @@ class _ShareCard extends ConsumerWidget {
             );
           },
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: RakubaSpace.s),
         OutlinedButton.icon(
           key: const ValueKey('save-results'),
           icon: const Icon(Icons.usb),
           label: Text(t.saveSignedFile),
           onPressed: onSave,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: RakubaSpace.s),
         Tooltip(
           message: t.sendOnlineOff,
           child: OutlinedButton(onPressed: null, child: Text(t.sendOnline)),

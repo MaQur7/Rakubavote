@@ -78,12 +78,12 @@ class _CandidateDialogState extends ConsumerState<_CandidateDialog> {
           TextField(key: const ValueKey('cand-number'), controller: _number, keyboardType: TextInputType.number),
           FieldLabel(t.candidateName),
           TextField(key: const ValueKey('cand-name'), controller: _name, autofocus: true),
-          const SizedBox(height: 16),
+          const SizedBox(height: RakubaSpace.s),
           Row(children: [
             PhotoBox(bytes: _photo, size: 72, circle: true, label: t.photo),
-            const SizedBox(width: 12),
+            const SizedBox(width: RakubaSpace.s),
             Expanded(
-              child: Wrap(spacing: 8, runSpacing: 8, children: [
+              child: Wrap(spacing: RakubaSpace.xs, runSpacing: RakubaSpace.xs, children: [
                 OutlinedButton(
                   onPressed: () async {
                     final b = await capturePhoto();
@@ -96,12 +96,12 @@ class _CandidateDialogState extends ConsumerState<_CandidateDialog> {
               ]),
             ),
           ]),
-          const SizedBox(height: 12),
+          const SizedBox(height: RakubaSpace.s),
           Row(children: [
             PhotoBox(bytes: _symbol, size: 72, label: t.colSymbol),
-            const SizedBox(width: 12),
+            const SizedBox(width: RakubaSpace.s),
             Expanded(
-              child: Wrap(spacing: 8, runSpacing: 8, children: [
+              child: Wrap(spacing: RakubaSpace.xs, runSpacing: RakubaSpace.xs, children: [
                 OutlinedButton(
                   onPressed: () async {
                     final b = await pickImageFile();
@@ -116,8 +116,8 @@ class _CandidateDialogState extends ConsumerState<_CandidateDialog> {
           ]),
           if (_error != null)
             Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: Text(_error!, style: const TextStyle(color: RakubaColors.clay, fontSize: 16)),
+              padding: const EdgeInsets.only(top: RakubaSpace.s),
+              child: Text(_error!, style: rakubaText(context, RakubaType.body, colour: RakubaColors.clay)),
             ),
         ]),
       ),
