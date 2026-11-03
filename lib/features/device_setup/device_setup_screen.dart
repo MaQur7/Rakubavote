@@ -26,25 +26,25 @@ class LanguageButtons extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final current = ref.watch(localeProvider);
     return Wrap(
-      spacing: 12,
-      runSpacing: 12,
+      spacing: RakubaSpace.s,
+      runSpacing: RakubaSpace.s,
       children: [
         for (final l in AppLocalizations.supportedLocales)
-          OutlinedButton(
-            style: l == current
-                ? OutlinedButton.styleFrom(
-                    backgroundColor: RakubaColors.nileBlue.withValues(
-                      alpha: 0.1,
-                    ),
-                    side: const BorderSide(
-                      color: RakubaColors.nileBlue,
-                      width: 3,
-                    ),
-                  )
-                : null,
-            onPressed: () => ref.read(localeProvider.notifier).set(l),
-            child: Text(lookupAppLocalizations(l).languageName),
-          ),
+          // Chosen language: 3 px Nile Blue border and a tick (design system).
+          l == current
+              ? OutlinedButton.icon(
+                  style: const ButtonStyle(
+                    side: WidgetStatePropertyAll(
+                        BorderSide(color: RakubaColors.nileBlue, width: RakubaLine.selected)),
+                  ),
+                  onPressed: () => ref.read(localeProvider.notifier).set(l),
+                  icon: const Icon(Icons.check),
+                  label: Text(lookupAppLocalizations(l).languageName),
+                )
+              : OutlinedButton(
+                  onPressed: () => ref.read(localeProvider.notifier).set(l),
+                  child: Text(lookupAppLocalizations(l).languageName),
+                ),
       ],
     );
   }
@@ -110,52 +110,42 @@ class _DeviceSetupScreenState extends ConsumerState<DeviceSetupScreen> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 640),
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(RakubaSpace.m),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Wordmark(size: 36),
                   Text(
                     t.tagline,
-                    style: const TextStyle(fontSize: RakubaSizes.body),
+                    style: rakubaText(context, RakubaType.bodyLarge),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: RakubaSpace.s),
                   const LanguageButtons(),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: RakubaSpace.m),
                   Text(
                     t.chooseDeviceMode,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: rakubaText(context, RakubaType.heading, bold: true),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: RakubaSpace.s),
                   for (final m in DeviceMode.values)
                     Card(
+                      margin: const EdgeInsets.only(bottom: RakubaSpace.xs),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          RakubaSizes.cardRadius,
-                        ),
-                        side: BorderSide(
-                          color: _mode == m
-                              ? RakubaColors.nileBlue
-                              : RakubaColors.placeholder,
-                          width: _mode == m ? 3 : 1,
-                        ),
+                        borderRadius: BorderRadius.circular(RakubaRadius.panel),
+                        side: _mode == m
+                            ? const BorderSide(color: RakubaColors.nileBlue, width: RakubaLine.selected)
+                            : const BorderSide(color: RakubaColors.border),
                       ),
                       child: ListTile(
                         key: ValueKey('mode-${m.name}'),
                         minTileHeight: RakubaSizes.minTouch + 16,
                         title: Text(
                           modeTitle(t, m),
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: rakubaText(context, RakubaType.heading, bold: true),
                         ),
                         subtitle: Text(
                           modeHint(t, m),
-                          style: const TextStyle(fontSize: RakubaSizes.body),
+                          style: rakubaText(context, RakubaType.bodyLarge),
                         ),
                         trailing: _mode == m
                             ? const Icon(
@@ -167,13 +157,10 @@ class _DeviceSetupScreenState extends ConsumerState<DeviceSetupScreen> {
                       ),
                     ),
                   if (_mode != null) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: RakubaSpace.s),
                     Text(
                       t.setupDeviceTitle,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: rakubaText(context, RakubaType.heading, bold: true),
                     ),
                     FieldLabel(t.yourName),
                     TextField(
@@ -195,20 +182,17 @@ class _DeviceSetupScreenState extends ConsumerState<DeviceSetupScreen> {
                       obscureText: true,
                       keyboardType: TextInputType.number,
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: RakubaSpace.s),
                     NoticeBox(child: Text(t.pinWarning)),
                     if (_error != null)
                       Padding(
-                        padding: const EdgeInsets.only(top: 12),
+                        padding: const EdgeInsets.only(top: RakubaSpace.s),
                         child: Text(
                           _error!,
-                          style: const TextStyle(
-                            color: RakubaColors.clay,
-                            fontSize: 16,
-                          ),
+                          style: rakubaText(context, RakubaType.body, bold: true, colour: RakubaColors.clay),
                         ),
                       ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: RakubaSpace.s),
                     FilledButton(
                       key: const ValueKey('setup-submit'),
                       onPressed: _busy ? null : () => _submit(t),

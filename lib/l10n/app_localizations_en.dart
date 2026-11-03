@@ -795,10 +795,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Compare the photo with the person in front of you before confirming.';
 
   @override
-  String get confirmIssueToken => 'Confirm and issue voting token';
+  String get confirmIssueToken => 'Confirm and give a voting code';
 
   @override
-  String get tokenTitle => 'One-time voting token';
+  String get tokenTitle => 'One-time voting code';
 
   @override
   String get tokenNote =>
@@ -812,7 +812,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get manualText =>
-      'Check the printed register, record the reason, then issue a token manually.';
+      'Check the printed register, record the reason, then give a voting code manually.';
 
   @override
   String get manualCheckin => 'Manual check-in';
@@ -863,7 +863,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get alreadyHasToken => 'This voter has already received a token.';
+  String get alreadyHasToken =>
+      'This voter has already received a voting code.';
 
   @override
   String get errPollsNotOpen =>

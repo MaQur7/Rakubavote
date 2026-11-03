@@ -150,7 +150,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
           child: SafeArea(
             bottom: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+              padding: const EdgeInsets.fromLTRB(RakubaSpace.s, RakubaSpace.s, RakubaSpace.s, RakubaSpace.s),
               child: Row(children: [
                 if (widget.onBack != null)
                   IconButton(
@@ -161,9 +161,9 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                   ),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(t.officialUseOnly, style: const TextStyle(color: RakubaColors.lightThatch, fontSize: 14)),
+                    Text(t.officialUseOnly, style: rakubaText(context, RakubaType.label, colour: RakubaColors.lightThatch)),
                     Text(t.checkinDeskTitle(widget.stationName),
-                        style: const TextStyle(color: RakubaColors.white, fontSize: 22, fontWeight: FontWeight.w700)),
+                        style: rakubaText(context, RakubaType.heading, bold: true, colour: RakubaColors.white)),
                   ]),
                 ),
                 StatusPill(t.offlineSavedLaptop),
@@ -175,19 +175,19 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 680),
-              child: ListView(padding: const EdgeInsets.all(24), children: [
+              child: ListView(padding: const EdgeInsets.all(RakubaSpace.m), children: [
                 StreamBuilder<({int checkedIn, int registered})>(
                   stream: ref.watch(checkInBackendProvider).counts(),
                   builder: (context, s) => Text(
                     s.data == null ? '' : t.checkedInCount('${s.data!.checkedIn}', '${s.data!.registered}'),
                     key: const ValueKey('checkin-count'),
-                    style: const TextStyle(fontSize: 16),
+                    style: rakubaText(context, RakubaType.body),
                   ),
                 ),
                 FieldLabel(t.findVoter),
                 if (canScanWithCamera)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.only(bottom: RakubaSpace.xs),
                     child: OutlinedButton.icon(
                       key: const ValueKey('scan-card'),
                       icon: const Icon(Icons.qr_code_scanner),
@@ -206,32 +206,32 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                   controller: _query,
                   focusNode: _focus,
                   autofocus: true,
-                  style: const TextStyle(fontSize: 20),
+                  style: rakubaText(context, RakubaType.heading),
                   decoration: InputDecoration(hintText: t.nameOrVoterNumber),
                   onChanged: _onChanged,
                   onSubmitted: _onSubmitted,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text(t.scanHint, style: const TextStyle(fontSize: RakubaSizes.label)),
+                  padding: const EdgeInsets.only(top: RakubaSpace.xs),
+                  child: MutedText(t.scanHint),
                 ),
                 if (_notice != null) ...[
-                  const SizedBox(height: 12),
-                  NoticeBox(child: Text(_notice!, key: const ValueKey('checkin-notice'), style: const TextStyle(fontSize: 16))),
+                  const SizedBox(height: RakubaSpace.s),
+                  NoticeBox(child: Text(_notice!, key: const ValueKey('checkin-notice'), style: rakubaText(context, RakubaType.body))),
                 ],
                 if (_results.length > 1)
                   Padding(
-                    padding: const EdgeInsets.only(top: 12),
+                    padding: const EdgeInsets.only(top: RakubaSpace.s),
                     child: Card(
                       child: Column(children: [
                         for (final r in _results)
                           ListTile(
                             minTileHeight: RakubaSizes.minTouch,
                             leading: PhotoBox(bytes: r.photo, size: 44),
-                            title: Text(r.fullName, style: const TextStyle(fontWeight: FontWeight.w700)),
+                            title: Text(r.fullName),
                             subtitle: Text('${t.voterNoLine(voterNoLabel(r.voterNo))} · ${r.groupName}'),
                             trailing: r.checkedIn
-                                ? Text(t.statusCheckedIn, style: const TextStyle(color: RakubaColors.clay))
+                                ? Text(t.statusCheckedIn, style: rakubaText(context, RakubaType.label, bold: true, colour: RakubaColors.clay))
                                 : null,
                             selected: _selected?.id == r.id,
                             onTap: () => setState(() {
@@ -243,7 +243,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                     ),
                   ),
                 if (_selected != null) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: RakubaSpace.s),
                   _VoterCard(
                     status: _selected!,
                     busy: _busy,
@@ -252,31 +252,29 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                   ),
                 ],
                 if (_token != null) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: RakubaSpace.s),
                   _TokenBox(token: _token!),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: RakubaSpace.s),
                   FilledButton(key: const ValueKey('next-voter'), onPressed: _reset, child: Text(t.nextVoter)),
                 ],
-                const SizedBox(height: 16),
+                const SizedBox(height: RakubaSpace.s),
                 SectionCard(
                   child: Wrap(
                     alignment: WrapAlignment.spaceBetween,
                     crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: 12,
-                    runSpacing: 12,
+                    spacing: RakubaSpace.s,
+                    runSpacing: RakubaSpace.s,
                     children: [
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 420),
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(t.manualTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-                          Text(t.manualText, style: const TextStyle(fontSize: 16)),
+                          Text(t.manualTitle, style: rakubaText(context, RakubaType.bodyLarge, bold: true)),
+                          Text(t.manualText, style: rakubaText(context, RakubaType.body)),
                         ]),
                       ),
                       OutlinedButton(
                         key: const ValueKey('manual-checkin'),
-                        style: OutlinedButton.styleFrom(
-                            foregroundColor: RakubaColors.clay,
-                            side: const BorderSide(color: RakubaColors.clay, width: 2)),
+                        style: destructiveOutlinedStyle(),
                         onPressed: _manual,
                         child: Text(t.manualCheckin),
                       ),
@@ -307,41 +305,38 @@ class _VoterCard extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           PhotoBox(bytes: v.photo, size: 140, label: t.photoFromRegistration),
-          const SizedBox(width: 20),
+          const SizedBox(width: RakubaSpace.m),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(v.fullName,
                   key: const ValueKey('checkin-voter-name'),
-                  style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w700)),
-              const SizedBox(height: 6),
-              Text(t.voterNoLine(voterNoLabel(v.voterNo)), style: const TextStyle(fontSize: 18)),
-              if (v.groupName.isNotEmpty) Text(v.groupName, style: const TextStyle(fontSize: 16)),
-              const SizedBox(height: 6),
+                  style: rakubaText(context, RakubaType.name, bold: true)),
+              const SizedBox(height: RakubaSpace.xs),
+              Text(t.voterNoLine(voterNoLabel(v.voterNo)), style: rakubaText(context, RakubaType.bodyLarge)),
+              if (v.groupName.isNotEmpty) Text(v.groupName, style: rakubaText(context, RakubaType.body)),
+              const SizedBox(height: RakubaSpace.xs),
               Text(
                 issued
                     ? t.statusJustCheckedIn
                     : (status.checkedIn ? t.statusCheckedIn : t.statusNotVoted),
                 key: const ValueKey('checkin-status'),
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: status.checkedIn && !issued ? RakubaColors.clay : RakubaColors.acaciaGreen),
+                style: rakubaText(context, RakubaType.body, bold: true, colour: status.checkedIn && !issued ? RakubaColors.clay : RakubaColors.acaciaGreen),
               ),
             ]),
           ),
         ]),
         if (!status.checkedIn) ...[
-          const SizedBox(height: 16),
-          Text(t.comparePhoto, style: const TextStyle(fontSize: 16)),
-          const SizedBox(height: 12),
+          const SizedBox(height: RakubaSpace.s),
+          Text(t.comparePhoto, style: rakubaText(context, RakubaType.body)),
+          const SizedBox(height: RakubaSpace.s),
           FilledButton(
             key: const ValueKey('issue-token'),
             onPressed: busy ? null : onIssue,
             child: Text(t.confirmIssueToken),
           ),
         ] else if (!issued) ...[
-          const SizedBox(height: 12),
-          NoticeBox(child: Text(t.alreadyHasToken, style: const TextStyle(fontSize: 16))),
+          const SizedBox(height: RakubaSpace.s),
+          NoticeBox(child: Text(t.alreadyHasToken, style: rakubaText(context, RakubaType.body))),
         ],
       ]),
     );
@@ -355,25 +350,28 @@ class _TokenBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
+    // Like a paper slip: white with an Ink edge. The code is the result of
+    // check-in, not a warning.
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RakubaSpace.m),
       decoration: BoxDecoration(
-        color: RakubaColors.warningTint,
-        borderRadius: BorderRadius.circular(RakubaSizes.cardRadius),
-        border: Border.all(color: RakubaColors.thatchGold, width: 2),
+        color: RakubaColors.card,
+        borderRadius: BorderRadius.circular(RakubaRadius.panel),
+        border: Border.all(color: RakubaColors.ink, width: RakubaLine.strong),
       ),
       child: Column(children: [
-        Text(t.tokenTitle, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-        const SizedBox(height: 8),
+        Text(t.tokenTitle, style: rakubaText(context, RakubaType.body, bold: true)),
+        const SizedBox(height: RakubaSpace.xs),
         Text(
           VotingToken.format(token),
           key: const ValueKey('issued-token'),
           // Codes are Latin letters and digits in every language.
           textDirection: TextDirection.ltr,
-          style: const TextStyle(fontSize: 52, fontWeight: FontWeight.w700, letterSpacing: 6),
+          style: rakubaText(context, RakubaType.display, bold: true)
+              .copyWith(letterSpacing: RakubaSpace.xs, fontFeatures: const [FontFeature.tabularFigures()]),
         ),
-        const SizedBox(height: 8),
-        Text(t.tokenNote, textAlign: TextAlign.center, style: const TextStyle(fontSize: 16)),
+        const SizedBox(height: RakubaSpace.xs),
+        Text(t.tokenNote, textAlign: TextAlign.center, style: rakubaText(context, RakubaType.body)),
       ]),
     );
   }
@@ -453,13 +451,13 @@ class _ManualCheckInDialogState extends ConsumerState<_ManualCheckInDialog> {
             ),
             if (_found != null)
               Padding(
-                padding: const EdgeInsets.only(top: 8),
+                padding: const EdgeInsets.only(top: RakubaSpace.xs),
                 child: Row(children: [
                   PhotoBox(bytes: _found!.photo, size: 56),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: RakubaSpace.s),
                   Expanded(
                       child: Text(_found!.fullName,
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700))),
+                          style: rakubaText(context, RakubaType.bodyLarge, bold: true))),
                 ]),
               ),
             FieldLabel(t.manualReason),
@@ -480,8 +478,8 @@ class _ManualCheckInDialogState extends ConsumerState<_ManualCheckInDialog> {
             TextField(key: const ValueKey('manual-details'), controller: _details, maxLines: 2),
             if (_error != null)
               Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: Text(_error!, style: const TextStyle(color: RakubaColors.clay, fontSize: 16)),
+                padding: const EdgeInsets.only(top: RakubaSpace.s),
+                child: Text(_error!, style: rakubaText(context, RakubaType.body, bold: true, colour: RakubaColors.clay)),
               ),
           ]),
         ),

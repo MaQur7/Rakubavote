@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'dart:ui' as ui;
+
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -35,11 +38,23 @@ Future<void> _loadFonts() async {
   await load('MaterialIcons', [_materialFonts()]);
 }
 
-/// Captures the current app screen as build/screens/[name].png when enabled.
+/// Captures the whole window (including dialogs) as build/screens/[name].png
+/// when enabled.
 Future<void> screen(WidgetTester tester, String name) async {
   if (!screensEnabled) return;
   await tester.runAsync(_loadFonts);
-  await tester.pump();
-  await expectLater(find.byWidgetPredicate((w) => w is WidgetsApp).first,
-      matchesGoldenFile('../../build/screens/$name.png'));
+  // Finish route and fade animations (the harness's settle() pumps frames
+  // without moving the clock, so a dialog would still be transparent).
+  await tester.pump(const Duration(milliseconds: 400));
+  final view = tester.binding.renderViews.first;
+  // The root layer holds every route and overlay, unlike a widget finder.
+  // ignore: invalid_use_of_protected_member
+  final layer = view.debugLayer! as OffsetLayer;
+  final size = view.size;
+  await tester.runAsync(() async {
+    final image = await layer.toImage(Offset.zero & size, pixelRatio: tester.view.devicePixelRatio);
+    final png = await image.toByteData(format: ui.ImageByteFormat.png);
+    final file = File('build/screens/$name.png')..createSync(recursive: true);
+    file.writeAsBytesSync(png!.buffer.asUint8List());
+  });
 }

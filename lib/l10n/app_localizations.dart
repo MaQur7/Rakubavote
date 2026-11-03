@@ -1489,13 +1489,13 @@ abstract class AppLocalizations {
   /// No description provided for @confirmIssueToken.
   ///
   /// In en, this message translates to:
-  /// **'Confirm and issue voting token'**
+  /// **'Confirm and give a voting code'**
   String get confirmIssueToken;
 
   /// No description provided for @tokenTitle.
   ///
   /// In en, this message translates to:
-  /// **'One-time voting token'**
+  /// **'One-time voting code'**
   String get tokenTitle;
 
   /// No description provided for @tokenNote.
@@ -1519,7 +1519,7 @@ abstract class AppLocalizations {
   /// No description provided for @manualText.
   ///
   /// In en, this message translates to:
-  /// **'Check the printed register, record the reason, then issue a token manually.'**
+  /// **'Check the printed register, record the reason, then give a voting code manually.'**
   String get manualText;
 
   /// No description provided for @manualCheckin.
@@ -1609,7 +1609,7 @@ abstract class AppLocalizations {
   /// No description provided for @alreadyHasToken.
   ///
   /// In en, this message translates to:
-  /// **'This voter has already received a token.'**
+  /// **'This voter has already received a voting code.'**
   String get alreadyHasToken;
 
   /// No description provided for @errPollsNotOpen.

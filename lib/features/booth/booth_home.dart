@@ -261,7 +261,7 @@ class _BoothHomeState extends ConsumerState<BoothHome> {
                     padding: const EdgeInsets.only(top: RakubaSpace.s),
                     child: Text(_error!,
                         key: const ValueKey('booth-load-error'),
-                        style: rakubaText(context, RakubaType.body, colour: RakubaColors.clay)),
+                        style: rakubaText(context, RakubaType.body, bold: true, colour: RakubaColors.clay)),
                   ),
               ]),
             ),

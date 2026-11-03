@@ -59,14 +59,14 @@ class _UnlockScreenState extends ConsumerState<UnlockScreen> {
             constraints: const BoxConstraints(maxWidth: 520),
             child: ListView(
               shrinkWrap: true,
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(RakubaSpace.m),
               children: [
                 const Wordmark(size: 32),
-                const SizedBox(height: 16),
+                const SizedBox(height: RakubaSpace.s),
                 const LanguageButtons(),
-                const SizedBox(height: 24),
+                const SizedBox(height: RakubaSpace.m),
                 Text(t.unlockTitle(modeTitle(t, widget.info.mode)),
-                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
+                    style: rakubaText(context, RakubaType.name, bold: true)),
                 FieldLabel(t.yourName),
                 TextField(key: const ValueKey('unlock-name'), controller: _name),
                 FieldLabel(t.officerPin),
@@ -79,10 +79,10 @@ class _UnlockScreenState extends ConsumerState<UnlockScreen> {
                 ),
                 if (_error != null)
                   Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: Text(_error!, style: const TextStyle(color: RakubaColors.clay, fontSize: 16)),
+                    padding: const EdgeInsets.only(top: RakubaSpace.s),
+                    child: Text(_error!, style: rakubaText(context, RakubaType.body, bold: true, colour: RakubaColors.clay)),
                   ),
-                const SizedBox(height: 16),
+                const SizedBox(height: RakubaSpace.s),
                 FilledButton(
                   key: const ValueKey('unlock-submit'),
                   onPressed: _busy ? null : () => _unlock(t),

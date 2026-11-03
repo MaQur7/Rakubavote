@@ -93,8 +93,8 @@ class _PairCardState extends ConsumerState<PairCard> {
     return SectionCard(
       title: t.connectToLaptop,
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Text(t.connectToLaptopNote, style: const TextStyle(fontSize: 16)),
-        const SizedBox(height: 12),
+        Text(t.connectToLaptopNote, style: rakubaText(context, RakubaType.body)),
+        const SizedBox(height: RakubaSpace.s),
         if (canScanWithCamera) ...[
           FilledButton.icon(
             key: const ValueKey('scan-laptop-qr'),
@@ -102,7 +102,7 @@ class _PairCardState extends ConsumerState<PairCard> {
             label: Text(t.scanLaptopQr),
             onPressed: _busy ? null : _scan,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: RakubaSpace.xs),
         ],
         FieldLabel(t.laptopAddressField),
         TextField(
@@ -113,16 +113,16 @@ class _PairCardState extends ConsumerState<PairCard> {
         ),
         FieldLabel(t.pairingCode),
         TextField(key: const ValueKey('pair-code'), controller: _code, textCapitalization: TextCapitalization.characters),
-        const SizedBox(height: 12),
+        const SizedBox(height: RakubaSpace.s),
         OutlinedButton(key: const ValueKey('pair-connect'), onPressed: _busy ? null : _connect, child: Text(t.connect)),
         if (_waitingId != null) ...[
-          const SizedBox(height: 12),
+          const SizedBox(height: RakubaSpace.s),
           NoticeBox(child: Text(t.waitingApproval(_waitingId!), key: const ValueKey('pair-waiting'))),
         ],
         if (_error != null)
           Padding(
-            padding: const EdgeInsets.only(top: 12),
-            child: Text(_error!, style: const TextStyle(color: RakubaColors.clay, fontSize: 16)),
+            padding: const EdgeInsets.only(top: RakubaSpace.s),
+            child: Text(_error!, style: rakubaText(context, RakubaType.body, bold: true, colour: RakubaColors.clay)),
           ),
       ]),
     );

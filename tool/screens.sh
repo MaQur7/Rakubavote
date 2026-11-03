@@ -4,5 +4,5 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 rm -rf build/screens
-RAKUBA_SCREENS=1 flutter test test/widgets --update-goldens "$@"
+RAKUBA_SCREENS=1 flutter test test/widgets "$@"
 echo "Screens written to build/screens/"

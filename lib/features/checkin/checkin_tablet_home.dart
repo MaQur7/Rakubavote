@@ -38,7 +38,7 @@ class CheckInTabletHome extends ConsumerWidget {
             body: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 560),
-                child: ListView(padding: const EdgeInsets.all(24), children: const [PairCard(role: DeviceRole.checkin)]),
+                child: ListView(padding: const EdgeInsets.all(RakubaSpace.m), children: const [PairCard(role: DeviceRole.checkin)]),
               ),
             ),
           );

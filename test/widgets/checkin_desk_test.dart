@@ -59,7 +59,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     await settle(tester);
     expect(find.text('Already checked in'), findsOneWidget);
-    expect(find.text('This voter has already received a token.'), findsOneWidget);
+    expect(find.text('This voter has already received a voting code.'), findsOneWidget);
     await screen(tester, 'checkin-already');
     expect(find.byKey(const ValueKey('issue-token')), findsNothing);
     await finish(tester, session);
