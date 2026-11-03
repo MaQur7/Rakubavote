@@ -36,7 +36,10 @@ class SetupScreen extends ConsumerWidget {
       stream: svc.watchElection(),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.waiting && !snap.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return Padding(
+            padding: const EdgeInsets.all(RakubaSpace.l),
+            child: LoadingLine(AppLocalizations.of(context).loadingElection),
+          );
         }
         final e = snap.data;
         return e == null

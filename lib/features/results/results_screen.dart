@@ -152,7 +152,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
   Widget _boothCard(AppLocalizations t, ElectionState state) => SectionCard(
         title: t.boothVotesTitle,
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          if (_booths.isEmpty) Text(t.noPairedBooths),
+          if (_booths.isEmpty) EmptyState(t.noPairedBooths),
           for (final b in _booths)
             ListTile(
               minTileHeight: RakubaSizes.minTouch,

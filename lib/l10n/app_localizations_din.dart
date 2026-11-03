@@ -1557,4 +1557,25 @@ class AppLocalizationsDin extends AppLocalizations {
   @override
   String get kioskPinningOnly =>
       'Booth lock: screen pinning only. Ask the technician to set this tablet up as a locked booth (see the guide).';
+
+  @override
+  String get loadingDevice => 'Opening this device…';
+
+  @override
+  String get loadingElection => 'Opening the election…';
+
+  @override
+  String get loadingDuplicates => 'Looking for similar names in the register…';
+
+  @override
+  String get deviceOpenFailed =>
+      'The saved data on this device could not be opened. Close Rakubavote and open it again. If this happens again, ask the person who set up this device.';
+
+  @override
+  String get noVotersYet =>
+      'No voters yet. Register the first voter on the left, or import a list.';
+
+  @override
+  String get noVotersMatch =>
+      'No voter matches this search. Check the spelling or the number.';
 }

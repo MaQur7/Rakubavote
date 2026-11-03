@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/theme.dart';
+import '../core/widgets/common.dart';
 import '../features/admin/admin_shell.dart';
 import '../features/booth/booth_home.dart';
 import '../features/checkin/checkin_tablet_home.dart';
@@ -50,15 +51,15 @@ class _AppRootState extends ConsumerState<AppRoot> {
     }
     final store = ref.watch(deviceStoreProvider);
     return store.when(
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (e, _) => Scaffold(body: Center(child: Text('$e'))),
+      loading: () => const _Opening(),
+      error: (e, _) => const _OpenFailed(),
       data: (store) => FutureBuilder<DeviceInfo?>(
         // Re-read after locking or setting up.
         key: ValueKey(session),
         future: store.readInfo(),
         builder: (context, snap) {
           if (snap.connectionState != ConnectionState.done) {
-            return const Scaffold(body: Center(child: CircularProgressIndicator()));
+            return const _Opening();
           }
           final info = snap.data;
           return info == null ? DeviceSetupScreen(store: store) : UnlockScreen(store: store, info: info);
@@ -68,3 +69,37 @@ class _AppRootState extends ConsumerState<AppRoot> {
   }
 }
 
+
+/// Loading state while the device store opens (design system, section 8).
+class _Opening extends StatelessWidget {
+  const _Opening();
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: Padding(
+              padding: const EdgeInsets.all(RakubaSpace.l),
+              child: LoadingLine(AppLocalizations.of(context).loadingDevice),
+            ),
+          ),
+        ),
+      );
+}
+
+/// Error state: what happened and what to do, never an exception text.
+class _OpenFailed extends StatelessWidget {
+  const _OpenFailed();
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: Padding(
+              padding: const EdgeInsets.all(RakubaSpace.l),
+              child: NoticeBox(child: Text(AppLocalizations.of(context).deviceOpenFailed)),
+            ),
+          ),
+        ),
+      );
+}

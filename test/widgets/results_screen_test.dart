@@ -129,7 +129,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('open-devices')));
     await settle(tester);
     await tester.pump(const Duration(seconds: 1));
-    expect(find.text('No tablets are paired yet.'), findsOneWidget);
+    expect(find.text('No tablets are paired yet. Show a pairing code above to add one.'), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('start-network')));
     await pumpUntilFound(tester, find.text('The station network is on.'));
     expect(find.text('The station network is on.'), findsOneWidget);

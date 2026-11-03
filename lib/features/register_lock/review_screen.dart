@@ -189,8 +189,7 @@ class _ObjectionsCard extends ConsumerWidget {
                   ],
                 ),
               const SizedBox(height: RakubaSpace.s),
-              if (list.isEmpty)
-                Text(t.noObjections, style: rakubaText(context, RakubaType.body)),
+              if (list.isEmpty) EmptyState(t.noObjections),
               for (final o in list)
                 _ObjectionTile(
                   key: ValueKey(o.objection.id),
@@ -535,13 +534,10 @@ class _DuplicatePairsDialog extends ConsumerWidget {
               .possibleDuplicatePairs(electionId),
           builder: (context, snap) {
             if (!snap.hasData) {
-              return const SizedBox(
-                height: 80,
-                child: Center(child: CircularProgressIndicator()),
-              );
+              return LoadingLine(t.loadingDuplicates);
             }
             final pairs = snap.data!;
-            if (pairs.isEmpty) return Text(t.noDuplicatesFound);
+            if (pairs.isEmpty) return EmptyState(t.noDuplicatesFound);
             return ListView(
               shrinkWrap: true,
               children: [

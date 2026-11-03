@@ -131,6 +131,9 @@ void main() {
     await settle(tester);
     await tester.tap(find.byKey(const ValueKey('admin-tab-1')));
     await settle(tester);
+    // Empty state: says what will appear and how to fill it.
+    expect(find.text('No voters yet. Register the first voter on the left, or import a list.'), findsOneWidget);
+    await screen(tester, 'admin-registration-empty');
     await tester.enterText(find.byKey(const ValueKey('reg-name')), 'Student One');
     await tester.ensureVisible(find.byKey(const ValueKey('reg-save')));
     await tester.tap(find.byKey(const ValueKey('reg-save')));

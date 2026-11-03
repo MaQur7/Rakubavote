@@ -571,7 +571,8 @@ class AppLocalizationsAr extends AppLocalizations {
       'يُحفظ كل قرار في سجل التدقيق مع اسم المسؤول والوقت.';
 
   @override
-  String get noObjections => 'لا توجد اعتراضات مسجلة.';
+  String get noObjections =>
+      'لا توجد اعتراضات مسجلة. تظهر هنا الاعتراضات المقدمة أثناء العرض العام.';
 
   @override
   String get raiseObjection => 'تسجيل اعتراض';
@@ -1234,7 +1235,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noPairedBooths => 'لا توجد أكشاك مقترنة بعد.';
 
   @override
-  String get noPairedDevices => 'لا توجد أجهزة لوحية مقترنة بعد.';
+  String get noPairedDevices =>
+      'لا توجد أجهزة لوحية مقترنة بعد. اعرض رمز الاقتران أعلاه لإضافة جهاز.';
 
   @override
   String get noWifiAddress =>
@@ -1538,4 +1540,25 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get kioskPinningOnly =>
       'قفل الكشك: تثبيت الشاشة فقط. اطلب من الفني إعداد هذا الجهاز ككشك مقفل (راجع الدليل).';
+
+  @override
+  String get loadingDevice => 'جارٍ فتح هذا الجهاز…';
+
+  @override
+  String get loadingElection => 'جارٍ فتح الانتخاب…';
+
+  @override
+  String get loadingDuplicates => 'جارٍ البحث عن أسماء متشابهة في السجل…';
+
+  @override
+  String get deviceOpenFailed =>
+      'تعذّر فتح البيانات المحفوظة على هذا الجهاز. أغلق Rakubavote وافتحه مرة أخرى. إذا تكرر ذلك، اطلب المساعدة من الشخص الذي أعدّ هذا الجهاز.';
+
+  @override
+  String get noVotersYet =>
+      'لا يوجد ناخبون بعد. سجّل أول ناخب في النموذج على اليمين، أو استورد قائمة.';
+
+  @override
+  String get noVotersMatch =>
+      'لا يوجد ناخب يطابق هذا البحث. تحقق من الإملاء أو الرقم.';
 }

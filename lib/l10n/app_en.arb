@@ -272,7 +272,7 @@
   "openObjections": "Open objections",
   "objectionsTitle": "Objections and corrections",
   "objectionsNote": "Every decision is saved in the audit log with the official's name and time.",
-  "noObjections": "No objections recorded.",
+  "noObjections": "No objections recorded. Objections raised during the public display appear here.",
   "raiseObjection": "Record an objection",
   "checkDuplicates": "Check for duplicates",
   "objectionKind": "What is the objection?",
@@ -627,7 +627,7 @@
   },
   "networkRunning": "The station network is on.",
   "noPairedBooths": "No booths are paired yet.",
-  "noPairedDevices": "No tablets are paired yet.",
+  "noPairedDevices": "No tablets are paired yet. Show a pairing code above to add one.",
   "noWifiAddress": "This laptop has no Wi-Fi address. Connect it to the station router or turn on its hotspot.",
   "notConnected": "Not connected",
   "pairRequestLine": "{label} ({role}) wants to connect. Device id: {id}",
@@ -817,5 +817,11 @@
   "poolStop": "Wi-Fi is back: stop using pre-loaded codes",
   "poolModeOn": "Pre-loaded codes are in use on this booth.",
   "kioskFull": "Booth lock: full. Voters cannot leave the voting screen.",
-  "kioskPinningOnly": "Booth lock: screen pinning only. Ask the technician to set this tablet up as a locked booth (see the guide)."
+  "kioskPinningOnly": "Booth lock: screen pinning only. Ask the technician to set this tablet up as a locked booth (see the guide).",
+  "loadingDevice": "Opening this device…",
+  "loadingElection": "Opening the election…",
+  "loadingDuplicates": "Looking for similar names in the register…",
+  "deviceOpenFailed": "The saved data on this device could not be opened. Close Rakubavote and open it again. If this happens again, ask the person who set up this device.",
+  "noVotersYet": "No voters yet. Register the first voter on the left, or import a list.",
+  "noVotersMatch": "No voter matches this search. Check the spelling or the number."
 }

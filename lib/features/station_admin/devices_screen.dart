@@ -89,7 +89,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                   const SizedBox(height: RakubaSpace.xs),
                   for (final a in _addresses)
                     SelectableText(t.laptopAddress('$a:${server.port}'), style: rakubaText(context, RakubaType.bodyLarge)),
-                  if (_addresses.isEmpty) Text(t.noWifiAddress, style: const TextStyle(color: RakubaColors.clay)),
+                  if (_addresses.isEmpty) NoticeBox(child: Text(t.noWifiAddress)),
                 ],
                 if (_error != null)
                   Padding(
@@ -187,7 +187,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                 stream: server.enrollment.watchActive(),
                 builder: (context, snap) {
                   final list = snap.data ?? const <DeviceEnrollment>[];
-                  if (list.isEmpty) return Text(t.noPairedDevices);
+                  if (list.isEmpty) return EmptyState(t.noPairedDevices);
                   return Column(children: [
                     for (final d in list)
                       ListTile(

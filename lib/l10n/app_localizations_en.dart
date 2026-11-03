@@ -573,7 +573,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Every decision is saved in the audit log with the official\'s name and time.';
 
   @override
-  String get noObjections => 'No objections recorded.';
+  String get noObjections =>
+      'No objections recorded. Objections raised during the public display appear here.';
 
   @override
   String get raiseObjection => 'Record an objection';
@@ -1252,7 +1253,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noPairedBooths => 'No booths are paired yet.';
 
   @override
-  String get noPairedDevices => 'No tablets are paired yet.';
+  String get noPairedDevices =>
+      'No tablets are paired yet. Show a pairing code above to add one.';
 
   @override
   String get noWifiAddress =>
@@ -1558,4 +1560,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get kioskPinningOnly =>
       'Booth lock: screen pinning only. Ask the technician to set this tablet up as a locked booth (see the guide).';
+
+  @override
+  String get loadingDevice => 'Opening this device…';
+
+  @override
+  String get loadingElection => 'Opening the election…';
+
+  @override
+  String get loadingDuplicates => 'Looking for similar names in the register…';
+
+  @override
+  String get deviceOpenFailed =>
+      'The saved data on this device could not be opened. Close Rakubavote and open it again. If this happens again, ask the person who set up this device.';
+
+  @override
+  String get noVotersYet =>
+      'No voters yet. Register the first voter on the left, or import a list.';
+
+  @override
+  String get noVotersMatch =>
+      'No voter matches this search. Check the spelling or the number.';
 }

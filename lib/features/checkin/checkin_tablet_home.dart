@@ -18,8 +18,12 @@ class CheckInTabletHome extends ConsumerWidget {
     final t = AppLocalizations.of(context);
     final link = ref.watch(stationLinkProvider);
     return link.when(
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (e, _) => Scaffold(body: Center(child: Text('$e'))),
+      loading: () => Scaffold(
+          body: Padding(padding: const EdgeInsets.all(RakubaSpace.l), child: LoadingLine(t.loadingDevice))),
+      error: (e, _) => Scaffold(
+          body: Padding(
+              padding: const EdgeInsets.all(RakubaSpace.l),
+              child: NoticeBox(child: Text(t.deviceOpenFailed)))),
       data: (l) {
         if (l == null) {
           return Scaffold(

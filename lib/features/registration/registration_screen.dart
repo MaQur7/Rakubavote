@@ -512,6 +512,8 @@ class _VoterListState extends ConsumerState<VoterList> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _header(t),
+                      if (snap.hasData && voters.isEmpty)
+                        EmptyState(_query.trim().isEmpty ? t.noVotersYet : t.noVotersMatch),
                       Expanded(
                         child: ListView.builder(
                           itemCount: voters.length,

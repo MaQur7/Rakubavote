@@ -1111,7 +1111,7 @@ abstract class AppLocalizations {
   /// No description provided for @noObjections.
   ///
   /// In en, this message translates to:
-  /// **'No objections recorded.'**
+  /// **'No objections recorded. Objections raised during the public display appear here.'**
   String get noObjections;
 
   /// No description provided for @raiseObjection.
@@ -2245,7 +2245,7 @@ abstract class AppLocalizations {
   /// No description provided for @noPairedDevices.
   ///
   /// In en, this message translates to:
-  /// **'No tablets are paired yet.'**
+  /// **'No tablets are paired yet. Show a pairing code above to add one.'**
   String get noPairedDevices;
 
   /// No description provided for @noWifiAddress.
@@ -2751,6 +2751,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Booth lock: screen pinning only. Ask the technician to set this tablet up as a locked booth (see the guide).'**
   String get kioskPinningOnly;
+
+  /// No description provided for @loadingDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening this device…'**
+  String get loadingDevice;
+
+  /// No description provided for @loadingElection.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening the election…'**
+  String get loadingElection;
+
+  /// No description provided for @loadingDuplicates.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for similar names in the register…'**
+  String get loadingDuplicates;
+
+  /// No description provided for @deviceOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The saved data on this device could not be opened. Close Rakubavote and open it again. If this happens again, ask the person who set up this device.'**
+  String get deviceOpenFailed;
+
+  /// No description provided for @noVotersYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No voters yet. Register the first voter on the left, or import a list.'**
+  String get noVotersYet;
+
+  /// No description provided for @noVotersMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No voter matches this search. Check the spelling or the number.'**
+  String get noVotersMatch;
 }
 
 class _AppLocalizationsDelegate
