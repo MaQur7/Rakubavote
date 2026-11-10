@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
+
 import '../../core/theme.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -95,27 +96,6 @@ class SymbolImage extends StatelessWidget {
       child: Image.memory(bytes!, width: size, height: size, fit: BoxFit.contain, gaplessPlayback: true),
     );
   }
-}
-
-/// The square tick box on the right of each row: the one "chosen" signal on
-/// every ballot row (with the row's 3 px border in the position colour).
-class TickBox extends StatelessWidget {
-  const TickBox({super.key, required this.checked, required this.colour, this.size = RakubaSpace.xxl});
-  final bool checked;
-  final Color colour;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: checked ? colour : RakubaColors.white,
-          borderRadius: BorderRadius.circular(RakubaRadius.input),
-          border: Border.all(color: checked ? colour : RakubaColors.border, width: RakubaLine.strong),
-        ),
-        child: checked ? Icon(Icons.check, color: RakubaColors.white, size: size * 0.7) : null,
-      );
 }
 
 /// Dashed rounded border, used for "No choice" (mockups 3 and 4).

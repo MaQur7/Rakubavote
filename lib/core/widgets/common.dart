@@ -2,31 +2,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
+import '../brand/brand.dart';
 import '../theme.dart';
-
-/// "Rakuba" + "vote" wordmark. On dark backgrounds "vote" is Light Thatch.
-class Wordmark extends StatelessWidget {
-  const Wordmark({super.key, this.onDark = false, this.size = 20, this.suffix});
-  final bool onDark;
-  final double size;
-  final String? suffix;
-
-  @override
-  Widget build(BuildContext context) {
-    final base = TextStyle(
-        fontFamily: RakubaFonts.latin, fontFamilyFallback: RakubaFonts.fallbackFor(arabic: false), fontWeight: FontWeight.w700, fontSize: size,
-        color: onDark ? RakubaColors.white : RakubaColors.ink);
-    return Text.rich(
-      TextSpan(style: base, children: [
-        const TextSpan(text: 'Rakuba'),
-        TextSpan(text: 'vote', style: TextStyle(color: onDark ? RakubaColors.lightThatch : RakubaColors.nileBlue)),
-        if (suffix != null) TextSpan(text: ' $suffix'),
-      ]),
-      // The product name is Latin in every language (brand guidelines).
-      textDirection: TextDirection.ltr,
-    );
-  }
-}
 
 /// Rounded status pill, e.g. "Offline · saved on this laptop".
 class StatusPill extends StatelessWidget {
@@ -61,14 +38,17 @@ class SectionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (title != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: RakubaSpace.s),
-                    child: Row(children: [
-                      Expanded(child: Text(title!, style: rakubaText(context, RakubaType.heading, bold: true))),
-                      ?trailing,
-                    ]),
+                if (title != null) ...[
+                  Row(children: [
+                    Expanded(child: Text(title!, style: rakubaText(context, RakubaType.heading, bold: true))),
+                    ?trailing,
+                  ]),
+                  // The heading stands on a post rule, as the roof stands on its posts.
+                  const Padding(
+                    padding: EdgeInsets.only(top: RakubaSpace.xs, bottom: RakubaSpace.s),
+                    child: PostRule(),
                   ),
+                ],
                 child,
               ],
             ),
@@ -90,21 +70,28 @@ class PhotoBox extends StatelessWidget {
     final radius = circle ? BorderRadius.circular(RakubaRadius.pill) : BorderRadius.circular(RakubaRadius.input);
     return ClipRRect(
       borderRadius: radius,
-      child: Container(
+      child: SizedBox(
         width: size,
         height: size,
-        color: RakubaColors.rule,
-        alignment: Alignment.center,
         child: bytes != null
             ? Image.memory(bytes!, width: size, height: size, fit: BoxFit.cover, gaplessPlayback: true)
-            : (label == null
-                ? null
-                : Padding(
-                    padding: const EdgeInsets.all(RakubaSpace.xs),
-                    child: Text(label!,
-                        textAlign: TextAlign.center,
-                        style: rakubaText(context, RakubaType.label, colour: RakubaColors.inkMuted)),
-                  )),
+            // No photo: the thatch hatch, never a flat grey box.
+            : ThatchHatch(
+                background: RakubaColors.paper,
+                child: label == null
+                    ? null
+                    : Center(
+                        child: ColoredBox(
+                          color: RakubaColors.paper,
+                          child: Padding(
+                            padding: const EdgeInsets.all(RakubaSpace.xxs),
+                            child: Text(label!,
+                                textAlign: TextAlign.center,
+                                style: rakubaText(context, RakubaType.label, colour: RakubaColors.inkMuted)),
+                          ),
+                        ),
+                      ),
+              ),
       ),
     );
   }

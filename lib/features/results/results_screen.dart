@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
+import '../../core/brand/brand.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -156,8 +158,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
           for (final b in _booths)
             ListTile(
               minTileHeight: RakubaSizes.minTouch,
-              leading: Icon(b.received ? Icons.check_circle : Icons.hourglass_empty,
-                  color: b.received ? RakubaColors.acaciaGreen : RakubaColors.clay),
+              leading: TickBox(checked: b.received, colour: RakubaColors.acaciaGreen, size: RakubaSpace.l),
               title: Text(b.booth.label),
               subtitle: Text(b.received ? t.boothVotesReceived('${b.ballots}') : t.boothVotesWaiting),
             ),
@@ -187,8 +188,7 @@ class _StatsRow extends StatelessWidget {
     // A ledger, like the tally sheet: no stat tiles (design system, section 7).
     return SectionCard(
       title: ok ? t.checkMatch : t.checkDiffer,
-      trailing: Icon(ok ? Icons.check_circle : Icons.error_outline,
-          color: ok ? RakubaColors.acaciaGreen : RakubaColors.clay),
+      trailing: ok ? const BrandTick(size: RakubaSpace.l, colour: RakubaColors.acaciaGreen) : null,
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         LedgerRow(label: t.statRegistered, value: '${r['registered']}'),
         LedgerRow(label: t.statCheckedIn, value: '${r['checkedIn']}'),

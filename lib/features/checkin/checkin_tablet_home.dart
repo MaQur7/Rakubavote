@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../core/brand/brand.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
@@ -30,11 +32,11 @@ class CheckInTabletHome extends ConsumerWidget {
             appBar: AppBar(
               backgroundColor: RakubaColors.ink,
               foregroundColor: RakubaColors.white,
-              title: Wordmark(onDark: true, suffix: t.modeCheckin),
+              title: RakubaLogo(onDark: true, markSize: RakubaSpace.l, role: t.modeCheckin),
               actions: [
                 IconButton(
                   tooltip: t.lockDevice,
-                  icon: const Icon(Icons.lock_outline),
+                  icon: const BrandIcon(BrandIconKind.secret),
                   onPressed: () => ref.read(sessionProvider.notifier).lock(),
                 ),
               ],

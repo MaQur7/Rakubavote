@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../core/brand/brand.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
@@ -42,7 +44,7 @@ class _AdminShellState extends ConsumerState<AdminShell> {
                 ),
                 child: Row(
                   children: [
-                    Wordmark(onDark: true, size: 20, suffix: t.adminSuffix),
+                    RakubaLogo(onDark: true, markSize: RakubaSpace.l, role: t.adminSuffix),
                     const SizedBox(width: RakubaSpace.s),
                     Expanded(
                       child: SingleChildScrollView(
@@ -87,7 +89,7 @@ class _AdminShellState extends ConsumerState<AdminShell> {
                             style: onDarkStyle(active: true).copyWith(
                               minimumSize: const WidgetStatePropertyAll(Size(RakubaSpace.xxl, RakubaSpace.xl)),
                             ),
-                            icon: const Icon(Icons.how_to_reg_outlined),
+                            icon: const BrandIcon(BrandIconKind.checkIn),
                             label: Text(t.openCheckinDesk),
                             onPressed: () => Navigator.of(context).push(
                               MaterialPageRoute<void>(
@@ -114,7 +116,7 @@ class _AdminShellState extends ConsumerState<AdminShell> {
                     IconButton(
                       tooltip: t.lockDevice,
                       style: onDarkStyle(),
-                      icon: const Icon(Icons.lock_outline),
+                      icon: const BrandIcon(BrandIconKind.secret),
                       onPressed: () =>
                           ref.read(sessionProvider.notifier).lock(),
                     ),

@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+
+import '../../core/brand/brand.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
@@ -223,7 +225,7 @@ class _ElectionSetupState extends ConsumerState<ElectionSetup> {
                   const SizedBox(height: RakubaSpace.xs),
                   OutlinedButton.icon(
                     key: const ValueKey('add-position'),
-                    icon: const Icon(Icons.add),
+                    icon: const BrandIcon(BrandIconKind.add),
                     label: Text(t.addPosition),
                     onPressed: () async {
                       try {
@@ -821,7 +823,7 @@ class _PositionEditorState extends ConsumerState<PositionEditor> {
                       ),
                     ),
                     child: p.colour == c.toARGB32()
-                        ? const Icon(Icons.check, color: RakubaColors.white)
+                        ? const BrandTick(size: RakubaSpace.m, colour: RakubaColors.white)
                         : null,
                   ),
                 ),
@@ -833,12 +835,12 @@ class _PositionEditorState extends ConsumerState<PositionEditor> {
             children: [
               TextButton.icon(
                 onPressed: () => svc.movePosition(p.id, -1, official: official),
-                icon: const Icon(Icons.arrow_upward),
+                icon: const BrandIcon(BrandIconKind.up),
                 label: Text(t.moveUp),
               ),
               TextButton.icon(
                 onPressed: () => svc.movePosition(p.id, 1, official: official),
-                icon: const Icon(Icons.arrow_downward),
+                icon: const BrandIcon(BrandIconKind.down),
                 label: Text(t.moveDown),
               ),
               TextButton.icon(

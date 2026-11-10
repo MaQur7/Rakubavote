@@ -160,15 +160,46 @@ pw.Widget _logo(Uint8List? bytes, double size) => pw.Container(
       child: _image(bytes) == null ? null : pw.ClipOval(child: pw.Image(_image(bytes)!, fit: pw.BoxFit.cover)),
     );
 
-pw.Widget _wordmark(double size) => pw.RichText(
-      text: pw.TextSpan(
-        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: size, color: PdfColors.white),
-        children: [
-          const pw.TextSpan(text: 'Rakuba'),
-          pw.TextSpan(text: 'vote', style: const pw.TextStyle(color: _lightThatch)),
-        ],
-      ),
+/// The mark on dark (D26), drawn from the same numbers as brand/: a 120 unit
+/// square with the roof 104 x 16, posts 12 x 64 and the 45 degree tick.
+pw.Widget _mark(double size) => pw.CustomPaint(
+      size: PdfPoint(size, size),
+      painter: (canvas, s) {
+        final k = s.x / 120;
+        // PDF y runs upward.
+        double y(double v) => (120 - v) * k;
+        canvas
+          ..setFillColor(_lightThatch)
+          ..drawRRect(8 * k, y(36), 104 * k, 16 * k, 4 * k, 4 * k)
+          ..fillPath()
+          ..setFillColor(PdfColors.white)
+          ..drawRect(20 * k, y(100), 12 * k, 64 * k)
+          ..drawRect(88 * k, y(100), 12 * k, 64 * k)
+          ..fillPath()
+          ..setStrokeColor(PdfColors.white)
+          ..setLineWidth(12 * k)
+          ..setLineCap(PdfLineCap.round)
+          ..setLineJoin(PdfLineJoin.round)
+          ..moveTo(42 * k, y(72))
+          ..lineTo(54 * k, y(84))
+          ..lineTo(78 * k, y(60))
+          ..strokePath();
+      },
     );
+
+pw.Widget _wordmark(double size) => pw.Row(mainAxisSize: pw.MainAxisSize.min, children: [
+      _mark(size * 1.5),
+      pw.SizedBox(width: size * 0.3),
+      pw.RichText(
+        text: pw.TextSpan(
+          style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: size, color: PdfColors.white),
+          children: [
+            const pw.TextSpan(text: 'Rakuba'),
+            pw.TextSpan(text: 'vote', style: const pw.TextStyle(color: _lightThatch)),
+          ],
+        ),
+      ),
+    ]);
 
 pw.Widget _photo(Uint8List? bytes, double w, double h) => pw.Container(
       width: w,

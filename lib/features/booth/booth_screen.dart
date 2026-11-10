@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import '../../core/brand/brand.dart';
 import 'package:flutter/services.dart';
 
 import '../../core/db/ballot_box_repository.dart';
@@ -263,7 +265,7 @@ class _LanguageButton extends StatelessWidget {
               key: ValueKey('lang-$code'),
               style: style,
               onPressed: () => c.setLanguage(code),
-              icon: const Icon(Icons.check),
+              icon: const BrandIcon(BrandIconKind.vote),
               label: label)
           : OutlinedButton(key: ValueKey('lang-$code'), style: style, onPressed: () => c.setLanguage(code), child: label),
     );
@@ -301,9 +303,10 @@ class _TopBar extends StatelessWidget {
             Expanded(
               child: Container(
                 height: RakubaSpace.xs,
+                // Progress segments are small roof bars.
                 decoration: BoxDecoration(
                   color: i <= c.index ? colour : RakubaColors.rule,
-                  borderRadius: BorderRadius.circular(RakubaRadius.pill),
+                  borderRadius: BorderRadius.circular(RakubaSpace.xs / 4),
                 ),
               ),
             ),
@@ -871,12 +874,8 @@ class _EndPageState extends State<_EndPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(RakubaSpace.l),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Container(
-          width: RakubaSpace.xxl * 2,
-          height: RakubaSpace.xxl * 2,
-          decoration: const BoxDecoration(color: RakubaColors.acaciaGreen, shape: BoxShape.circle),
-          child: const Icon(Icons.check, color: RakubaColors.white, size: RakubaSpace.xxl + RakubaSpace.m),
-        ),
+        // The mark's own tick, drawn short arm then long arm.
+        const DrawnTick(size: RakubaSpace.xxl * 2 + RakubaSpace.l, colour: RakubaColors.acaciaGreen),
         const SizedBox(height: RakubaSpace.m),
         Text(t.endTitle,
             key: const ValueKey('end-title'),
@@ -908,7 +907,7 @@ class _ClosedPage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(RakubaSpace.l),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const Icon(Icons.how_to_vote_outlined, size: RakubaSpace.xxl + RakubaSpace.l, color: RakubaColors.ink),
+          const RakubaMark(size: RakubaSpace.xxl + RakubaSpace.l, scheme: MarkScheme.oneColour),
           const SizedBox(height: RakubaSpace.s),
           Text(t.pollsClosedTitle,
               key: const ValueKey('polls-closed'),

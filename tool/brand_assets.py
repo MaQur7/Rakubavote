@@ -105,6 +105,20 @@ def png_lockup(path, scheme, bg, height=240):
     os.remove(tmp)
 
 
+def app_icons():
+    """Launcher icons for Android, Windows and Linux from the app icon."""
+    from PIL import Image
+    icon = dict(roof=LTHATCH, post=PAPER, tick=PAPER, bg=NILE, inset=0.125)
+    for name, px in [('mdpi', 48), ('hdpi', 72), ('xhdpi', 96), ('xxhdpi', 144), ('xxxhdpi', 192)]:
+        png_mark('android/app/src/main/res/mipmap-%s/ic_launcher.png' % name, px, radius=0.22, **icon)
+    png_mark('linux/rakubavote.png', 512, radius=0.22, **icon)
+    tmp = '/tmp/_rkv_ico.png'
+    png_mark(tmp, 256, radius=0.22, **icon)
+    Image.open(tmp).save('windows/runner/resources/app_icon.ico',
+                         sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
+    os.remove(tmp)
+
+
 def main():
     os.makedirs('brand', exist_ok=True)
     files = {
@@ -125,6 +139,7 @@ def main():
         png_lockup('brand/rakubavote-logo.png', 'colour', PAPER)
         png_lockup('brand/rakubavote-logo-on-dark.png', 'on-dark', INK)
         png_lockup('brand/rakubavote-logo-one-colour.png', 'one-colour', WHITE)
+        app_icons()
     except ImportError:
         print('Pillow not installed: SVG files written, PNG files skipped')
     print('brand files written')

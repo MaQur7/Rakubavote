@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../core/brand/brand.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
@@ -168,7 +170,7 @@ class _ObjectionsCard extends ConsumerWidget {
                   children: [
                     OutlinedButton.icon(
                       key: const ValueKey('raise-objection'),
-                      icon: const Icon(Icons.add),
+                      icon: const BrandIcon(BrandIconKind.add),
                       label: Text(t.raiseObjection),
                       onPressed: () => showDialog<void>(
                         context: context,
@@ -178,7 +180,7 @@ class _ObjectionsCard extends ConsumerWidget {
                     ),
                     OutlinedButton.icon(
                       key: const ValueKey('check-duplicates'),
-                      icon: const Icon(Icons.people_outline),
+                      icon: const BrandIcon(BrandIconKind.tie),
                       label: Text(t.checkDuplicates),
                       onPressed: () => showDialog<void>(
                         context: context,

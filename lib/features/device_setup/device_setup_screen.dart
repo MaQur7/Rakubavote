@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+
+import '../../core/brand/brand.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/device_store.dart';
 import '../../app/providers.dart';
 import '../../core/theme.dart';
+import 'brand_shell.dart';
 import '../../core/widgets/common.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -35,10 +39,14 @@ class LanguageButtons extends ConsumerWidget {
               ? OutlinedButton.icon(
                   style: const ButtonStyle(
                     side: WidgetStatePropertyAll(
-                        BorderSide(color: RakubaColors.nileBlue, width: RakubaLine.selected)),
+                      BorderSide(
+                        color: RakubaColors.nileBlue,
+                        width: RakubaLine.selected,
+                      ),
+                    ),
                   ),
                   onPressed: () => ref.read(localeProvider.notifier).set(l),
-                  icon: const Icon(Icons.check),
+                  icon: const BrandIcon(BrandIconKind.vote),
                   label: Text(lookupAppLocalizations(l).languageName),
                 )
               : OutlinedButton(
@@ -80,10 +88,10 @@ class _DeviceSetupScreenState extends ConsumerState<DeviceSetupScreen> {
     final problem = _name.text.trim().isEmpty
         ? t.nameRequired
         : !isAcceptablePin(_pin.text)
-            ? t.pinRule
-            : _pin.text != _pin2.text
-                ? t.pinsDoNotMatch
-                : null;
+        ? t.pinRule
+        : _pin.text != _pin2.text
+        ? t.pinsDoNotMatch
+        : null;
     if (problem != null) {
       setState(() => _error = problem);
       return;
@@ -104,105 +112,99 @@ class _DeviceSetupScreenState extends ConsumerState<DeviceSetupScreen> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 640),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(RakubaSpace.m),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Wordmark(size: 36),
-                  Text(
-                    t.tagline,
-                    style: rakubaText(context, RakubaType.bodyLarge),
-                  ),
-                  const SizedBox(height: RakubaSpace.s),
-                  const LanguageButtons(),
-                  const SizedBox(height: RakubaSpace.m),
-                  Text(
-                    t.chooseDeviceMode,
+    return BrandShell(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(RakubaSpace.m),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const LanguageButtons(),
+            const SizedBox(height: RakubaSpace.m),
+            Text(
+              t.chooseDeviceMode,
+              style: rakubaText(context, RakubaType.heading, bold: true),
+            ),
+            const SizedBox(height: RakubaSpace.s),
+            for (final m in DeviceMode.values)
+              Card(
+                margin: const EdgeInsets.only(bottom: RakubaSpace.xs),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(RakubaRadius.panel),
+                  side: _mode == m
+                      ? const BorderSide(
+                          color: RakubaColors.nileBlue,
+                          width: RakubaLine.selected,
+                        )
+                      : const BorderSide(color: RakubaColors.border),
+                ),
+                child: ListTile(
+                  key: ValueKey('mode-${m.name}'),
+                  minTileHeight: RakubaSizes.minTouch + 16,
+                  title: Text(
+                    modeTitle(t, m),
                     style: rakubaText(context, RakubaType.heading, bold: true),
                   ),
-                  const SizedBox(height: RakubaSpace.s),
-                  for (final m in DeviceMode.values)
-                    Card(
-                      margin: const EdgeInsets.only(bottom: RakubaSpace.xs),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(RakubaRadius.panel),
-                        side: _mode == m
-                            ? const BorderSide(color: RakubaColors.nileBlue, width: RakubaLine.selected)
-                            : const BorderSide(color: RakubaColors.border),
-                      ),
-                      child: ListTile(
-                        key: ValueKey('mode-${m.name}'),
-                        minTileHeight: RakubaSizes.minTouch + 16,
-                        title: Text(
-                          modeTitle(t, m),
-                          style: rakubaText(context, RakubaType.heading, bold: true),
-                        ),
-                        subtitle: Text(
-                          modeHint(t, m),
-                          style: rakubaText(context, RakubaType.bodyLarge),
-                        ),
-                        trailing: _mode == m
-                            ? const Icon(
-                                Icons.check_circle,
-                                color: RakubaColors.nileBlue,
-                              )
-                            : null,
-                        onTap: () => setState(() => _mode = m),
-                      ),
-                    ),
-                  if (_mode != null) ...[
-                    const SizedBox(height: RakubaSpace.s),
-                    Text(
-                      t.setupDeviceTitle,
-                      style: rakubaText(context, RakubaType.heading, bold: true),
-                    ),
-                    FieldLabel(t.yourName),
-                    TextField(
-                      key: const ValueKey('setup-name'),
-                      controller: _name,
-                      decoration: InputDecoration(hintText: t.yourNameHint),
-                    ),
-                    FieldLabel(t.choosePin),
-                    TextField(
-                      key: const ValueKey('setup-pin'),
-                      controller: _pin,
-                      obscureText: true,
-                      keyboardType: TextInputType.number,
-                    ),
-                    FieldLabel(t.confirmPin),
-                    TextField(
-                      key: const ValueKey('setup-pin2'),
-                      controller: _pin2,
-                      obscureText: true,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: RakubaSpace.s),
-                    NoticeBox(child: Text(t.pinWarning)),
-                    if (_error != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: RakubaSpace.s),
-                        child: Text(
-                          _error!,
-                          style: rakubaText(context, RakubaType.body, bold: true, colour: RakubaColors.clay),
-                        ),
-                      ),
-                    const SizedBox(height: RakubaSpace.s),
-                    FilledButton(
-                      key: const ValueKey('setup-submit'),
-                      onPressed: _busy ? null : () => _submit(t),
-                      child: Text(t.setUpButton),
-                    ),
-                  ],
-                ],
+                  subtitle: Text(
+                    modeHint(t, m),
+                    style: rakubaText(context, RakubaType.bodyLarge),
+                  ),
+                  trailing: TickBox(
+                    checked: _mode == m,
+                    colour: RakubaColors.nileBlue,
+                    size: RakubaSpace.l,
+                  ),
+                  onTap: () => setState(() => _mode = m),
+                ),
               ),
-            ),
-          ),
+            if (_mode != null) ...[
+              const SizedBox(height: RakubaSpace.s),
+              Text(
+                t.setupDeviceTitle,
+                style: rakubaText(context, RakubaType.heading, bold: true),
+              ),
+              FieldLabel(t.yourName),
+              TextField(
+                key: const ValueKey('setup-name'),
+                controller: _name,
+                decoration: InputDecoration(hintText: t.yourNameHint),
+              ),
+              FieldLabel(t.choosePin),
+              TextField(
+                key: const ValueKey('setup-pin'),
+                controller: _pin,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+              ),
+              FieldLabel(t.confirmPin),
+              TextField(
+                key: const ValueKey('setup-pin2'),
+                controller: _pin2,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: RakubaSpace.s),
+              NoticeBox(child: Text(t.pinWarning)),
+              if (_error != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: RakubaSpace.s),
+                  child: Text(
+                    _error!,
+                    style: rakubaText(
+                      context,
+                      RakubaType.body,
+                      bold: true,
+                      colour: RakubaColors.clay,
+                    ),
+                  ),
+                ),
+              const SizedBox(height: RakubaSpace.s),
+              FilledButton(
+                key: const ValueKey('setup-submit'),
+                onPressed: _busy ? null : () => _submit(t),
+                child: Text(t.setUpButton),
+              ),
+            ],
+          ],
         ),
       ),
     );
