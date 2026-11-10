@@ -212,10 +212,16 @@ form sits on Paper beside it. On narrow screens the panel becomes an Ink header.
   end before the total once the register is locked, and the colonnade closing every page above
   the draft note or the fingerprint.
 
-**Still to do.** The marketing site mockups (G) predate the brand.
+**Website** (`docs/mockups/G-landing.html`, written by `tool/site_mockup.py`; renders in
+`G-landing.png` and `G-landing-phone.png`). The Ink bar is the roof of the page; the hero photo
+stands in the shelter frame; facts and the kit are ledgers; the four phases are ruled rows with the
+ballot's number box, closed by a tick end; audiences are band modules; the kit section ends in the
+mat weave and the page closes on the colonnade. No hero illustration of a device, no numbered
+circles, no icon grid, no feature strip. It is a mockup: the pilot form does not send.
 
 ## Changelog
 
+- 2026-11-10: Website mockup redrawn in the brand language; content corrected for D18 and D23.
 - 2026-11-10: Voter card and register PDF redrawn in the brand language; print rules added to section 11.
 - 2026-11-10: Visual language applied to all screens (D27); section 11 added; icons and bans updated.
 - 2026-11-10: Logo approved (D26); section 9 rewritten.

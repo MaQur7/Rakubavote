@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rakubavote Website</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: an editorial page on a 12-column grid. The Ink bar is the roof of the page; sections open on a post rule and the sheet closes on the colonnade. Light only, by design. */
+@font-face { font-family: AtkinsonLocal; font-weight: 400; src: url(../../assets/fonts/AtkinsonHyperlegible-Regular.ttf); }
+@font-face { font-family: AtkinsonLocal; font-weight: 700; src: url(../../assets/fonts/AtkinsonHyperlegible-Bold.ttf); }
+:root { --ink: #1B1B1B; --paper: #F4F1EA; --card: #FFFFFF; --muted: #57524A; --rule: #DDD6C6; --border: #8A8577;
+  --nile: #1D4E89; --acacia: #1F5E3A; --clay: #A9521A; --thatch: #C8963E; --lthatch: #E6C27A;
+  --font: "Atkinson Hyperlegible", AtkinsonLocal, "Noto Sans", system-ui, sans-serif; color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 18px/1.5 var(--font); }
+.in { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+a { color: var(--nile); font-weight: 700; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+h1 { font-size: clamp(36px, 6vw, 60px); line-height: 1.05; letter-spacing: -.02em; margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(26px, 3.4vw, 32px); line-height: 1.2; margin: 0; text-wrap: balance; }
+h3 { font-size: 22px; line-height: 1.25; margin: 0; }
+p { margin: 0; max-width: 60ch; }
+.muted { color: var(--muted); }
+.small { font-size: 16px; }
+
+/* logo */
+.logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo .mark { width: 40px; height: 40px; flex: none; }
+.logo .word { font-weight: 700; font-size: 24px; letter-spacing: -.01em; color: var(--ink); }
+.logo .word b { color: var(--nile); }
+.logo.dark .word { color: var(--paper); } .logo.dark .word b { color: var(--lthatch); }
+
+/* the Ink bar: roof of the page */
+.bar { background: var(--ink); color: var(--paper); }
+.bar .in { display: flex; align-items: center; gap: 16px 32px; flex-wrap: wrap; padding-block: 12px; }
+.bar nav { display: flex; gap: 8px 24px; flex-wrap: wrap; flex: 1; }
+.bar nav a { color: var(--paper); font-weight: 400; text-decoration: none; padding: 8px 0; }
+.bar nav a:hover { text-decoration: underline; }
+.bar a:focus-visible { outline-color: var(--lthatch); }
+
+/* buttons: flat, 12 px corners */
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 56px; padding: 0 24px; border-radius: 12px; font: 700 18px var(--font); text-decoration: none; cursor: pointer; border: 0; }
+.btn.primary { background: var(--nile); color: #fff; }
+.btn.second { background: var(--card); color: var(--nile); border: 1px solid var(--border); }
+.btn.thatch { background: var(--lthatch); color: var(--ink); min-height: 48px; }
+.btn.onink { background: var(--paper); color: var(--ink); }
+
+/* brand parts */
+.roof { height: 8px; border-radius: 2px; background: var(--thatch); }
+.postrule { height: 8px; border-top: 2px solid var(--ink); position: relative; margin: 8px 0 24px; }
+.postrule::before, .postrule::after { content: ""; position: absolute; top: 0; width: 6px; height: 8px; background: var(--ink); }
+.postrule::before { left: 18px; } .postrule::after { right: 18px; }
+.onink .postrule { border-color: var(--paper); } .onink .postrule::before, .onink .postrule::after { background: var(--paper); }
+.tickend { display: flex; align-items: center; gap: 8px; color: var(--acacia); }
+.tickend::before { content: ""; flex: 1; height: 2px; background: var(--ink); }
+.tick { width: 32px; height: 32px; flex: none; }
+.colonnade { display: block; width: 100%; height: 32px; }
+.frame { width: 100%; max-width: 416px; }
+.frame .r { height: 0; padding-top: 15.385%; border-radius: 6px; background: var(--thatch); }
+.frame .b { display: flex; justify-content: center; }
+.frame .p { width: 11.538%; background: var(--ink); }
+.frame .w { width: 53.846%; aspect-ratio: 7 / 8; position: relative; background: var(--card); }
+.frame .w svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.frame .w span { position: absolute; left: 8%; right: 8%; top: 50%; transform: translateY(-50%); background: var(--card); padding: 8px; font-size: 14px; line-height: 1.35; color: var(--muted); text-align: center; }
+
+section { padding-block: 64px; }
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 32px 24px; align-items: start; }
+.c5 { grid-column: span 5; } .c6 { grid-column: span 6; } .c7 { grid-column: span 7; } .c4 { grid-column: span 4; } .c8 { grid-column: span 8; } .c12 { grid-column: span 12; }
+.stack { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.eyebrow { font-weight: 700; color: var(--clay); }
+.actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 8px; }
+
+/* hero */
+.hero { padding-block: 48px 64px; }
+.hero .grid { align-items: center; }
+.hero .lede { font-size: 20px; }
+
+/* ledger */
+.ledger { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
+.ledger li { display: flex; gap: 16px; justify-content: space-between; align-items: baseline; padding: 12px 0 12px 16px; border-bottom: 1px solid var(--rule); }
+.ledger b { text-align: right; font-size: 20px; font-variant-numeric: tabular-nums; }
+.onink .ledger, .onink .ledger li { border-color: #4A4740; }
+.onink .ledger span { color: var(--paper); } .onink .ledger b { color: var(--lthatch); }
+
+/* how it works: ruled rows with the ballot's number box */
+.steps { margin: 0; padding: 0; list-style: none; }
+.steps li { display: grid; grid-template-columns: 48px minmax(0, 220px) minmax(0, 1fr); gap: 8px 24px; align-items: start; padding: 24px 0; border-bottom: 1px solid var(--rule); }
+.no { width: 48px; height: 48px; border-radius: 8px; background: var(--ink); color: #fff; font-weight: 700; font-size: 22px; display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; }
+
+/* band module: a colour band (the roof) over a white panel (the bay) */
+.band { background: var(--card); border: 2px solid var(--bc, var(--nile)); border-radius: 16px; overflow: hidden; min-width: 0; }
+.band > header { background: var(--bc, var(--nile)); color: #fff; padding: 12px 24px; font-weight: 700; font-size: 22px; line-height: 1.25; }
+.band > header small { display: block; font-weight: 400; font-size: 16px; }
+.band > div { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.bands { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+
+/* the ballot sample, as in the app */
+.ballot > div { background: #E8EDF4; gap: 16px; }
+.row { background: var(--card); border: 2px solid var(--border); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 16px; }
+.row.on { border: 3px solid var(--nile); }
+.row.none { border-style: dashed; background: var(--paper); }
+.ph { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; flex: none; background: var(--paper); }
+.ph svg { width: 100%; height: 100%; display: block; }
+.row .n { width: 40px; height: 40px; border-radius: 8px; background: var(--ink); color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center; flex: none; }
+.row .nm { flex: 1; font-weight: 700; font-size: 22px; min-width: 0; }
+.box { width: 56px; height: 56px; border-radius: 8px; border: 2px solid var(--border); background: var(--card); flex: none; display: flex; align-items: center; justify-content: center; color: #fff; }
+.row.on .box { background: var(--nile); border-color: var(--nile); }
+.box .tick { width: 44px; height: 44px; }
+.dash { width: 28px; height: 6px; border-radius: 1px; background: var(--ink); flex: none; margin: 0 6px; }
+
+ul.plain { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
+ul.plain li { padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.code { font-weight: 700; font-size: clamp(32px, 5vw, 48px); line-height: 1.1; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+.notice { border-left: 4px solid var(--nile); padding: 8px 16px; }
+
+/* kit: Ink section, mat weave in its lower part with nothing set over it */
+.onink { background: var(--ink); color: var(--paper); }
+.onink h2 { color: var(--paper); } .onink .muted { color: #CFC9BB; }
+.weave { height: 108px; display: block; width: 100%; }
+
+/* form */
+form { display: flex; flex-direction: column; gap: 8px; max-width: 520px; }
+label { font-weight: 700; font-size: 14px; margin-top: 8px; }
+input, select { font: 400 18px var(--font); min-height: 56px; padding: 0 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--ink); width: 100%; }
+form .btn { margin-top: 16px; }
+
+footer.end { background: var(--ink); color: var(--paper); padding-block: 48px 0; }
+footer.end .in { display: flex; flex-direction: column; gap: 24px; }
+footer.end .top { display: flex; flex-wrap: wrap; gap: 16px 48px; justify-content: space-between; align-items: flex-start; }
+footer.end a { color: var(--lthatch); }
+footer.end a:focus-visible { outline-color: var(--lthatch); }
+
+@media (max-width: 860px) {
+  .c4, .c5, .c6, .c7, .c8 { grid-column: span 12; }
+  .bar .in { justify-content: space-between; }
+  .bar nav { order: 3; flex: 1 1 100%; gap: 0 16px; font-size: 16px; }
+  section { padding-block: 48px; }
+  .steps li { grid-template-columns: 48px minmax(0, 1fr); }
+  .steps li p { grid-column: 2; }
+  .row .nm { font-size: 18px; } .ph { width: 48px; height: 48px; } .box { width: 48px; height: 48px; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><rect width="8" height="1.5" fill="#C8963E"/></pattern>
+<pattern id="weave" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M3 9 l6 6 l12 -12" fill="none" stroke="#E6C27A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 27 l6 6 l12 -12" fill="none" stroke="#E6C27A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M-15 27 l6 6 l12 -12" fill="none" stroke="#E6C27A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 -9 l6 6 l12 -12" fill="none" stroke="#E6C27A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M-15 -9 l6 6 l12 -12" fill="none" stroke="#E6C27A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 45 l6 6 l12 -12" fill="none" stroke="#E6C27A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 -27 l6 6 l12 -12" fill="none" stroke="#E6C27A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M39 9 l6 6 l12 -12" fill="none" stroke="#E6C27A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M-33 9 l6 6 l12 -12" fill="none" stroke="#E6C27A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></pattern>
+<pattern id="posts" width="34" height="24" patternUnits="userSpaceOnUse"><rect x="6" width="6" height="24" fill="#F4F1EA"/></pattern>
+</defs></svg>
+<div class="bar"><div class="in">
+  <a href="#top" aria-label="Rakubavote, home"><span class="logo dark"><svg class="mark" viewBox="0 0 120 120" role="img" aria-label="Rakubavote"><rect x="8" y="20" width="104" height="16" rx="4" fill="#E6C27A"/><rect x="20" y="36" width="12" height="64" fill="#F4F1EA"/><rect x="88" y="36" width="12" height="64" fill="#F4F1EA"/><path d="M42 72 L54 84 L78 60" fill="none" stroke="#F4F1EA" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="word">Rakuba<b>vote</b></span></span></a>
+  <nav aria-label="Sections"><a href="#how">How it works</a><a href="#trust">Trust</a><a href="#who">Who it is for</a><a href="#kit">The kit</a><a href="#code">Open source</a></nav>
+  <a class="btn thatch" href="#pilot">Request a pilot</a>
+</div></div>
+
+<main id="top">
+<section class="hero"><div class="in"><div class="grid">
+  <div class="c7 stack">
+    <div class="roof"></div>
+    <p class="eyebrow">Offline voting for South Sudan</p>
+    <h1>Fair elections, in the shade of the community.</h1>
+    <p class="lede">Rakubavote runs voter registration, secret voting and a count everyone can check, on tablets and one laptop, with no internet.</p>
+    <div class="actions"><a class="btn primary" href="#pilot">Request a pilot</a><a class="btn second" href="#code">Read the code</a></div>
+  </div>
+  <div class="c5">
+    <div class="frame" role="img" aria-label="Photo placeholder under a rakuba roof">
+      <div class="r"></div>
+      <div class="b"><div class="p"></div><div class="w"><svg aria-hidden="true"><rect width="100%" height="100%" fill="url(#hatch)"/></svg><span>Photo: voters waiting under a rakuba at a school election, taken with consent</span></div><div class="p"></div></div>
+    </div>
+  </div>
+</div></div></section>
+
+<section style="padding-top:0"><div class="in">
+  <ul class="ledger">
+    <li><span>Internet needed</span><b>None</b></li>
+    <li><span>People who can link a vote to a voter</span><b>Nobody</b></li>
+    <li><span>Ballot languages</span><b>English, Arabic, local languages</b></li>
+    <li><span>Cost of the software</span><b>Free, open source</b></li>
+  </ul>
+</div></section>
+
+<section id="how" style="padding-top:0"><div class="in">
+  <h2>How an election works</h2><div class="postrule"></div>
+  <ol class="steps">
+    <li><span class="no">1</span><h3>Register</h3><p>Officials register each voter with a photo, collect any fee the organization has set, and print a voter card.</p></li>
+    <li><span class="no">2</span><h3>Review and lock</h3><p>The register is posted for objections. When they are settled it is locked and signed, with a short fingerprint code that agents copy down.</p></li>
+    <li><span class="no">3</span><h3>Vote</h3><p>Each voter checks in, receives a one-time voting code, and votes in secret on a tablet: one position per screen, with a review before confirming.</p></li>
+    <li><span class="no">4</span><h3>Count</h3><p>When the polls close the laptop counts the votes, checks them against the check-ins and signs the results. Ties are recorded; the committee announces.</p></li>
+  </ol>
+  <div class="tickend" style="margin-top:24px"><svg class="tick" viewBox="0 0 120 120" aria-hidden="true"><path d="M28 62 L50 84 L92 42" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+</div></section>
+
+<section style="padding-top:0"><div class="in"><div class="grid">
+  <div class="c6">
+    <div class="band ballot" aria-label="Sample ballot screen">
+      <header>Chairman<small>Tap one candidate, or choose No choice</small></header>
+      <div><div class="row on"><span class="ph"><svg aria-hidden="true"><rect width="100%" height="100%" fill="url(#hatch)"/></svg></span><span class="n">1</span><span class="nm">[Candidate 1]</span><span class="box"><svg class="tick" viewBox="0 0 120 120" aria-hidden="true"><path d="M28 62 L50 84 L92 42" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div><div class="row"><span class="ph"><svg aria-hidden="true"><rect width="100%" height="100%" fill="url(#hatch)"/></svg></span><span class="n">2</span><span class="nm">[Candidate 2]</span><span class="box"></span></div>
+        <div class="row none"><span class="dash"></span><span class="nm">No choice for this position</span><span class="box"></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="c6 stack">
+    <h2>Built for every voter</h2><div class="postrule" style="margin-bottom:0"></div>
+    <ul class="plain">
+      <li>Candidate photo, number and symbol on every row, for voters who cannot read</li>
+      <li>One position per screen, large buttons, and a review before confirming</li>
+      <li>English, Arabic (right to left) and local languages</li>
+      <li>Type a candidate's number when the list is long</li>
+      <li>"No choice for this position" is always the last option</li>
+    </ul>
+  </div>
+</div></div></section>
+
+<section id="trust" style="padding-top:0"><div class="in"><div class="grid">
+  <div class="c7 stack">
+    <h2>Trust you can check</h2><div class="postrule" style="margin-bottom:0"></div>
+    <ul class="plain">
+      <li>The register is posted publicly, then locked before election day</li>
+      <li>Who voted and how they voted are kept in separate files with no shared key</li>
+      <li>The ballot, the register, every batch of votes and the results are digitally signed</li>
+      <li>Every action by an official is written to a log that cannot be edited</li>
+    </ul>
+    <p class="notice">Rakubavote does not print paper receipts, so there is no hand recount. <a href="https://github.com/maqur7/rakubavote/blob/master/SECURITY.md">Read what it does and does not protect against.</a></p>
+  </div>
+  <div class="c5 stack">
+    <p class="muted small">Agents and observers copy a short code like this one. If the register or the results change, the code changes.</p>
+    <p class="code">K7QM-2H9X</p>
+    <div class="tickend"><svg class="tick" viewBox="0 0 120 120" aria-hidden="true"><path d="M28 62 L50 84 L92 42" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <p class="muted small">Example fingerprint code</p>
+  </div>
+</div></div></section>
+
+<section id="who" style="padding-top:0"><div class="in">
+  <h2>Who it is for</h2><div class="postrule"></div>
+  <div class="bands">
+    <div class="band" style="--bc:#1D4E89"><header>Schools</header><div><p>Head prefect, head boy, head girl and secretaries, chosen by every student.</p></div></div>
+    <div class="band" style="--bc:#2E7D4F"><header>Community associations</header><div><p>Chairperson, secretary general and finance secretary, with an optional registration fee.</p></div></div>
+    <div class="band" style="--bc:#A9521A"><header>Party bodies</header><div><p>Congresses and primaries with many candidates. Offered on the same terms to every party.</p></div></div>
+  </div>
+</div></section>
+
+<section id="kit" class="onink" style="padding-bottom:0"><div class="in"><div class="grid">
+  <div class="c5 stack">
+    <div class="roof" style="background:var(--lthatch)"></div>
+    <h2>One small kit per station</h2>
+    <p class="muted">The software is free. You need devices you may already have.</p>
+  </div>
+  <div class="c7">
+    <ul class="ledger">
+      <li><span>Laptop: setup, registration, check-in, results</span><b>1</b></li>
+      <li><span>Android tablets: voting booths</span><b>2 to 3</b></li>
+      <li><span>Wi-Fi hotspot from the laptop or a phone, without internet</span><b>1</b></li>
+      <li><span>Power banks or a solar panel, for a full day</span><b>3 to 4</b></li>
+      <li><span>Any office printer, for voter cards only</span><b>1</b></li>
+    </ul>
+  </div>
+</div></div>
+<svg class="weave" aria-hidden="true" style="margin-top:64px"><rect width="100%" height="100%" fill="url(#weave)"/></svg>
+</section>
+
+<section id="code"><div class="in"><div class="grid">
+  <div class="c8 stack">
+    <h2>Open for anyone to inspect</h2><div class="postrule" style="margin-bottom:0"></div>
+    <p>The full code is public under the AGPL-3.0 licence. Universities, tech groups and election observers are welcome to review it, test it and report problems.</p>
+  </div>
+  <div class="c4 actions" style="margin-top:0"><a class="btn second" href="https://github.com/maqur7/rakubavote">Read the code on GitHub</a></div>
+</div></div></section>
+
+<section id="pilot" style="padding-top:0"><div class="in"><div class="grid">
+  <div class="c5 stack">
+    <div class="roof"></div>
+    <h2>Request a pilot</h2>
+    <p>Tell us about your election. We start with small elections and train your officials.</p>
+  </div>
+  <div class="c7">
+    <form id="pilot-form">
+      <label for="f-name">Your name</label><input id="f-name" autocomplete="name">
+      <label for="f-org">Organization</label><input id="f-org" autocomplete="organization">
+      <label for="f-type">Type of election</label>
+      <select id="f-type"><option>School</option><option>Community association</option><option>Party body</option><option>Other</option></select>
+      <label for="f-phone">Phone or WhatsApp</label><input id="f-phone" inputmode="tel" autocomplete="tel">
+      <button class="btn primary" type="submit">Send request</button>
+      <p class="muted small" id="pilot-note" hidden>This page is a design mockup. The form does not send anything yet.</p>
+    </form>
+  </div>
+</div></div></section>
+</main>
+
+<footer class="end">
+  <div class="in">
+    <div class="top">
+      <div class="stack"><span class="logo dark"><svg class="mark" viewBox="0 0 120 120" role="img" aria-label="Rakubavote"><rect x="8" y="20" width="104" height="16" rx="4" fill="#E6C27A"/><rect x="20" y="36" width="12" height="64" fill="#F4F1EA"/><rect x="88" y="36" width="12" height="64" fill="#F4F1EA"/><path d="M42 72 L54 84 L78 60" fill="none" stroke="#F4F1EA" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="word">Rakuba<b>vote</b></span></span><p>Your vote, in the open.</p></div>
+      <div class="stack"><span>[contact email]</span><a href="https://github.com/maqur7/rakubavote">GitHub</a></div>
+    </div>
+    <p class="small" style="color:#CFC9BB">Rakubavote is independent and not affiliated with any political party or government.</p>
+  </div>
+  <svg class="colonnade" aria-hidden="true" style="margin-top:32px"><rect width="100%" height="8" fill="#C8963E"/><rect y="8" width="100%" height="24" fill="url(#posts)"/></svg>
+</footer>
+<script>
+document.getElementById('pilot-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+  document.getElementById('pilot-note').hidden = false;
+});
+</script>
+</body>
+</html>
