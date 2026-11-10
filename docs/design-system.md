@@ -27,6 +27,9 @@ Code: `lib/core/theme.dart` (tokens) and `lib/core/widgets/` (shared components)
 | Spacing values not on the scale (2, 3, 5, 6, 10, 14, 15, 18, 20, 28 are used today) | Section 5 |
 | Placeholder shapes standing in for missing content (the empty gold circle on the booth welcome) | Leave the space out, or show the text it stands for |
 | Icons without a word next to them on voter and check-in screens | Icon + label, or label only |
+| Stock check, add, lock, arrow and "block" icons; ticks in circles | `BrandTick`, `TickBox`, `BrandIcon` (section 11) |
+| Flat grey photo placeholders; pill-shaped progress bars; zoom or fade page transitions | Thatch hatch; roof bars; sideways slide (section 11) |
+| Any decorative shape that is not a part of the mark | Section 11 only |
 | Grey text below 4.5:1, white text on Thatch Gold or Light Thatch | `inkMuted` (section 3); Ink on thatch colours |
 | Emoji, sparkles, robot imagery, stock photos of people at screens | Nothing, or real photos with consent |
 | "Token", "submit", "success!", "error" in the interface | "Voting code", "Save", plain sentences (brand voice) |
@@ -78,7 +81,8 @@ tabular figures. Lines stay under about 60 characters (max width 640 px for runn
 - **Touch targets:** 64 px minimum on every touch screen; 48 px only for admin table actions on the
   laptop (mouse and keyboard).
 - **Radius:** 4 only for the small admin tick box · 8 inputs, booth tick boxes and photos · 12 buttons and ballot rows · 16 panels and dialogs ·
-  999 only for status pills, the Help button and the booth progress segments. Nothing else.
+  999 only for status pills and the Help button. Bars (progress, counts, roof lines) use a quarter
+  of their height. Nothing else.
 - **Lines:** 1 px `rule` for dividers and panel edges; 1 px `border` for inputs; 2 px for the
   booth's outlined buttons and focus/selected borders (3 px). No other widths.
 
@@ -115,8 +119,9 @@ mouse, a keyboard and a USB scanner that types.
 - **Status pill:** radius 999, `acaciaGreen` or `clay` fill with white text, or Ink outline.
 - **Admin navigation:** numbered steps "1 Setup · 2 Registration · 3 Review and lock ·
   4 Results"; active step lightThatch fill with **Ink** text; all four always visible.
-- **Icons:** Material Symbols outlined only, 24 px, Ink or `nileBlue`, always with a word on voter
-  and check-in screens. Custom set later (ballot box, voter card, rakuba) as the brand asks.
+- **Icons:** brand icons (`BrandIcon`, section 11) wherever one exists. Material Symbols outlined
+  only for technical things the mark cannot draw (Wi-Fi, QR code, printer, USB, camera, delete,
+  devices, help). 24 px, Ink or `nileBlue`, always with a word on voter and check-in screens.
 
 ## 7. Layout patterns
 
@@ -150,21 +155,59 @@ three versions there (full colour, on dark, one colour) and the app icon.
   1 : 2 and stroke 3u. Clear space 4u. Minimum size 24 px (mark), 120 px (mark with name).
 - The wordmark is "Rakuba" in Ink and "vote" in Nile Blue (Paper and Light Thatch on dark), alone;
   role words sit beside it in plain text.
-- The visual language (patterns, shelter frame, icons, dividers, band module, motion) reuses only
-  the mark's parts, its 45° angle and its unit. It will be written into this document when the
-  interface is restructured around the brand.
-- Not yet in the app: screens and app icons still use the earlier draft.
+- In code the mark is `RakubaMark` and the logo `RakubaLogo` (`lib/core/brand/brand.dart`), drawn
+  from the same numbers; `test/core/brand_test.dart` fails if they drift from `brand/`.
+- Where it appears: the Ink top bar of admin, booth panel and check-in tablet (on-dark logo, role
+  beside it); the brand panel of first run and PIN unlock; the closed-polls screen (one colour);
+  beside "Powered by Rakubavote" on the booth welcome; launcher icons; the printed voter card.
 
 ## 10. Checks that keep this true
 
 - `test/design_system_test.dart` scans `lib/` and fails on: a `Color(0x…)` outside `theme.dart`,
   a font size, radius or spacing value not on the scales, `ColorScheme.fromSeed`, `elevation`
-  above 0, `BoxShadow`, gradients.
+  above 0, `BoxShadow`, gradients, and stock icons that have a brand icon (check, add, lock,
+  arrows, block, vote).
+- `test/core/brand_test.dart` fixes the mark's construction and the files in `brand/`.
 - A component sheet (all buttons, inputs, ballot rows and notices in every state, English and
   Arabic) is rendered by `tool/screens.sh` before any screen work is reviewed.
 
+## 11. Visual language (from the mark only)
+
+Every graphic element comes from the mark's four parts (A roof, B posts, C tick, D the bay between
+the posts), its one angle (45°) and its unit. Nothing else may be drawn. All of these are widgets
+in `lib/core/brand/brand.dart`; use them, never a look-alike.
+
+| Element | Widget | From | Use it for | Never |
+|---|---|---|---|---|
+| Tick | `BrandTick`, `DrawnTick` | C | Chosen, saved, done. The End screen draws it once | A stock check icon |
+| Tick box | `TickBox` | C in a square | Ballot rows, chosen device mode, votes received from a booth | Circles with ticks |
+| Roof line | `RoofLine` | A | Opening a screen or brand panel (8 px; corner = a quarter of its height) | Under every heading |
+| Post rule | `PostRule` | A on B | Under every panel heading (built into `SectionCard`) | As a general divider in lists |
+| Tick end | `TickEnd` | a rule + C | Closing something finished: the locked register, the completed count | Unfinished or open items |
+| Band module | colour band over a white panel | A over D | Ballot positions, review cards, results per position | A thin accent stripe on a card |
+| Shelter frame | `ShelterFrame` | A, B, D (7 : 8) | Identity photos: registration, voter details, check-in | Candidate photos (circles, as on the paper ballot) |
+| Thatch hatch | `ThatchHatch` | 45° of C | Missing photos and empty image areas | Behind text; flat grey boxes instead |
+| Mat weave | `MatWeave` | C repeated | Brand surfaces: the lower part of the first-run and unlock panel, covers | Behind text or on working screens |
+| Colonnade | `Colonnade` | B under A | Footer that closes a sheet (results) | More than once per screen |
+| Tally dots | `TallyDots` | round end of C | Small counts up to about 10 (choices made of N) | Large numbers; use the ledger |
+| Roof bars | radius = height / 4 | A | Booth progress segments, result count bars | Pill-shaped progress bars |
+| Brand icons | `BrandIcon` | A, B, C on the 30u grid | station, vote, results, voter card, check-in, secret (lock), next, back, add, tie, none (no choice), up, down | Stock icons for these meanings |
+
+**Motion.** Things move only the way the mark is built: screens slide in sideways, along the roof;
+the tick is drawn short arm first, then the long arm. Nothing zooms, bounces, spins or fades in
+from nowhere. With animations turned off in the device settings everything appears complete.
+
+**Brand panel.** First run and PIN unlock share `BrandShell`: an Ink panel (2 of 5 columns) with
+the on-dark logo, a Light Thatch roof line, the tagline, and the mat weave in its lower part; the
+form sits on Paper beside it. On narrow screens the panel becomes an Ink header.
+
+**Still to do.** The printed voter card and register PDF carry the mark but keep their earlier
+layout (round logo holder, dashed seal circle); they should be redrawn with the shelter frame and
+roof line. The marketing site mockups (G) predate the brand.
+
 ## Changelog
 
+- 2026-11-10: Visual language applied to all screens (D27); section 11 added; icons and bans updated.
 - 2026-11-10: Logo approved (D26); section 9 rewritten.
 - 2026-11-01: First draft from the screen audit against the MindStudio design-system guide.
 - 2026-11-03: Ballot rows 2 px border; booth progress segments may be pills; voter Help dialog uses 26 / 22.

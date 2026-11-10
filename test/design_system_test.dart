@@ -68,7 +68,9 @@ void main() {
 
   test('banned defaults are not used', () {
     final banned = RegExp(
-        r'ColorScheme\.fromSeed|BoxShadow|LinearGradient|RadialGradient|SweepGradient|BackdropFilter|CircularProgressIndicator|elevation: [1-9]');
+        r'ColorScheme\.fromSeed|BoxShadow|LinearGradient|RadialGradient|SweepGradient|BackdropFilter|CircularProgressIndicator|elevation: [1-9]'
+        // Stock icons that have a brand icon (design system, section 11).
+        r'|Icons\.(check|check_circle|add|lock|lock_outline|arrow_upward|arrow_downward|arrow_forward|arrow_back|block|how_to_vote\w*|how_to_reg\w*)\b');
     expect(scan(banned, (_) => true), isEmpty);
   });
 }

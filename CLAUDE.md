@@ -34,7 +34,7 @@ Design system (exact values, bans, states): docs/design-system.md
 
 ## Structure
 - lib/app/ device mode chooser, PIN unlock, shell
-- lib/core/ theme tokens, crypto, db (registry + ballot box), audit log, domain models, counting, templates
+- lib/core/ theme tokens, brand (mark, logo and the graphics derived from it), crypto, db (registry + ballot box), audit log, domain models, counting, templates
 - lib/features/{device_setup,setup,registration,register_lock,checkin,booth,results}/
 - lib/station/ local server, client, protocol, USB bundles, multi-part QR
 - lib/printing/ voter registration cards (only printed item, D18)
@@ -69,7 +69,10 @@ Design system (exact values, bans, states): docs/design-system.md
 - Follow docs/design-system.md (D25), docs/mockups/ and docs/brand-guidelines.md. Only values
   on its scales; if a case is missing, add it to the design system first.
 - Logo (D26): roof on two posts with a tick. Never redraw it; regenerate files with
-  `python3 tool/brand_assets.py`. Touch targets >= 64 px,
+  `python3 tool/brand_assets.py`.
+- Graphics (D27): only the widgets in lib/core/brand/brand.dart (tick, tick box, roof line, post
+  rule, tick end, shelter frame, thatch hatch, mat weave, colonnade, tally dots, brand icons). No
+  shape that is not part of the mark; no stock icon where a brand icon exists. Touch targets >= 64 px,
   sentence case, Atkinson Hyperlegible (Latin) + Noto Sans Arabic, fonts
   bundled offline (assets/fonts).
 - Button text styles must carry the font family and fallbacks: use the theme, or
