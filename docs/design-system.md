@@ -142,9 +142,18 @@ mouse, a keyboard and a USB scanner that types.
 
 ## 9. Logo
 
-**On hold (D25).** The project lead will choose and approve a reworked logo first, then define the
-brand visual language around it. Until then the app keeps the current wordmark text and the board F
-draft files in `brand/` unchanged, and no screen work in this document touches the logo.
+Approved (D26): a flat rakuba roof on two posts with a tick inside. Files and construction are in
+`brand/` (written by `tool/brand_assets.py`); the mark is never redrawn or recoloured outside the
+three versions there (full colour, on dark, one colour) and the app icon.
+
+- Unit u = 1/30 of the mark. Roof 26u × 4u, posts 3u × 16u, bay 14u × 16u, tick 45° with arms
+  1 : 2 and stroke 3u. Clear space 4u. Minimum size 24 px (mark), 120 px (mark with name).
+- The wordmark is "Rakuba" in Ink and "vote" in Nile Blue (Paper and Light Thatch on dark), alone;
+  role words sit beside it in plain text.
+- The visual language (patterns, shelter frame, icons, dividers, band module, motion) reuses only
+  the mark's parts, its 45° angle and its unit. It will be written into this document when the
+  interface is restructured around the brand.
+- Not yet in the app: screens and app icons still use the earlier draft.
 
 ## 10. Checks that keep this true
 
@@ -156,6 +165,7 @@ draft files in `brand/` unchanged, and no screen work in this document touches t
 
 ## Changelog
 
+- 2026-11-10: Logo approved (D26); section 9 rewritten.
 - 2026-11-01: First draft from the screen audit against the MindStudio design-system guide.
 - 2026-11-03: Ballot rows 2 px border; booth progress segments may be pills; voter Help dialog uses 26 / 22.
 - 2026-11-03: Focus ring is Ink, not Nile Blue; radius 4 allowed for the small admin tick box.

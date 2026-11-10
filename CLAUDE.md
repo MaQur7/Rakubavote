@@ -68,7 +68,8 @@ Design system (exact values, bans, states): docs/design-system.md
 ## UI rules
 - Follow docs/design-system.md (D25), docs/mockups/ and docs/brand-guidelines.md. Only values
   on its scales; if a case is missing, add it to the design system first.
-- Logo is on hold (D25): do not change logo files or the wordmark until the project lead approves a new one. Touch targets >= 64 px,
+- Logo (D26): roof on two posts with a tick. Never redraw it; regenerate files with
+  `python3 tool/brand_assets.py`. Touch targets >= 64 px,
   sentence case, Atkinson Hyperlegible (Latin) + Noto Sans Arabic, fonts
   bundled offline (assets/fonts).
 - Button text styles must carry the font family and fallbacks: use the theme, or
