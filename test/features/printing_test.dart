@@ -146,4 +146,17 @@ void main() {
     expect(pageCount(big), greaterThan(2));
     await db2.close();
   });
+
+  test('cards print without a photo or logo, and with a damaged photo, in every layout', () async {
+    final data = await cards.cardData(await allIds(), feeText: fee);
+    final one = data.first;
+    final damaged = VoterCardData(
+        orgName: one.orgName, electionName: one.electionName, year: one.year, stationName: one.stationName,
+        voterNoLabel: one.voterNoLabel, fullName: one.fullName, idLabel: one.idLabel, memberId: one.memberId,
+        groupLabel: one.groupLabel, groupName: one.groupName, feeText: '', registeredOn: one.registeredOn,
+        qrText: one.qrText, photo: Uint8List.fromList([1, 2, 3]), orgLogo: Uint8List.fromList([9, 9]));
+    for (final layout in CardLayout.values) {
+      expect(pageCount(await buildVoterCardsPdf([one, damaged], labels: labels, layout: layout)), layout == CardLayout.idCardsOnA4 ? 1 : 2);
+    }
+  });
 }

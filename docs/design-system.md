@@ -201,12 +201,22 @@ from nowhere. With animations turned off in the device settings everything appea
 the on-dark logo, a Light Thatch roof line, the tagline, and the mat weave in its lower part; the
 form sits on Paper beside it. On narrow screens the panel becomes an Ink header.
 
-**Still to do.** The printed voter card and register PDF carry the mark but keep their earlier
-layout (round logo holder, dashed seal circle); they should be redrawn with the shelter frame and
-roof line. The marketing site mockups (G) predate the brand.
+**Print** (`lib/printing/brand_pdf.dart`, the same numbers in printer points).
+
+- Voter card: the Ink strip is the roof of the card, with the organisation's name (and its logo
+  only when it has one) and the on-dark logo small at the end. A6 cards put the photo in the
+  shelter frame. ID cards are too small for it (the frame needs about 40 mm), so the photo takes
+  the band: a roof bar directly on a 7 : 8 window. A missing or damaged photo prints as the hatch.
+  The place for the rubber stamp is an empty box in a clay hatch, labelled.
+- Register: Ink band header, a ruled ledger (no boxes, Ink rule under the column headings), a tick
+  end before the total once the register is locked, and the colonnade closing every page above
+  the draft note or the fingerprint.
+
+**Still to do.** The marketing site mockups (G) predate the brand.
 
 ## Changelog
 
+- 2026-11-10: Voter card and register PDF redrawn in the brand language; print rules added to section 11.
 - 2026-11-10: Visual language applied to all screens (D27); section 11 added; icons and bans updated.
 - 2026-11-10: Logo approved (D26); section 9 rewritten.
 - 2026-11-01: First draft from the screen audit against the MindStudio design-system guide.

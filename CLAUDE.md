@@ -37,7 +37,8 @@ Design system (exact values, bans, states): docs/design-system.md
 - lib/core/ theme tokens, brand (mark, logo and the graphics derived from it), crypto, db (registry + ballot box), audit log, domain models, counting, templates
 - lib/features/{device_setup,setup,registration,register_lock,checkin,booth,results}/
 - lib/station/ local server, client, protocol, USB bundles, multi-part QR
-- lib/printing/ voter registration cards (only printed item, D18)
+- lib/printing/ voter registration cards (only printed item, D18) and the register PDF; brand parts
+  for print are in brand_pdf.dart
 - lib/platform/ kiosk (Android lock task, MainActivity.kt channel), camera, QR scan, beep
 - test/ unit + integration (incl. 500-voter simulation and secrecy tests); widget tests use
   test/support/app_harness.dart (end each with `finish()`; drift needs real-time pumps via `settle()`)

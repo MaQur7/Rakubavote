@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import 'brand_pdf.dart';
 import 'pdf_fonts.dart';
 
 /// One line of the printed register. Deliberately without photo and fee:
@@ -42,11 +43,6 @@ class RegisterLabels {
   final String Function(int count) total;
 }
 
-const _ink = PdfColor.fromInt(0xFF1B1B1B);
-const _lightThatch = PdfColor.fromInt(0xFFE6C27A);
-const _paper = PdfColor.fromInt(0xFFF4F1EA);
-const _clay = PdfColor.fromInt(0xFFA9521A);
-
 /// The public register for the notice board and as a backup for manual
 /// check-in. Shows the fingerprint when the register is locked.
 Future<Uint8List> buildRegisterPdf({
@@ -66,10 +62,11 @@ Future<Uint8List> buildRegisterPdf({
   doc.addPage(pw.MultiPage(
     pageFormat: PdfPageFormat.a4,
     margin: const pw.EdgeInsets.all(15 * PdfPageFormat.mm),
+    // The Ink band is the roof of the sheet: organisation first, Rakubavote small.
     header: (ctx) => pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 8),
-      padding: const pw.EdgeInsets.all(8),
-      color: _ink,
+      margin: const pw.EdgeInsets.only(bottom: 10),
+      padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      color: pdfInk,
       child: pw.Row(children: [
         pw.Expanded(
           child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
@@ -77,26 +74,28 @@ Future<Uint8List> buildRegisterPdf({
                 textDirection: dir(orgName),
                 style: pw.TextStyle(color: PdfColors.white, fontSize: 13, fontWeight: pw.FontWeight.bold)),
             pw.Text('${labels.title} · $electionName, $year · $stationName',
-                style: const pw.TextStyle(color: _lightThatch, fontSize: 9)),
+                style: const pw.TextStyle(color: pdfLightThatch, fontSize: 9)),
           ]),
         ),
-        pw.RichText(
-          text: pw.TextSpan(
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9, color: PdfColors.white),
-            children: [const pw.TextSpan(text: 'Rakuba'), pw.TextSpan(text: 'vote', style: const pw.TextStyle(color: _lightThatch))],
-          ),
-        ),
+        pw.SizedBox(width: 10),
+        pdfLogo(9, onDark: true),
       ]),
     ),
-    footer: (ctx) => pw.Row(children: [
-      pw.Expanded(
-        child: pw.Text(
-          fingerprint == null ? labels.draftNote : labels.lockedNote(fingerprint),
-          style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold, color: fingerprint == null ? _clay : _ink),
+    // Every page closes on the colonnade, then the draft note or the fingerprint.
+    footer: (ctx) => pw.Column(mainAxisSize: pw.MainAxisSize.min, children: [
+      pw.SizedBox(height: 8),
+      pdfColonnade(),
+      pw.SizedBox(height: 4),
+      pw.Row(children: [
+        pw.Expanded(
+          child: pw.Text(
+            fingerprint == null ? labels.draftNote : labels.lockedNote(fingerprint),
+            style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold, color: fingerprint == null ? pdfClay : pdfInk),
+          ),
         ),
-      ),
-      pw.Text('${labels.generatedOn(generatedOn)} · ${labels.pageOf(ctx.pageNumber, ctx.pagesCount)}',
-          style: const pw.TextStyle(fontSize: 8)),
+        pw.Text('${labels.generatedOn(generatedOn)} · ${labels.pageOf(ctx.pageNumber, ctx.pagesCount)}',
+            style: const pw.TextStyle(fontSize: 8, color: pdfMuted)),
+      ]),
     ]),
     build: (ctx) {
       pw.Widget cell(String text, {bool bold = false}) => pw.Padding(
@@ -113,11 +112,15 @@ Future<Uint8List> buildRegisterPdf({
             2: pw.FlexColumnWidth(1.4),
             3: pw.FlexColumnWidth(1.6),
           },
-          border: const pw.TableBorder(horizontalInside: pw.BorderSide(color: PdfColors.grey400, width: 0.4)),
+          // A ledger: ruled lines between rows, no boxes.
+          border: const pw.TableBorder(
+            horizontalInside: pw.BorderSide(color: pdfRule, width: 0.6),
+            bottom: pw.BorderSide(color: pdfRule, width: 0.6),
+          ),
           children: [
             pw.TableRow(
               repeat: true,
-              decoration: const pw.BoxDecoration(color: _paper),
+              decoration: const pw.BoxDecoration(border: pw.Border(bottom: pw.BorderSide(color: pdfInk, width: 1.2))),
               children: [
                 for (final h in [labels.voterNo, labels.name, labels.idLabel, labels.groupLabel]) cell(h, bold: true),
               ],
@@ -131,7 +134,9 @@ Future<Uint8List> buildRegisterPdf({
               ]),
           ],
         ),
-        pw.SizedBox(height: 8),
+        pw.SizedBox(height: 10),
+        // A locked register is finished: the rule ends in the tick.
+        if (fingerprint != null) ...[pdfTickEnd(), pw.SizedBox(height: 4)],
         pw.Text(labels.total(lines.length), style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
       ];
     },

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import 'brand_pdf.dart';
 import 'pdf_fonts.dart';
 
 /// Card sizes from the brief: ID card (85.6 × 54 mm) or A6.
@@ -78,14 +79,8 @@ class VoterCardData {
   final Uint8List? photo;
 }
 
-// Brand colours (lib/core/theme.dart), as PDF colours.
-const _ink = PdfColor.fromInt(0xFF1B1B1B);
-const _lightThatch = PdfColor.fromInt(0xFFE6C27A);
-const _thatchGold = PdfColor.fromInt(0xFFC8963E);
-const _clay = PdfColor.fromInt(0xFFA9521A);
+// Card stock: slightly warmer than white so the Ink strip and hatch read in print.
 const _cardPaper = PdfColor.fromInt(0xFFFBF9F4);
-const _placeholder = PdfColor.fromInt(0xFFDDD6C6);
-const _muted = PdfColor.fromInt(0xFF4A4740);
 
 const _idWidth = 85.6 * PdfPageFormat.mm;
 const _idHeight = 54 * PdfPageFormat.mm;
@@ -129,7 +124,8 @@ Future<Uint8List> buildVoterCardsPdf(
             children: [
               for (final c in page)
                 pw.Container(
-                  decoration: pw.BoxDecoration(border: pw.Border.all(color: PdfColors.grey400, width: 0.3)),
+                  // Cut line.
+                  decoration: pw.BoxDecoration(border: pw.Border.all(color: pdfRule, width: 0.4)),
                   child: _idCard(c, labels),
                 ),
             ],
@@ -140,134 +136,105 @@ Future<Uint8List> buildVoterCardsPdf(
   return doc.save();
 }
 
-/// An image for the PDF, or null if the bytes are not a readable image
-/// (a damaged photo prints as the grey placeholder instead of failing).
-pw.ImageProvider? _image(Uint8List? bytes) {
-  if (bytes == null) return null;
-  try {
-    return pw.MemoryImage(bytes);
-  } catch (_) {
-    return null;
-  }
-}
-
 pw.TextDirection _dir(String s) => hasArabic(s) ? pw.TextDirection.rtl : pw.TextDirection.ltr;
 
-pw.Widget _logo(Uint8List? bytes, double size) => pw.Container(
-      width: size,
-      height: size,
-      decoration: pw.BoxDecoration(shape: pw.BoxShape.circle, border: pw.Border.all(color: _lightThatch, width: 1)),
-      child: _image(bytes) == null ? null : pw.ClipOval(child: pw.Image(_image(bytes)!, fit: pw.BoxFit.cover)),
-    );
-
-/// The mark on dark (D26), drawn from the same numbers as brand/: a 120 unit
-/// square with the roof 104 x 16, posts 12 x 64 and the 45 degree tick.
-pw.Widget _mark(double size) => pw.CustomPaint(
-      size: PdfPoint(size, size),
-      painter: (canvas, s) {
-        final k = s.x / 120;
-        // PDF y runs upward.
-        double y(double v) => (120 - v) * k;
-        canvas
-          ..setFillColor(_lightThatch)
-          ..drawRRect(8 * k, y(36), 104 * k, 16 * k, 4 * k, 4 * k)
-          ..fillPath()
-          ..setFillColor(PdfColors.white)
-          ..drawRect(20 * k, y(100), 12 * k, 64 * k)
-          ..drawRect(88 * k, y(100), 12 * k, 64 * k)
-          ..fillPath()
-          ..setStrokeColor(PdfColors.white)
-          ..setLineWidth(12 * k)
-          ..setLineCap(PdfLineCap.round)
-          ..setLineJoin(PdfLineJoin.round)
-          ..moveTo(42 * k, y(72))
-          ..lineTo(54 * k, y(84))
-          ..lineTo(78 * k, y(60))
-          ..strokePath();
-      },
-    );
-
-pw.Widget _wordmark(double size) => pw.Row(mainAxisSize: pw.MainAxisSize.min, children: [
-      _mark(size * 1.5),
-      pw.SizedBox(width: size * 0.3),
-      pw.RichText(
-        text: pw.TextSpan(
-          style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: size, color: PdfColors.white),
-          children: [
-            const pw.TextSpan(text: 'Rakuba'),
-            pw.TextSpan(text: 'vote', style: const pw.TextStyle(color: _lightThatch)),
-          ],
-        ),
-      ),
-    ]);
-
-pw.Widget _photo(Uint8List? bytes, double w, double h) => pw.Container(
-      width: w,
-      height: h,
-      decoration: pw.BoxDecoration(color: _placeholder, borderRadius: pw.BorderRadius.circular(3)),
-      child: _image(bytes) == null
-          ? null
-          : pw.ClipRRect(horizontalRadius: 3, verticalRadius: 3, child: pw.Image(_image(bytes)!, fit: pw.BoxFit.cover)),
-    );
+/// The organisation's logo, only when it has one (never an empty holder).
+pw.Widget? _orgLogo(Uint8List? bytes, double size) {
+  final image = pdfImage(bytes);
+  if (image == null) return null;
+  return pw.ClipRRect(
+    horizontalRadius: size / 8,
+    verticalRadius: size / 8,
+    child: pw.Image(image, width: size, height: size, fit: pw.BoxFit.cover),
+  );
+}
 
 pw.Widget _field(String label, String value, {double labelSize = 5, double valueSize = 8}) => pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text(label, style: pw.TextStyle(fontSize: labelSize, color: _muted)),
-        pw.Text(value.isEmpty ? '—' : value,
-            textDirection: _dir(value), style: pw.TextStyle(fontSize: valueSize, fontWeight: pw.FontWeight.bold)),
+        pw.Text(label, style: pw.TextStyle(fontSize: labelSize, color: pdfMuted)),
+        // Long values shrink to fit instead of running into the next column.
+        pw.FittedBox(
+          fit: pw.BoxFit.scaleDown,
+          alignment: pw.Alignment.centerLeft,
+          child: pw.Text(value.isEmpty ? '—' : value,
+              textDirection: _dir(value), style: pw.TextStyle(fontSize: valueSize, fontWeight: pw.FontWeight.bold)),
+        ),
       ],
     );
 
-pw.Widget _seal(String text, double size) => pw.Container(
-      width: size * 1.6,
-      height: size,
-      alignment: pw.Alignment.center,
-      decoration: pw.BoxDecoration(
-        borderRadius: pw.BorderRadius.circular(size),
-        border: pw.Border.all(color: _clay, width: 0.8, style: pw.BorderStyle.dotted),
+/// The Ink strip is the roof of the card: organisation first, Rakubavote small.
+pw.Widget _strip(VoterCardData c, CardLabels l,
+    {required double height, required double pad, required double logo, required double name, required double sub, required double mark}) {
+  final org = _orgLogo(c.orgLogo, logo);
+  return pw.Container(
+    height: height,
+    padding: pw.EdgeInsets.symmetric(horizontal: pad),
+    color: pdfInk,
+    child: pw.Row(children: [
+      if (org != null) ...[org, pw.SizedBox(width: pad)],
+      pw.Expanded(
+        child: pw.Column(
+            mainAxisAlignment: pw.MainAxisAlignment.center,
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.FittedBox(
+                fit: pw.BoxFit.scaleDown,
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(c.orgName,
+                    textDirection: _dir(c.orgName),
+                    style: pw.TextStyle(color: PdfColors.white, fontSize: name, fontWeight: pw.FontWeight.bold)),
+              ),
+              // Shrinks to fit, so the year is never cut off.
+              pw.FittedBox(
+                fit: pw.BoxFit.scaleDown,
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text('${l.cardTitle} · ${c.electionName}, ${c.year}',
+                    style: pw.TextStyle(color: pdfLightThatch, fontSize: sub)),
+              ),
+            ]),
       ),
-      child: pw.Text(text, style: pw.TextStyle(color: _clay, fontSize: size * 0.22, fontWeight: pw.FontWeight.bold)),
-    );
+      pw.SizedBox(width: pad),
+      pdfLogo(mark, onDark: true),
+    ]),
+  );
+}
 
-/// Mockup E at ID-1 size.
+pw.Widget _signAndSeal(CardLabels l, {required double text, required double sealW, required double sealH, required double gap}) =>
+    pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
+      pw.Expanded(
+        child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+          pw.Container(height: 0.7, color: pdfInk),
+          pw.SizedBox(height: 1),
+          pw.Text(l.officialSignature, style: pw.TextStyle(fontSize: text, color: pdfMuted)),
+        ]),
+      ),
+      pw.SizedBox(width: gap),
+      pdfSealBox(l.officialSeal, sealW, sealH, text),
+    ]);
+
+pw.Widget _qr(VoterCardData c, CardLabels l, double size, double note) => pw.Column(children: [
+      pw.BarcodeWidget(barcode: pw.Barcode.qrCode(), data: c.qrText, width: size, height: size),
+      pw.SizedBox(height: 1),
+      pw.SizedBox(
+        width: size,
+        child: pw.Text(l.qrNote, textAlign: pw.TextAlign.center, style: pw.TextStyle(fontSize: note, color: pdfMuted)),
+      ),
+    ]);
+
+/// ID-1 size (85.6 x 54 mm). Too small for the shelter frame, so the photo
+/// takes the band: a roof bar on a 7 : 8 window.
 pw.Widget _idCard(VoterCardData c, CardLabels l) => pw.Container(
       width: _idWidth,
       height: _idHeight,
-      decoration: pw.BoxDecoration(color: _cardPaper, borderRadius: pw.BorderRadius.circular(6)),
+      color: _cardPaper,
       child: pw.Column(children: [
-        pw.Container(
-          height: 12 * PdfPageFormat.mm,
-          padding: const pw.EdgeInsets.symmetric(horizontal: 6),
-          decoration: const pw.BoxDecoration(
-            color: _ink,
-            borderRadius: pw.BorderRadius.only(topLeft: pw.Radius.circular(6), topRight: pw.Radius.circular(6)),
-          ),
-          child: pw.Row(children: [
-            _logo(c.orgLogo, 8 * PdfPageFormat.mm),
-            pw.SizedBox(width: 5),
-            pw.Expanded(
-              child: pw.Column(mainAxisAlignment: pw.MainAxisAlignment.center, crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                // Long organization names shrink to fit instead of being cut.
-                pw.FittedBox(
-                  fit: pw.BoxFit.scaleDown,
-                  alignment: pw.Alignment.centerLeft,
-                  child: pw.Text(c.orgName,
-                      textDirection: _dir(c.orgName),
-                      style: pw.TextStyle(color: PdfColors.white, fontSize: 7.5, fontWeight: pw.FontWeight.bold)),
-                ),
-                pw.Text('${l.cardTitle} · ${c.electionName}, ${c.year}',
-                    maxLines: 1, style: const pw.TextStyle(color: _lightThatch, fontSize: 5)),
-              ]),
-            ),
-            _wordmark(6),
-          ]),
-        ),
+        _strip(c, l, height: 11 * PdfPageFormat.mm, pad: 5, logo: 7.5 * PdfPageFormat.mm, name: 7.5, sub: 5, mark: 5.5),
         pw.Expanded(
           child: pw.Padding(
-            padding: const pw.EdgeInsets.fromLTRB(5, 4, 5, 2),
+            padding: const pw.EdgeInsets.fromLTRB(5, 5, 5, 2),
             child: pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-              _photo(c.photo, 17 * PdfPageFormat.mm, 21 * PdfPageFormat.mm),
+              pdfPhotoBand(16.5 * PdfPageFormat.mm, c.photo),
               pw.SizedBox(width: 5),
               pw.Expanded(
                 child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
@@ -275,114 +242,70 @@ pw.Widget _idCard(VoterCardData c, CardLabels l) => pw.Container(
                   pw.SizedBox(height: 2),
                   pw.Row(children: [
                     pw.Expanded(child: _field(l.voterNo, c.voterNoLabel, valueSize: 9)),
+                    pw.SizedBox(width: 3),
                     pw.Expanded(child: _field(c.idLabel, c.memberId)),
                   ]),
                   pw.SizedBox(height: 2),
                   pw.Row(children: [
                     pw.Expanded(child: _field(c.groupLabel, c.groupName)),
-                    if (c.feeText.isNotEmpty) pw.Expanded(child: _field(l.fee, c.feeText)),
+                    pw.SizedBox(width: 3),
+                    if (c.feeText.isNotEmpty) pw.Expanded(child: _field(l.fee, c.feeText)) else pw.Spacer(),
                   ]),
                   pw.SizedBox(height: 2),
-                  pw.Text(l.registeredLine(c.registeredOn, c.stationName), style: const pw.TextStyle(fontSize: 4.5)),
+                  pw.Text(l.registeredLine(c.registeredOn, c.stationName),
+                      style: const pw.TextStyle(fontSize: 4.5, color: pdfMuted)),
                 ]),
               ),
               pw.SizedBox(width: 4),
-              pw.Column(children: [
-                pw.BarcodeWidget(
-                    barcode: pw.Barcode.qrCode(), data: c.qrText, width: 19 * PdfPageFormat.mm, height: 19 * PdfPageFormat.mm),
-                pw.SizedBox(height: 1),
-                pw.SizedBox(
-                  width: 20 * PdfPageFormat.mm,
-                  child: pw.Text(l.qrNote, textAlign: pw.TextAlign.center, style: const pw.TextStyle(fontSize: 3.6)),
-                ),
-              ]),
+              _qr(c, l, 19 * PdfPageFormat.mm, 3.6),
             ]),
           ),
         ),
         pw.Padding(
           padding: const pw.EdgeInsets.fromLTRB(5, 0, 5, 3),
-          child: pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
-            pw.Expanded(
-              child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                pw.Container(height: 0.6, color: _ink),
-                pw.SizedBox(height: 1),
-                pw.Text(l.officialSignature, style: const pw.TextStyle(fontSize: 4)),
-              ]),
-            ),
-            pw.SizedBox(width: 6),
-            _seal(l.officialSeal, 7 * PdfPageFormat.mm),
-          ]),
+          child: _signAndSeal(l, text: 4, sealW: 15 * PdfPageFormat.mm, sealH: 6.5 * PdfPageFormat.mm, gap: 6),
         ),
       ]),
     );
 
-/// The same card laid out on A6 (portrait), larger for low vision.
+/// A6 (portrait), larger for low vision: the photo stands in the shelter frame.
 pw.Widget _a6Card(VoterCardData c, CardLabels l) => pw.Container(
-      decoration: pw.BoxDecoration(
-          color: _cardPaper, borderRadius: pw.BorderRadius.circular(8), border: pw.Border.all(color: _thatchGold, width: 0.5)),
+      color: _cardPaper,
       child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.stretch, children: [
-        pw.Container(
-          padding: const pw.EdgeInsets.all(8),
-          decoration: const pw.BoxDecoration(
-              color: _ink, borderRadius: pw.BorderRadius.only(topLeft: pw.Radius.circular(8), topRight: pw.Radius.circular(8))),
-          child: pw.Row(children: [
-            _logo(c.orgLogo, 14 * PdfPageFormat.mm),
-            pw.SizedBox(width: 8),
-            pw.Expanded(
-              child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                pw.Text(c.orgName,
-                    textDirection: _dir(c.orgName),
-                    style: pw.TextStyle(color: PdfColors.white, fontSize: 11, fontWeight: pw.FontWeight.bold)),
-                pw.Text('${l.cardTitle} · ${c.electionName}, ${c.year}', style: const pw.TextStyle(color: _lightThatch, fontSize: 7)),
-              ]),
-            ),
-            _wordmark(8),
-          ]),
-        ),
+        _strip(c, l, height: 20 * PdfPageFormat.mm, pad: 8, logo: 13 * PdfPageFormat.mm, name: 11, sub: 7, mark: 7.5),
         pw.Padding(
           padding: const pw.EdgeInsets.all(10),
           child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
             pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-              _photo(c.photo, 30 * PdfPageFormat.mm, 38 * PdfPageFormat.mm),
+              pdfShelterFrame(46 * PdfPageFormat.mm, c.photo),
               pw.Spacer(),
-              pw.Column(children: [
-                pw.BarcodeWidget(
-                    barcode: pw.Barcode.qrCode(), data: c.qrText, width: 34 * PdfPageFormat.mm, height: 34 * PdfPageFormat.mm),
-                pw.SizedBox(
-                    width: 36 * PdfPageFormat.mm,
-                    child: pw.Text(l.qrNote, textAlign: pw.TextAlign.center, style: const pw.TextStyle(fontSize: 6))),
-              ]),
+              _qr(c, l, 34 * PdfPageFormat.mm, 6),
             ]),
-            pw.SizedBox(height: 8),
+            pw.SizedBox(height: 10),
             _field(l.fullName, c.fullName, labelSize: 7, valueSize: 14),
             pw.SizedBox(height: 6),
             pw.Row(children: [
               pw.Expanded(child: _field(l.voterNo, c.voterNoLabel, labelSize: 7, valueSize: 14)),
+              pw.SizedBox(width: 6),
               pw.Expanded(child: _field(c.idLabel, c.memberId, labelSize: 7, valueSize: 11)),
             ]),
             pw.SizedBox(height: 6),
             pw.Row(children: [
               pw.Expanded(child: _field(c.groupLabel, c.groupName, labelSize: 7, valueSize: 11)),
-              if (c.feeText.isNotEmpty) pw.Expanded(child: _field(l.fee, c.feeText, labelSize: 7, valueSize: 11)),
+              pw.SizedBox(width: 6),
+              if (c.feeText.isNotEmpty)
+                pw.Expanded(child: _field(l.fee, c.feeText, labelSize: 7, valueSize: 11))
+              else
+                pw.Spacer(),
             ]),
             pw.SizedBox(height: 6),
-            pw.Text(l.registeredLine(c.registeredOn, c.stationName), style: const pw.TextStyle(fontSize: 7)),
+            pw.Text(l.registeredLine(c.registeredOn, c.stationName), style: const pw.TextStyle(fontSize: 7, color: pdfMuted)),
           ]),
         ),
         pw.Spacer(),
         pw.Padding(
           padding: const pw.EdgeInsets.fromLTRB(10, 0, 10, 10),
-          child: pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
-            pw.Expanded(
-              child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                pw.Container(height: 0.8, color: _ink),
-                pw.SizedBox(height: 2),
-                pw.Text(l.officialSignature, style: const pw.TextStyle(fontSize: 7)),
-              ]),
-            ),
-            pw.SizedBox(width: 10),
-            _seal(l.officialSeal, 14 * PdfPageFormat.mm),
-          ]),
+          child: _signAndSeal(l, text: 7, sealW: 30 * PdfPageFormat.mm, sealH: 14 * PdfPageFormat.mm, gap: 10),
         ),
       ]),
     );
