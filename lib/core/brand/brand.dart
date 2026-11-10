@@ -232,7 +232,7 @@ class TickBox extends StatelessWidget {
 
 /// Icons built only from the mark's parts on its 120 grid: bars, posts,
 /// 45 degree strokes and the round end.
-enum BrandIconKind { station, vote, results, voterCard, checkIn, secret, next, back, add, tie, up, down }
+enum BrandIconKind { station, vote, results, voterCard, checkIn, secret, next, back, add, tie, none, up, down }
 
 class _IconPainter extends CustomPainter {
   _IconPainter(this.kind, this.colour, this.rtl);
@@ -294,6 +294,9 @@ class _IconPainter extends CustomPainter {
       case BrandIconKind.tie:
         bar(26, 42, 68, 12, 2);
         bar(26, 66, 68, 12, 2);
+      case BrandIconKind.none:
+        // One bar with nothing under it: no choice.
+        bar(26, 54, 68, 12, 2);
       case BrandIconKind.up:
         chevron(const [Offset(34, 72), Offset(60, 46), Offset(86, 72)]);
       case BrandIconKind.down:
@@ -379,7 +382,7 @@ class TickEnd extends StatelessWidget {
   Widget build(BuildContext context) => Row(children: [
         const Expanded(child: ColoredBox(color: RakubaColors.ink, child: SizedBox(height: RakubaLine.strong))),
         const SizedBox(width: RakubaSpace.xs),
-        BrandTick(size: RakubaSpace.m, colour: colour),
+        BrandTick(size: RakubaSpace.l, colour: colour),
       ]);
 }
 

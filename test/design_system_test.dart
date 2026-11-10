@@ -11,6 +11,8 @@ void main() {
   // not hand-written.
   bool skipped(String path) =>
       path.endsWith('lib/core/theme.dart') ||
+      // The mark's own geometry (unit 4 on a 120 square), checked by brand_test.dart.
+      path.endsWith('lib/core/brand/brand.dart') ||
       path.endsWith('_pdf.dart') ||
       path.endsWith('pdf_fonts.dart') ||
       path.contains('lib/l10n/') ||

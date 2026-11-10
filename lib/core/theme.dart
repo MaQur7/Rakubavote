@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 
 // Tokens and component styles from docs/design-system.md (D25). Every colour,
@@ -347,6 +348,15 @@ ThemeData buildRakubaTheme({required bool arabic}) {
     dividerColor: RakubaColors.rule,
     disabledColor: RakubaColors.disabled,
     shadowColor: RakubaColors.transparent,
+    // Screens slide in sideways, along the roof; nothing zooms or fades in.
+    pageTransitionsTheme: const PageTransitionsTheme(builders: {
+      TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+      TargetPlatform.linux: CupertinoPageTransitionsBuilder(),
+      TargetPlatform.windows: CupertinoPageTransitionsBuilder(),
+      TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      TargetPlatform.fuchsia: CupertinoPageTransitionsBuilder(),
+    }),
     visualDensity: VisualDensity.standard,
     materialTapTargetSize: MaterialTapTargetSize.padded,
     iconTheme: const IconThemeData(color: RakubaColors.ink, size: 24),

@@ -2,6 +2,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
+import '../../core/brand/brand.dart';
+
 
 import '../../core/theme.dart';
 import '../../l10n/app_localizations.dart';
@@ -73,11 +75,12 @@ class CircleImage extends StatelessWidget {
       );
     }
     return ClipOval(
-      child: Container(
+      child: SizedBox(
         width: size,
         height: size,
-        color: RakubaColors.rule,
-        child: bytes == null ? null : Image.memory(bytes!, fit: BoxFit.cover, gaplessPlayback: true),
+        child: bytes == null
+            ? const ThatchHatch(background: RakubaColors.paper)
+            : Image.memory(bytes!, fit: BoxFit.cover, gaplessPlayback: true),
       ),
     );
   }

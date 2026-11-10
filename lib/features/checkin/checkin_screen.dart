@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
+import '../../core/brand/brand.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
@@ -304,7 +306,7 @@ class _VoterCard extends StatelessWidget {
     return SectionCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          PhotoBox(bytes: v.photo, size: 140, label: t.photoFromRegistration),
+          ShelterFrame(width: 176, bytes: v.photo, label: t.photoFromRegistration),
           const SizedBox(width: RakubaSpace.m),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

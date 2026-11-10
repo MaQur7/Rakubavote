@@ -3,6 +3,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+
+import '../../core/brand/brand.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
@@ -188,7 +190,7 @@ class _RegisterVoterFormState extends ConsumerState<RegisterVoterForm> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  PhotoBox(bytes: _photo, size: 110, label: t.photo),
+                  ShelterFrame(width: 128, bytes: _photo, label: t.photo),
                   const SizedBox(width: RakubaSpace.s),
                   Expanded(
                     child: Column(
@@ -766,7 +768,7 @@ class _VoterDetailsDialogState extends ConsumerState<VoterDetailsDialog> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PhotoBox(bytes: _v.photo, size: 110, label: t.photo),
+            ShelterFrame(width: 128, bytes: _v.photo, label: t.photo),
             const SizedBox(width: RakubaSpace.s),
             Expanded(
               child: Column(

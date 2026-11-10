@@ -126,7 +126,12 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
             _StatsRow(view: r),
             const SizedBox(height: RakubaSpace.s),
             LayoutBuilder(builder: (context, c) {
-              final positions = Column(children: [for (final p in r.positions) _PositionResult(p: p)]);
+              final positions = Column(children: [
+                for (final p in r.positions) _PositionResult(p: p),
+                // The results sheet closes on the colonnade.
+                const Colonnade(),
+                const SizedBox(height: RakubaSpace.m),
+              ]);
               final share = _ShareCard(view: r, onSave: () => _save(r.signed));
               if (c.maxWidth < 900) return Column(children: [positions, share]);
               return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -203,6 +208,9 @@ class _StatsRow extends StatelessWidget {
           ),
         ],
         const SizedBox(height: RakubaSpace.m),
+        // The count is finished: the rule ends in the tick.
+        const TickEnd(),
+        const SizedBox(height: RakubaSpace.s),
         Text(t.resultsFingerprint(view.signed.fingerprint),
             key: const ValueKey('results-fingerprint'),
             style: rakubaText(context, RakubaType.title, bold: true)
@@ -277,7 +285,8 @@ class _PositionResult extends StatelessWidget {
               ]),
               const SizedBox(height: RakubaSpace.xxs),
               ClipRRect(
-                borderRadius: BorderRadius.circular(RakubaRadius.pill),
+                // Count bars are roof bars (corner a quarter of the height).
+                borderRadius: BorderRadius.circular(RakubaSpace.xs / 4),
                 child: LinearProgressIndicator(
                   value: (c['votes'] as int) / max,
                   minHeight: RakubaSpace.xs,

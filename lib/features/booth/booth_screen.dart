@@ -162,6 +162,9 @@ class _WelcomePageState extends State<_WelcomePage> {
           constraints: BoxConstraints(minHeight: box.maxHeight - RakubaSpace.xl),
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             const Align(alignment: AlignmentDirectional.centerEnd, child: HelpButton()),
+            const SizedBox(height: RakubaSpace.s),
+            // The roof line opens the ballot.
+            const RoofLine(colour: RakubaColors.ink),
             const SizedBox(height: RakubaSpace.xs),
             // The organisation's logo only when it has one; never an empty shape.
             if (logo != null) ...[
@@ -231,10 +234,13 @@ class _WelcomePageState extends State<_WelcomePage> {
             Text(t.secrecyFooter, textAlign: TextAlign.center, style: rakubaText(context, RakubaType.bodyLarge, bold: true)),
             Text(t.numbersHelp, textAlign: TextAlign.center, style: rakubaText(context, RakubaType.bodyLarge)),
             const SizedBox(height: RakubaSpace.m),
-            Text(t.poweredBy,
-                textAlign: TextAlign.center,
-                textDirection: TextDirection.ltr,
-                style: rakubaText(context, RakubaType.label, bold: true, colour: RakubaColors.inkMuted)),
+            Row(mainAxisAlignment: MainAxisAlignment.center, textDirection: TextDirection.ltr, children: [
+              const RakubaMark(size: RakubaSpace.m, scheme: MarkScheme.oneColour),
+              const SizedBox(width: RakubaSpace.xs),
+              Text(t.poweredBy,
+                  textDirection: TextDirection.ltr,
+                  style: rakubaText(context, RakubaType.label, bold: true, colour: RakubaColors.inkMuted)),
+            ]),
           ]),
         ),
       );
@@ -416,7 +422,7 @@ class _NoChoiceRow extends StatelessWidget {
             ),
             child: Row(children: [
               if (!compact) ...[
-                const Icon(Icons.block, size: RakubaSpace.xl, color: RakubaColors.ink),
+                const BrandIcon(BrandIconKind.none, size: RakubaSpace.xl, colour: RakubaColors.ink),
                 const SizedBox(width: RakubaSpace.s),
               ],
               Expanded(
@@ -461,8 +467,18 @@ class _PositionPage extends StatelessWidget {
             if (p.chooseN > 1)
               Padding(
                 padding: const EdgeInsets.only(top: RakubaSpace.xs),
-                child: Text(t.chosenCount('${c.selectionFor(p.id).where((x) => x != noChoice).length}', '${p.chooseN}'),
-                    style: rakubaText(context, RakubaType.bodyLarge, bold: true)),
+                child: Row(children: [
+                  TallyDots(
+                      filled: c.selectionFor(p.id).where((x) => x != noChoice).length,
+                      total: p.chooseN,
+                      colour: colour),
+                  const SizedBox(width: RakubaSpace.xs),
+                  Expanded(
+                    child: Text(
+                        t.chosenCount('${c.selectionFor(p.id).where((x) => x != noChoice).length}', '${p.chooseN}'),
+                        style: rakubaText(context, RakubaType.bodyLarge, bold: true)),
+                  ),
+                ]),
               ),
           ]),
         ),

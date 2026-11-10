@@ -725,6 +725,11 @@ class _LockCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ...common,
+                // The register is finished: the rule ends in the tick.
+                const Padding(
+                  padding: EdgeInsets.only(bottom: RakubaSpace.s),
+                  child: TickEnd(colour: RakubaColors.acaciaGreen),
+                ),
                 Text(
                   t.registerFingerprint,
                   style: rakubaText(context, RakubaType.body),
